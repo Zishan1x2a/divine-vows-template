@@ -26,9 +26,7 @@ export const wedding = {
     tagline: "Two souls, one sacred vow",
   },
   date: WEDDING_DATE,
-  dateLabel: WEDDING_DATE.toLocaleDateString("en-IN", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric",
-  }),
+  dateLabel: "Saturday, 14 November 2026",
   venue: {
     name: "Rambagh Heritage Palace",
     address: "Bhawani Singh Rd, Rambagh, Jaipur, Rajasthan 302005",
