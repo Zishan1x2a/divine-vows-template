@@ -1,24 +1,74 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState, useRef } from "react";
+import { Opening } from "@/components/wedding/opening";
+import { Nav } from "@/components/wedding/nav";
+import {
+  Welcome, Hero, Story, Events, Gallery, Family, WishingWall,
+  Rsvp, Countdown, Venue, DressCode, Registry, Faq, Contact, ThankYou,
+} from "@/components/wedding/sections";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: WeddingPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function WeddingPage() {
+  const [entered, setEntered] = useState(false);
+  const [musicOn, setMusicOn] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (entered) {
+      document.body.style.overflow = "";
+    } else {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [entered]);
+
+  function toggleMusic() {
+    const el = audioRef.current;
+    if (!el) return;
+    if (musicOn) {
+      el.pause();
+      setMusicOn(false);
+    } else {
+      el.play().then(() => setMusicOn(true)).catch(() => setMusicOn(false));
+    }
+  }
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
+    <>
+      {!entered && <Opening onEnter={() => setEntered(true)} />}
+
+      <audio
+        ref={audioRef}
+        loop
+        preload="none"
+        src="https://cdn.pixabay.com/audio/2022/10/18/audio_25a5116c2b.mp3"
+        aria-hidden
       />
-    </div>
+
+      <Nav musicOn={musicOn} toggleMusic={toggleMusic} />
+
+      <main>
+        <Welcome />
+        <Hero />
+        <Story />
+        <Events />
+        <Gallery />
+        <Family />
+        <WishingWall />
+        <Rsvp />
+        <Countdown />
+        <Venue />
+        <DressCode />
+        <Registry />
+        <Faq />
+        <Contact />
+        <ThankYou />
+      </main>
+    </>
   );
 }
