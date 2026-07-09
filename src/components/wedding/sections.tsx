@@ -543,15 +543,20 @@ function Field({
    COUNTDOWN
    ========================================================= */
 function useCountdown(target: Date) {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
+    setNow(Date.now());
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
+  if (now === null) {
+    return { done: false, days: 0, hours: 0, minutes: 0, seconds: 0, ready: false };
+  }
   const diff = Math.max(0, target.getTime() - now);
   const s = Math.floor(diff / 1000);
   return {
     done: diff === 0,
+    ready: true,
     days: Math.floor(s / 86400),
     hours: Math.floor((s % 86400) / 3600),
     minutes: Math.floor((s % 3600) / 60),
