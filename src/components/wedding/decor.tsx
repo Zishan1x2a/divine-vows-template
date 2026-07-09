@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 
+function useMounted() {
+  const [m, setM] = useState(false);
+  useEffect(() => setM(true), []);
+  return m;
+}
+
 // Floating rose/marigold petals
 export function FloatingPetals({ count = 14, className = "" }: { count?: number; className?: string }) {
+  const mounted = useMounted();
   const petals = useMemo(
     () => Array.from({ length: count }, (_, i) => ({
       left: Math.random() * 100,
