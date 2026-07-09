@@ -13,10 +13,8 @@ export const IMG = {
   gallery: [g1, g2, g3, g4, g1, g2, g3, g4],
 };
 
-// Wedding is 90 days from build (demo)
-const WEDDING_DATE = new Date();
-WEDDING_DATE.setDate(WEDDING_DATE.getDate() + 90);
-WEDDING_DATE.setHours(18, 30, 0, 0);
+// Fixed demo wedding date (stable across SSR/client)
+const WEDDING_DATE = new Date("2026-11-14T18:30:00+05:30");
 
 export const wedding = {
   guest: { name: "Rajesh & Family" },
