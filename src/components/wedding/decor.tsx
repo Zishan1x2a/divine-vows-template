@@ -50,6 +50,7 @@ export function FloatingPetals({ count = 14, className = "" }: { count?: number;
 }
 
 export function GoldenParticles({ count = 30, className = "" }: { count?: number; className?: string }) {
+  const mounted = useMounted();
   const dots = useMemo(
     () => Array.from({ length: count }, (_, i) => ({
       left: Math.random() * 100,
