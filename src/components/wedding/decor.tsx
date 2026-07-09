@@ -23,7 +23,7 @@ export function FloatingPetals({ count = 14, className = "" }: { count?: number;
   );
   return (
     <div aria-hidden className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
-      {petals.map((p) => (
+      {mounted && petals.map((p) => (
         <svg
           key={p.i}
           viewBox="0 0 24 24"
