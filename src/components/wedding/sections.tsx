@@ -968,7 +968,7 @@ function CeremonyCard({ e }: { e: typeof wedding.events[0] }) {
         boxShadow: `0 35px 80px -15px ${theme.shadowColor}, 0 0 0 1px ${theme.accentColor}75`,
         transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
       }}
-      className="group cursor-default relative w-[300px] h-[300px] rounded-full aspect-square sm:w-[370px] sm:h-[370px] flex flex-col items-center justify-center text-center px-6 py-8 sm:p-8 transition-all duration-500 overflow-hidden"
+      className="group cursor-default relative w-[300px] h-[300px] rounded-full aspect-square sm:w-[370px] sm:h-[370px] flex flex-col items-center justify-center text-center px-5 py-6 sm:p-8 transition-all duration-500 overflow-hidden"
       style={{
         background: theme.gradient,
         border: "1px solid rgba(212,175,55,0.15)",
@@ -998,55 +998,55 @@ function CeremonyCard({ e }: { e: typeof wedding.events[0] }) {
       <MandalaBg className="absolute inset-0 w-full h-full opacity-[0.03] scale-75 pointer-events-none" />
 
       {/* Content Container */}
-      <div className="relative flex flex-col items-center justify-center w-full z-10 select-none gap-1.5 h-full">
+      <div className="relative flex flex-col items-center justify-center w-full z-10 select-none gap-1 h-full">
         {/* Event Title */}
-        <h3 className="font-heading text-2xl sm:text-[32px] font-semibold text-[#F5E6A8] drop-shadow-[0_2px_8px_rgba(212,175,55,0.3)] tracking-wide leading-none select-none transition-all duration-300 group-hover:text-white">
+        <h3 className="font-heading text-lg sm:text-[25px] font-semibold text-[#F5E6A8] drop-shadow-[0_2px_8px_rgba(212,175,55,0.3)] tracking-wide leading-none select-none transition-all duration-300 group-hover:text-white">
           {e.name}
         </h3>
 
-        <span aria-hidden className="block h-px w-12 bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent mx-auto my-0.5" />
+        <span aria-hidden className="block h-px w-10 bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent mx-auto my-0.5" />
 
         {/* Traditional Significance mini blurb */}
-        <p className="font-body text-[9.5px] sm:text-[11px] italic text-white/70 leading-relaxed max-w-[210px] sm:max-w-[240px] select-none text-center">
+        <p className="font-body text-[8.5px] sm:text-[10px] italic text-white/70 leading-relaxed max-w-[170px] sm:max-w-[210px] select-none text-center">
           {getSignificance(e.name)}
         </p>
 
         {/* Date and Time - Royal Highlighted Style */}
-        <div className="px-3 py-1 sm:py-1.5 rounded bg-white/[0.04] border-t border-b border-[#D4AF37]/30 shadow-[0_0_12px_rgba(212,175,55,0.08)] backdrop-blur-[2px] transition-all duration-300 group-hover:bg-white/[0.07] group-hover:border-[#D4AF37]/50 w-full max-w-[200px] sm:max-w-[220px] text-center my-1">
-          <p className="font-body text-[9px] sm:text-[11.5px] text-[#FAF8F3] tracking-wide font-semibold flex items-center justify-center gap-1.5 uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse shrink-0" />
+        <div className="px-2 py-0.5 sm:py-1 rounded bg-white/[0.04] border-t border-b border-[#D4AF37]/30 shadow-[0_0_12px_rgba(212,175,55,0.08)] backdrop-blur-[2px] transition-all duration-300 group-hover:bg-white/[0.07] group-hover:border-[#D4AF37]/50 w-full max-w-[170px] sm:max-w-[210px] text-center my-0.5">
+          <p className="font-body text-[8.5px] sm:text-[10.5px] text-[#FAF8F3] tracking-wide font-semibold flex items-center justify-center gap-1 uppercase">
+            <span className="w-1 h-1 rounded-full bg-[#D4AF37] animate-pulse shrink-0" />
             <span className="truncate">{e.date}</span>
           </p>
-          <p className="font-body text-[8px] sm:text-[9px] text-[#FAF8F3]/80 mt-0.5 tracking-[0.12em] font-bold uppercase">
+          <p className="font-body text-[7.5px] sm:text-[8.5px] text-[#FAF8F3]/80 mt-0.5 tracking-[0.12em] font-bold uppercase">
             {e.time}
           </p>
         </div>
 
         {/* Venue detail */}
-        <div className="max-w-[190px] sm:max-w-[210px] text-center">
-          <p className="font-heading text-[10px] sm:text-[12px] italic text-[#FAF8F3]/90 leading-tight">
+        <div className="max-w-[160px] sm:max-w-[200px] text-center">
+          <p className="font-heading text-[9px] sm:text-[11.5px] italic text-[#FAF8F3]/90 leading-tight">
             {e.venue}
           </p>
         </div>
 
         {/* Dress code */}
-        <div className="text-center mt-0.5">
-          <span className="font-body text-[7px] uppercase tracking-[0.25em] text-[#D4AF37]/85 font-semibold">Dress Code</span>
-          <p className="font-body text-[9px] sm:text-[10.5px] italic text-[#FAF8F3]/90 leading-none mt-0.5">
+        <div className="text-center">
+          <span className="font-body text-[6.5px] uppercase tracking-[0.25em] text-[#D4AF37]/85 font-semibold">Dress Code</span>
+          <p className="font-body text-[8px] sm:text-[9.5px] italic text-[#FAF8F3]/90 leading-none mt-0.5">
             {e.dress}
           </p>
         </div>
 
         {/* Action Link (Get Directions) */}
-        <div className="mt-1">
+        <div className="mt-0.5">
           <a
             href={wedding.venue.directions}
             target="_blank"
             rel="noreferrer"
-            className="group/link inline-flex items-center gap-1 font-body text-[8px] sm:text-[9px] uppercase tracking-[0.25em] text-[#D4AF37] border-b border-[#D4AF37]/40 pb-0.5 hover:text-white hover:border-white transition-colors"
+            className="group/link inline-flex items-center gap-0.5 font-body text-[7.5px] sm:text-[8.5px] uppercase tracking-[0.25em] text-[#D4AF37] border-b border-[#D4AF37]/40 pb-0.5 hover:text-white hover:border-white transition-colors"
           >
             Get Direction
-            <ArrowUpRight className="h-2.5 w-2.5 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+            <ArrowUpRight className="h-2 w-2 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
           </a>
         </div>
       </div>
@@ -1404,8 +1404,8 @@ export function Family() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14 mt-16 max-w-5xl mx-auto items-start">
           {([
-            { side: "Groom's Family", key: "groom", titleHindi: "वर पक्ष", descHindi: "आदरणीय वर परिवार के स्नेही सदस्य" },
-            { side: "Bride's Family", key: "bride", titleHindi: "वधू पक्ष", descHindi: "आदरणीय वधू परिवार के स्नेही सदस्य" }
+            { side: "Groom's Family", key: "groom" },
+            { side: "Bride's Family", key: "bride" }
           ] as const).map((f) => {
             const sideKey = f.key;
             const isOpen = activeSide === sideKey;
@@ -1465,20 +1465,14 @@ export function Family() {
                 </div>
 
                 {/* Header info */}
-                <div className="text-center pb-5 select-none relative z-10">
-                  <span className="font-heading text-2xl sm:text-3xl text-[#F5E6A8] block leading-none mb-2 font-semibold">
-                    {f.titleHindi}
-                  </span>
-                  <h3 className="font-heading text-lg sm:text-xl font-medium tracking-widest text-[#FFF3D6] opacity-90">
+                <div className="text-center pb-5 select-none relative z-10 border-b border-[#D4AF37]/20">
+                  <h3 className="font-heading text-xl sm:text-2xl font-semibold tracking-widest text-[#FFF3D6] opacity-90">
                     {f.side}
                   </h3>
-                  <p className="font-body mt-2.5 text-xs text-[#FAF8F3]/75 max-w-sm mx-auto leading-relaxed border-t border-[#D4AF37]/20 pt-2.5">
-                    {f.descHindi}
-                  </p>
                 </div>
 
                 {/* Expand indicator */}
-                <div className="flex flex-col items-center justify-center mt-3 mb-1 select-none relative z-10">
+                <div className="flex flex-col items-center justify-center mt-5 mb-1 select-none relative z-10">
                   <motion.div
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -1487,7 +1481,7 @@ export function Family() {
                     <ChevronDown size={18} />
                   </motion.div>
                   <span className="font-body text-[10px] tracking-wider text-[#D4AF37]/80 mt-2 font-light">
-                    {isOpen ? "विवरण छुपाएं" : "आशीर्वाद देने वाले आदरणीय सदस्य देखें"}
+                    {isOpen ? "Hide Details" : "View Family Members & Blessings"}
                   </span>
                 </div>
 
@@ -2491,11 +2485,11 @@ export function ThankYou() {
         <Reveal>
           <h2 className="font-couple gold-text text-5xl sm:text-7xl">Thank You</h2>
           <Ornament className="mt-6" />
-          <p className="mx-auto mt-8 max-w-xl font-heading italic text-lg sm:text-xl text-ivory/85 leading-relaxed">
+          <p className="mx-auto mt-8 max-w-xl font-heading italic text-lg sm:text-xl text-white leading-relaxed">
             "Your presence is the greatest blessing we could ask for. We look forward to celebrating this beautiful journey with you."
           </p>
           <div className="mt-12">
-            <p className="text-[10px] uppercase tracking-[0.5em] text-ivory/60">With Love</p>
+            <p className="text-[10px] uppercase tracking-[0.5em] text-white">With Love</p>
             <p className="mt-3 font-couple gold-text text-3xl sm:text-4xl">
               {wedding.couple.brideShort} & {wedding.couple.groomShort}
             </p>
