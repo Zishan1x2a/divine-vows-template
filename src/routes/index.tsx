@@ -76,15 +76,6 @@ function WeddingPage() {
 
   // ── Navigation helpers ────────────────────────────────────────────────────
 
-  const triggerDoorTransition = useCallback((targetScene: Scene) => {
-    setShowDoor(true);
-    setDoorOpen(false);
-
-    // Start opening door swing and switch scene mid-way
-    setTimeout(() => setDoorOpen(true), 150);
-    setTimeout(() => setCurrentScene(targetScene), 1500);
-  }, []);
-
   const goToNext = useCallback(() => {
     const idx = SCENES.indexOf(currentScene);
     if (idx >= SCENES.length - 1) return;
@@ -92,15 +83,22 @@ function WeddingPage() {
     const isWelcome = currentScene === "welcome";
     if (isWelcome) {
       setWelcomeFading(true);
+      setShowDoor(true);
+      setDoorOpen(false);
+
+      // Start opening door swing and switch scene mid-way
+      setTimeout(() => setDoorOpen(true), 150);
+      setTimeout(() => setCurrentScene("hero"), 1500);
+    } else {
+      setCurrentScene(SCENES[idx + 1]);
     }
-    triggerDoorTransition(SCENES[idx + 1]);
-  }, [currentScene, triggerDoorTransition]);
+  }, [currentScene]);
 
   const goToPrevious = useCallback(() => {
     const idx = SCENES.indexOf(currentScene);
     if (idx <= 1) return; // 0 is welcome, 1 is hero
-    triggerDoorTransition(SCENES[idx - 1]);
-  }, [currentScene, triggerDoorTransition]);
+    setCurrentScene(SCENES[idx - 1]);
+  }, [currentScene]);
 
   // ── Scene renderer ────────────────────────────────────────────────────────
 
