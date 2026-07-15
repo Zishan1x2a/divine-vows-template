@@ -2010,14 +2010,22 @@ export function Rsvp() {
             <button 
               type="button" 
               onClick={openFlow} 
-              className="group relative overflow-hidden rounded-full cursor-pointer transition-transform duration-300 hover:scale-105 active:scale-95"
-              style={{ background: "var(--gradient-gold)", boxShadow: "0 10px 30px rgba(212,175,55,0.4)" }}
+              className="group relative overflow-hidden rounded-full cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_10px_35px_rgba(212,175,55,0.45)] hover:shadow-[0_15px_40px_rgba(212,175,55,0.6)]"
+              style={{ 
+                background: "linear-gradient(135deg, #FFE58F 0%, #D4AF37 50%, #B8862A 100%)",
+                border: "2px solid rgba(255, 255, 255, 0.4)",
+              }}
             >
-              <span className="absolute inset-[-6px] rounded-full border border-dashed border-white/20 animate-spin-slow pointer-events-none" />
-              <span className="relative z-10 flex items-center gap-3 px-8 py-4 text-maroon-deep font-heading text-sm uppercase tracking-[0.25em] font-semibold">
-                <Heart className="w-4.5 h-4.5 fill-current animate-pulse" />
+              {/* Spinning decorative frame */}
+              <span className="absolute inset-[-6px] rounded-full border border-dashed border-[#260508]/15 animate-spin-slow pointer-events-none z-10" />
+              
+              {/* Luxury Sweep Shine Effect */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full animate-luxury-shine pointer-events-none z-10" />
+
+              <span className="relative z-10 flex items-center gap-3 px-10 py-5 text-[#260508] font-heading text-sm sm:text-base uppercase tracking-[0.25em] font-extrabold">
+                <Heart className="w-5 h-5 fill-current animate-pulse text-[#800020]" />
                 <span>{rsvp ? "View / Edit RSVP" : "Accept Invitation"}</span>
-                <span>❋</span>
+                <span className="text-[#800020]">❋</span>
               </span>
             </button>
           </div>
@@ -2165,11 +2173,14 @@ export function Rsvp() {
               <div className="flex gap-2 pt-3">
                 <button 
                   type="submit" 
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full cursor-pointer py-3.5 text-xs uppercase tracking-[0.2em] text-[#260508] font-bold"
-                  style={{ background: "var(--gradient-gold)" }}
+                  className="flex-1 flex items-center justify-center gap-2 rounded-full cursor-pointer py-3.5 text-xs uppercase tracking-[0.2em] text-[#FAF8F3] font-bold border border-[#D4AF37]/50 shadow-[0_4px_20px_rgba(128,0,32,0.4)] hover:scale-102 hover:shadow-[0_6px_25px_rgba(128,0,32,0.6)] transition-all duration-300 relative overflow-hidden group"
+                  style={{ background: "linear-gradient(135deg, #800020 0%, #590D18 50%, #3D070C 100%)" }}
                 >
-                  <Check className="w-4 h-4" strokeWidth={2.5} />
-                  <span>{rsvp ? "Update RSVP" : "Submit RSVP"}</span>
+                  {/* Luxury Shine Effect */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent -translate-x-full animate-luxury-shine pointer-events-none z-10" />
+
+                  <Check className="w-4 h-4 text-[#D4AF37]" strokeWidth={3} />
+                  <span className="relative z-10">{rsvp ? "Update RSVP" : "Submit RSVP"}</span>
                 </button>
                 {rsvp && (
                   <button
