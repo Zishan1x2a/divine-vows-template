@@ -2773,43 +2773,48 @@ export function Contact() {
           {([...wedding.contacts.bride.map(c => ({ ...c, side: "bride" })), ...wedding.contacts.groom.map(c => ({ ...c, side: "groom" }))]).map((c, idx) => (
             <div 
               key={c.name} 
-              className="relative rounded-2xl p-6 text-center border border-[#D4AF37]/25 overflow-hidden group shadow-lg hover:-translate-y-1.5 transition-all duration-500"
+              className="relative rounded-3xl p-6 text-center border border-[#D4AF37]/25 overflow-hidden group shadow-xl hover:-translate-y-2 hover:border-[#D4AF37]/50 hover:shadow-[0_15px_35px_rgba(212,175,55,0.15)] transition-all duration-500"
               style={{
-                background: "linear-gradient(135deg, rgba(89, 13, 21, 0.85) 0%, rgba(20, 10, 4, 0.95) 100%)",
+                background: "linear-gradient(135deg, rgba(61, 7, 12, 0.9) 0%, rgba(20, 10, 4, 0.98) 100%)",
               }}
             >
               {/* Inner Decorative Border */}
-              <div className="absolute inset-2.5 border border-dashed border-[#D4AF37]/15 rounded-xl pointer-events-none group-hover:border-[#D4AF37]/35 transition-colors duration-500" />
+              <div className="absolute inset-2 border border-dashed border-[#D4AF37]/10 rounded-[22px] pointer-events-none group-hover:border-[#D4AF37]/30 transition-colors duration-500" />
               
-              {/* Corner Mandala watermark */}
-              <MandalaBg className="absolute -bottom-10 -right-10 w-28 h-28 opacity-[0.04] pointer-events-none transition-all duration-700 group-hover:opacity-[0.1] group-hover:rotate-12" />
+              {/* Luxury Sweep Shine Effect */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-luxury-shine pointer-events-none z-10" />
 
-              <div className="relative z-10 flex flex-col h-full justify-between min-h-[160px]">
+              {/* Corner Mandala watermark */}
+              <MandalaBg className="absolute -bottom-12 -right-12 w-32 h-32 opacity-[0.03] pointer-events-none transition-all duration-700 group-hover:opacity-[0.08] group-hover:rotate-12" />
+
+              <div className="relative z-10 flex flex-col h-full justify-between min-h-[170px]">
                 <div>
-                  <p className="font-body text-[8px] uppercase tracking-[0.25em] text-[#D4AF37]/80 mb-2.5">
+                  <p className="font-body text-[8px] uppercase tracking-[0.25em] text-[#D4AF37]/80 mb-3">
                     {c.side === "bride" ? "Bride's Side" : "Groom's Side"}
                   </p>
-                  <h3 className="font-heading text-lg sm:text-xl font-semibold text-white leading-tight mb-1">{c.name}</h3>
-                  <p className="font-body text-[10px] text-white/50">{c.role}</p>
+                  <h3 className="font-heading text-lg sm:text-xl font-semibold text-white leading-snug mb-1">{c.name}</h3>
+                  <p className="font-body text-[10px] text-white/50 tracking-wider uppercase">{c.role}</p>
                 </div>
                 
                 <div>
-                  <span aria-hidden className="block h-px w-10 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent mx-auto my-3 group-hover:w-16 transition-all duration-500" />
+                  <span aria-hidden className="block h-px w-10 bg-gradient-to-r from-transparent via-[#D4AF37]/35 to-transparent mx-auto my-3.5 group-hover:w-16 transition-all duration-500" />
                   
-                  <div className="flex justify-center gap-2 mt-2">
+                  <div className="flex justify-center gap-4 mt-2">
                     <a 
                       href={`tel:${c.phone}`} 
-                      className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FAF8F3] text-[10px] uppercase tracking-wider hover:bg-[#D4AF37] hover:text-[#260508] transition-all duration-300 font-medium"
+                      className="w-10 h-10 rounded-full flex items-center justify-center border border-[#D4AF37]/30 text-[#FAF8F3] hover:bg-[#D4AF37] hover:text-[#260508] hover:scale-110 active:scale-95 transition-all duration-300 shadow-[0_4px_12px_rgba(212,175,55,0.1)] group/btn cursor-pointer"
+                      aria-label={`Call ${c.name}`}
                     >
-                      <Phone size={10} /> Call
+                      <Phone size={13} className="group-hover/btn:animate-pulse" />
                     </a>
                     <a 
                       href={`https://wa.me/${c.phone.replace(/\D/g, "")}`} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FAF8F3] text-[10px] uppercase tracking-wider hover:bg-[#D4AF37] hover:text-[#260508] transition-all duration-300 font-medium"
+                      className="w-10 h-10 rounded-full flex items-center justify-center border border-[#D4AF37]/30 text-[#FAF8F3] hover:bg-[#D4AF37] hover:text-[#260508] hover:scale-110 active:scale-95 transition-all duration-300 shadow-[0_4px_12px_rgba(212,175,55,0.1)] group/btn cursor-pointer"
+                      aria-label={`WhatsApp ${c.name}`}
                     >
-                      <MessageCircle size={10} /> WhatsApp
+                      <MessageCircle size={13} />
                     </a>
                   </div>
                 </div>
