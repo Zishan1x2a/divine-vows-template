@@ -6,155 +6,6 @@ interface DoorTransitionProps {
   onComplete?: () => void;
 }
 
-// ── Left Temple Gateway SVG Carving ──
-const DoorGatewayLeft = () => (
-  <svg
-    className="absolute inset-0 w-full h-full pointer-events-none"
-    viewBox="0 0 400 800"
-    preserveAspectRatio="none"
-    fill="none"
-    stroke="#D4AF37"
-    strokeWidth="1.2"
-    opacity="0.22"
-  >
-    {/* Outer border frame */}
-    <rect x="15" y="15" width="370" height="770" rx="10" strokeWidth="1.5" strokeDasharray="3 3" />
-    
-    {/* Left Pillar Column (representing temple pillar) */}
-    <g strokeWidth="1.5">
-      <rect x="30" y="40" width="30" height="720" rx="3" />
-      {/* Pillar base details */}
-      <rect x="25" y="700" width="40" height="60" rx="2" />
-      <line x1="25" y1="720" x2="65" y2="720" />
-      <line x1="25" y1="740" x2="65" y2="740" />
-      {/* Pillar capital details at top */}
-      <rect x="25" y="40" width="40" height="50" rx="2" />
-      <path d="M20 90 L70 90 L60 110 L30 110 Z" fill="rgba(212,175,55,0.1)" />
-      {/* Flute lines down the pillar */}
-      <line x1="40" y1="120" x2="40" y2="690" strokeWidth="0.8" strokeDasharray="5 5" />
-      <line x1="50" y1="120" x2="50" y2="690" strokeWidth="0.8" strokeDasharray="5 5" />
-    </g>
-
-    {/* Hanging Leaf Toran Garland along the top arch */}
-    <g strokeWidth="1.2">
-      {/* Swag lines */}
-      <path d="M 60,90 Q 150,110 240,90 Q 320,105 400,90" strokeWidth="1.5" />
-      {/* Mango leaves hanging */}
-      {Array.from({ length: 9 }).map((_, idx) => {
-        const x = 70 + idx * 40;
-        return (
-          <path
-            key={idx}
-            d={`M ${x},96 Q ${x-6},120 ${x},130 Q ${x+6},120 ${x},96`}
-            fill="rgba(212,175,55,0.15)"
-          />
-        );
-      })}
-    </g>
-
-    {/* Half of Top Gateway Arch (Mandap Arch) */}
-    <path
-      d="M 60,90 L 60,250 C 60,380 220,480 400,480"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M 80,90 L 80,260 C 80,370 230,460 400,460"
-      strokeWidth="1.2"
-      strokeDasharray="4 4"
-    />
-    <path
-      d="M 100,90 L 100,270 C 100,360 240,440 400,440"
-      strokeWidth="0.8"
-    />
-
-    {/* Traditional Diya lamp bottom left */}
-    <g transform="translate(100, 680)" strokeWidth="1.5">
-      <path d="M 0,20 Q -20,20 -15,0 Q -5,-15 0,-25 Q 5,-15 15,0 Q 20,20 0,20 Z" fill="rgba(212,175,55,0.15)" />
-      {/* Flame */}
-      <path d="M 0,-25 Q -4,-35 0,-45 Q 4,-35 0,-25" fill="#D4AF37" stroke="none" />
-      {/* Stand */}
-      <line x1="0" y1="20" x2="0" y2="50" />
-      <path d="M -15,50 L 15,50" />
-    </g>
-  </svg>
-);
-
-// ── Right Temple Gateway SVG Carving ──
-const DoorGatewayRight = () => (
-  <svg
-    className="absolute inset-0 w-full h-full pointer-events-none"
-    viewBox="0 0 400 800"
-    preserveAspectRatio="none"
-    fill="none"
-    stroke="#D4AF37"
-    strokeWidth="1.2"
-    opacity="0.22"
-    style={{ transform: 'scaleX(-1)' }}
-  >
-    {/* Outer border frame */}
-    <rect x="15" y="15" width="370" height="770" rx="10" strokeWidth="1.5" strokeDasharray="3 3" />
-    
-    {/* Left Pillar Column (representing temple pillar) */}
-    <g strokeWidth="1.5">
-      <rect x="30" y="40" width="30" height="720" rx="3" />
-      {/* Pillar base details */}
-      <rect x="25" y="700" width="40" height="60" rx="2" />
-      <line x1="25" y1="720" x2="65" y2="720" />
-      <line x1="25" y1="740" x2="65" y2="740" />
-      {/* Pillar capital details at top */}
-      <rect x="25" y="40" width="40" height="50" rx="2" />
-      <path d="M20 90 L70 90 L60 110 L30 110 Z" fill="rgba(212,175,55,0.1)" />
-      {/* Flute lines down the pillar */}
-      <line x1="40" y1="120" x2="40" y2="690" strokeWidth="0.8" strokeDasharray="5 5" />
-      <line x1="50" y1="120" x2="50" y2="690" strokeWidth="0.8" strokeDasharray="5 5" />
-    </g>
-
-    {/* Hanging Leaf Toran Garland along the top arch */}
-    <g strokeWidth="1.2">
-      {/* Swag lines */}
-      <path d="M 60,90 Q 150,110 240,90 Q 320,105 400,90" strokeWidth="1.5" />
-      {/* Mango leaves hanging */}
-      {Array.from({ length: 9 }).map((_, idx) => {
-        const x = 70 + idx * 40;
-        return (
-          <path
-            key={idx}
-            d={`M ${x},96 Q ${x-6},120 ${x},130 Q ${x+6},120 ${x},96`}
-            fill="rgba(212,175,55,0.15)"
-          />
-        );
-      })}
-    </g>
-
-    {/* Half of Top Gateway Arch (Mandap Arch) */}
-    <path
-      d="M 60,90 L 60,250 C 60,380 220,480 400,480"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M 80,90 L 80,260 C 80,370 230,460 400,460"
-      strokeWidth="1.2"
-      strokeDasharray="4 4"
-    />
-    <path
-      d="M 100,90 L 100,270 C 100,360 240,440 400,440"
-      strokeWidth="0.8"
-    />
-
-    {/* Traditional Diya lamp bottom left */}
-    <g transform="translate(100, 680)" strokeWidth="1.5">
-      <path d="M 0,20 Q -20,20 -15,0 Q -5,-15 0,-25 Q 5,-15 15,0 Q 20,20 0,20 Z" fill="rgba(212,175,55,0.15)" />
-      {/* Flame */}
-      <path d="M 0,-25 Q -4,-35 0,-45 Q 4,-35 0,-25" fill="#D4AF37" stroke="none" />
-      {/* Stand */}
-      <line x1="0" y1="20" x2="0" y2="50" />
-      <path d="M -15,50 L 15,50" />
-    </g>
-  </svg>
-);
-
 // ── Hanging temple bell for the doors ──
 const DoorHangingBell = () => (
   <svg
@@ -185,41 +36,6 @@ const DoorCornerOrnament = ({ className }: { className: string }) => (
     <path d="M 16 16 L 28 28" />
     <circle cx="20" cy="20" r="2.5" fill="#D4AF37" />
     <polygon points="12,12 16,12 14,15" fill="#D4AF37" />
-  </svg>
-);
-
-// ── Ganesha Silhouette for Center of Doors ──
-const GaneshaDoorSVG = () => (
-  <svg
-    viewBox="0 0 100 120"
-    className="w-36 h-44 sm:w-40 sm:h-48 stroke-[#D4AF37] fill-none stroke-[1.3] opacity-90 filter drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]"
-  >
-    {/* Head/Crown */}
-    <path d="M 50,15 L 50,5" />
-    <path d="M 45,15 Q 50,10 55,15" />
-    <path d="M 40,25 Q 50,15 60,25" />
-    
-    {/* Ears */}
-    <path d="M 35,35 Q 15,35 25,55 C 30,65 40,65 42,60" />
-    <path d="M 65,35 Q 85,35 75,55 C 70,65 60,65 58,60" />
-    
-    {/* Face / Trunk */}
-    <path d="M 42,60 C 45,55 55,55 58,60" />
-    <path d="M 43,45 Q 50,40 57,45" />
-    {/* Trunk curl */}
-    <path d="M 47,55 Q 46,75 50,85 T 58,90 Q 64,90 62,82 T 53,80" />
-    
-    {/* Tusk */}
-    <path d="M 41,60 L 37,63" />
-    <path d="M 59,60 L 63,60" />
-    
-    {/* Modak (Sweets) */}
-    <circle cx="53" cy="80" r="1.5" fill="#D4AF37" />
-    
-    {/* Tilak */}
-    <path d="M 50,28 L 50,38" strokeWidth="1.8" />
-    <path d="M 47,32 Q 50,35 53,32" />
-    <path d="M 46,35 Q 50,38 54,35" />
   </svg>
 );
 
@@ -268,8 +84,15 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               }}
             />
 
-            {/* Custom Temple Gateway Carving */}
-            <DoorGatewayLeft />
+            {/* Repeating Gold Mandala Watermark Pattern */}
+            <div 
+              className="absolute inset-0 opacity-12 mix-blend-color-dodge pointer-events-none"
+              style={{
+                backgroundImage: `url(/mandala.png)`,
+                backgroundSize: '240px',
+                backgroundRepeat: 'repeat',
+              }}
+            />
 
             {/* Corner Ornaments */}
             <DoorCornerOrnament className="top-[10px] left-[10px] sm:top-[22px] sm:left-[22px]" />
@@ -289,7 +112,7 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               </motion.div>
             </div>
 
-            {/* Haveli Arch Accent */}
+            {/* Arched Border Accent */}
             <div
               className="absolute inset-4 sm:inset-10 bottom-24 sm:bottom-32 border-[2px] border-[#D4AF37]/45 rounded-t-[100px] sm:rounded-t-[140px] pointer-events-none"
               style={{ background: "radial-gradient(circle at center, rgba(212,175,55,0.05) 0%, transparent 80%)" }}
@@ -297,13 +120,15 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               <div className="absolute inset-2 sm:inset-3 border border-dashed border-[#D4AF37]/25 rounded-t-[90px] sm:rounded-t-[125px]" />
             </div>
 
-            {/* Left Half of Ganesha Medallion */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-25 overflow-hidden w-24 h-48 sm:w-28 sm:h-56 flex items-center justify-end">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-[#D4AF37]/65 bg-[#260508] shadow-[inset_-10px_0_20px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center">
-                <div className="translate-x-[48px] sm:translate-x-[56px] scale-100 sm:scale-110">
-                  <GaneshaDoorSVG />
-                </div>
-              </div>
+            {/* Left Half of Rotating Gold Mandala */}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] pointer-events-none z-25 overflow-visible">
+              <motion.img
+                src="/mandala.png"
+                alt=""
+                className="w-full h-full opacity-90 drop-shadow-[0_0_35px_rgba(212,175,55,0.85)] mix-blend-screen filter brightness-110"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              />
             </div>
 
             {/* Edge Glow Strip */}
@@ -343,8 +168,15 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               }}
             />
 
-            {/* Custom Temple Gateway Carving */}
-            <DoorGatewayRight />
+            {/* Repeating Gold Mandala Watermark Pattern */}
+            <div 
+              className="absolute inset-0 opacity-12 mix-blend-color-dodge pointer-events-none"
+              style={{
+                backgroundImage: `url(/mandala.png)`,
+                backgroundSize: '240px',
+                backgroundRepeat: 'repeat',
+              }}
+            />
 
             {/* Corner Ornaments */}
             <DoorCornerOrnament className="top-[10px] right-[10px] sm:top-[22px] sm:right-[22px] rotate-90" />
@@ -364,7 +196,7 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               </motion.div>
             </div>
 
-            {/* Haveli Arch Accent */}
+            {/* Arched Border Accent */}
             <div
               className="absolute inset-4 sm:inset-10 bottom-24 sm:bottom-32 border-[2px] border-[#D4AF37]/45 rounded-t-[100px] sm:rounded-t-[140px] pointer-events-none"
               style={{ background: "radial-gradient(circle at center, rgba(212,175,55,0.05) 0%, transparent 80%)" }}
@@ -372,13 +204,15 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               <div className="absolute inset-2 sm:inset-3 border border-dashed border-[#D4AF37]/25 rounded-t-[90px] sm:rounded-t-[125px]" />
             </div>
 
-            {/* Right Half of Ganesha Medallion */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-25 overflow-hidden w-24 h-48 sm:w-28 sm:h-56 flex items-center justify-start">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-[#D4AF37]/65 bg-[#260508] shadow-[inset_10px_0_20px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center">
-                <div className="-translate-x-[48px] sm:-translate-x-[56px] scale-100 sm:scale-110">
-                  <GaneshaDoorSVG />
-                </div>
-              </div>
+            {/* Right Half of Rotating Gold Mandala */}
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] pointer-events-none z-25 overflow-visible">
+              <motion.img
+                src="/mandala.png"
+                alt=""
+                className="w-full h-full opacity-90 drop-shadow-[0_0_35px_rgba(212,175,55,0.85)] mix-blend-screen filter brightness-110"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              />
             </div>
 
             {/* Edge Glow Strip */}
