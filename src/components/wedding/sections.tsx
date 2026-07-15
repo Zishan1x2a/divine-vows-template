@@ -728,7 +728,7 @@ export function Story() {
       {/* ── 5. Main Card Content ── */}
       <div className="relative mx-auto max-w-5xl z-10">
         {/* Section Title */}
-        <SectionTitle eyebrow="Our Journey" title="Our Story" subtitle="Five moments woven into forever." light />
+        <SectionTitle eyebrow="Our Journey" title="Our Story" subtitle="Five moments woven into forever." light subtitleClassName="!text-white font-medium" />
 
         {/* Story Card */}
         <Reveal delay={0.25}>
@@ -1144,7 +1144,7 @@ export function Events() {
       </motion.div>
 
       <div className="relative mx-auto max-w-6xl z-10 px-6">
-        <SectionTitle eyebrow="Ceremonies" title="Wedding Events" subtitle="Each ritual, a chapter of our celebration." light />
+        <SectionTitle eyebrow="Ceremonies" title="Wedding Events" subtitle="Each ritual, a chapter of our celebration." light subtitleClassName="!text-white font-medium" />
 
         {/* ── Unified Serpentine Timeline (Mobile + Desktop) ── */}
         <div className="relative mt-20">
@@ -1382,7 +1382,7 @@ export function Gallery() {
       <FloatingPetals count={8} />
 
       <div className="mx-auto max-w-6xl px-6 relative z-10 w-full">
-        <SectionTitle eyebrow="Memories" title="Our Gallery" subtitle="Moments we've collected on the way to now." />
+        <SectionTitle eyebrow="Memories" title="Our Gallery" subtitle="Moments we've collected on the way to now." light subtitleClassName="!text-white font-medium" />
 
         {/* ── Category Filters ── */}
         <div className="flex flex-wrap justify-center gap-2 mt-6 mb-6">
@@ -2057,7 +2057,7 @@ export function WishingWall() {
       <GoldenParticles count={15} />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6">
-        <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings and warm wishes from those we hold dear." light />
+        <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings and warm wishes from those we hold dear." light subtitleClassName="!text-white font-medium" />
 
         {/* Compose Form */}
         <form
@@ -2324,7 +2324,7 @@ export function Rsvp() {
       <MandalaBg className="absolute left-10 top-10 h-[500px] w-[500px] opacity-[0.04]" />
       
       <div className="mx-auto max-w-3xl px-6 text-center">
-        <SectionTitle eyebrow="Kindly Respond" title="RSVP" subtitle="Please let us know by 15 days before the wedding." light subtitleClassName="text-white font-medium" />
+        <SectionTitle eyebrow="Kindly Respond" title="RSVP" subtitle="Please let us know by 15 days before the wedding." light subtitleClassName="!text-white font-medium" />
 
         <div className="mt-12 max-w-lg mx-auto p-8 rounded-3xl border border-[#D4AF37]/25 backdrop-blur-xl shadow-2xl bg-black/10">
           <div className="accept-cta-wrap mx-auto relative flex flex-col items-center">
@@ -2715,7 +2715,7 @@ export function Countdown() {
       </motion.div>
 
       <div className="relative mx-auto max-w-5xl px-6">
-        <SectionTitle eyebrow="The Wait Begins" title="Countdown" light subtitle="Every second closer to forever." />
+        <SectionTitle eyebrow="The Wait Begins" title="Countdown" light subtitle="Every second closer to forever." subtitleClassName="!text-white font-medium" />
 
         {c.done ? (
           <p className="text-center font-heading text-3xl sm:text-5xl gold-text">The Celebration Has Begun!</p>
