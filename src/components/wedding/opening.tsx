@@ -220,6 +220,7 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
               boxShadow: "0 0 50px rgba(212, 175, 55, 0.35)",
               border: "1.5px solid rgba(212, 175, 55, 0.45)",
               background: "#000",
+              mixBlendMode: "screen",
             }}
           >
             <video
@@ -229,10 +230,7 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
               loop={false}
               muted
               playsInline
-              className="w-full h-full object-cover"
-              style={{
-                mixBlendMode: "screen",
-              }}
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </motion.div>
         </div>

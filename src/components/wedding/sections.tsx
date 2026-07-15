@@ -339,6 +339,8 @@ export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { 
               style={{
                 border: "1.5px solid rgba(212, 175, 55, 0.45)",
                 boxShadow: "0 0 25px rgba(212, 175, 55, 0.35)",
+                background: "#000",
+                mixBlendMode: "screen",
               }}
             >
               <video
@@ -348,10 +350,7 @@ export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { 
                 muted
                 playsInline
                 loop
-                className="w-full h-full object-cover"
-                style={{
-                  mixBlendMode: "screen",
-                }}
+                className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
           </div>
