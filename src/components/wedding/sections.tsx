@@ -522,15 +522,7 @@ export function Hero() {
                 <MapPin size={16} className="text-[#B8862A]" /> {wedding.venue.name}
               </p>
             </div>
-            <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
-              <GoldButton as="a" href="#story">Explore Celebration</GoldButton>
-              <a
-                href="#events"
-                className="inline-flex items-center gap-2 rounded-full gold-border px-8 py-3.5 text-sm uppercase tracking-[0.25em] text-maroon-deep transition-all hover:bg-gold/10"
-              >
-                Wedding Events
-              </a>
-            </div>
+            {/* Buttons removed as requested */}
           </div>
         </Reveal>
       </div>
