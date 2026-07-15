@@ -4,12 +4,10 @@ import { useForm } from "react-hook-form";
 import {
   Calendar, Clock, MapPin, Sparkles, Heart, Phone, MessageCircle,
   Gift, ChevronDown, X, Car, BedDouble, Navigation, Check,
-  ChevronLeft, ChevronRight, ArrowUpRight, Send,
+  ChevronLeft, ChevronRight, ArrowUpRight,
 } from "lucide-react";
-import { z } from "zod";
-import { toast } from "sonner";
-import confetti from "canvas-confetti";
 import { wedding, ganeshMantra, IMG } from "@/data/wedding";
+import confetti from "canvas-confetti";
 import {
   ArchFrame, FloatingPetals, GoldenParticles, MandalaBg,
   Ornament, Reveal, SectionTitle, GoldButton,
@@ -1327,58 +1325,123 @@ export function Family() {
   );
 }
 
-type Blessing = {
-  id: string;
+/* =========================================================
+   WISHING WALL
+   ========================================================= */
+export function WishingWall() {
+  const [wishes, setWishes] = useState(wedding.initialWishes);
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", msg: "" });
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.name.trim() || !form.msg.trim()) return;
+    setWishes((w) => [{ name: form.name, msg: form.msg }, ...w]);
+    setForm({ name: "", msg: "" });
+    setOpen(false);
+  }
+
+  return (
+    <section id="wishes" className="relative overflow-hidden py-24 bg-black/10">
+      <GoldenParticles count={20} />
+      <div className="mx-auto max-w-6xl px-6">
+        <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings from those we hold dear." />
+        <div className="mb-8 text-center">
+          <GoldButton onClick={() => setOpen(true)}>
+            <Heart size={14} /> Add Your Blessing
+          </GoldButton>
+        </div>
+        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [column-fill:balance]">
+          {wishes.map((w, i) => (
+            <Reveal key={i} delay={Math.min(i * 0.05, 0.4)}>
+              <div className="mb-6 break-inside-avoid glass-card rounded-2xl p-6 shadow-lg">
+                <p className="font-heading text-base italic text-maroon-deep">"{w.msg}"</p>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="grid h-9 w-9 place-items-center rounded-full gold-gradient font-couple text-xs text-maroon-deep">
+                    {w.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+                  </div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[#B8862A]">— {w.name}</p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-nightbg/80 p-4 backdrop-blur-md"
+          onClick={() => setOpen(false)}
+        >
+          <form
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={submit}
+            className="w-full max-w-md glass-card rounded-2xl p-8 shadow-2xl"
+          >
+            <h3 className="font-heading text-2xl gold-text">Leave a Blessing</h3>
+            <label className="mt-6 block text-xs uppercase tracking-[0.3em] text-maroon-deep">Your Name</label>
+            <input
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              maxLength={60}
+              required
+              className="mt-2 w-full rounded-lg gold-border bg-ivory/60 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-[#D4AF37]"
+            />
+            <label className="mt-4 block text-xs uppercase tracking-[0.3em] text-maroon-deep">Your Wish</label>
+            <textarea
+              value={form.msg}
+              onChange={(e) => setForm({ ...form, msg: e.target.value })}
+              maxLength={280}
+              required
+              rows={4}
+              className="mt-2 w-full rounded-lg gold-border bg-ivory/60 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-[#D4AF37]"
+            />
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="rounded-full px-6 py-2 text-xs uppercase tracking-[0.3em] text-maroon-deep hover:bg-beige/60"
+              >
+                Cancel
+              </button>
+              <GoldButton type="submit">Send Blessing</GoldButton>
+            </div>
+          </form>
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* =========================================================
+   RSVP
+   ========================================================= */
+type RsvpForm = {
   name: string;
-  message: string;
-  at: number;
+  phone: string;
+  attending: "yes" | "no";
+  guests: number;
+  meal: "veg" | "non-veg" | "jain" | "vegan";
+  message?: string;
 };
 
-const STORAGE_KEY = "wedding_blessings_v2";
+const STORAGE_KEY = "wedding-rsvp-v2";
 
-const blessingSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, { message: "Please enter your name" })
-    .max(50, { message: "Name must be 50 characters or less" }),
-  message: z
-    .string()
-    .trim()
-    .min(5, { message: "Please write a bit more" })
-    .max(400, { message: "Wish must be 400 characters or less" }),
-});
-
-const formatWhen = (ts: number) => {
-  const diff = Date.now() - ts;
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const d = Math.floor(h / 24);
-  return `${d}d ago`;
-};
-
-const fireBlessingConfetti = () => {
-  const end = Date.now() + 2500;
-  const colors = ["#D4AF37", "#F5E6A8", "#B8862A", "#FFFFFF", "#6E1F2A"];
+const fireGoldConfetti = () => {
+  const end = Date.now() + 3000;
+  const colors = ["#d4af37", "#f3e5ab", "#aa7c11", "#ffdf00"];
 
   (function frame() {
     confetti({
-      particleCount: 8,
-      angle: 60,
-      spread: 55,
-      origin: { x: 0, y: 0.8 },
+      particleCount: 6,
+      startVelocity: 20,
+      spread: 360,
+      ticks: 200,
+      origin: { x: Math.random(), y: -0.1 },
       colors: colors,
-      zIndex: 10000
-    });
-    confetti({
-      particleCount: 8,
-      angle: 120,
-      spread: 55,
-      origin: { x: 1, y: 0.8 },
-      colors: colors,
+      shapes: ['circle'],
+      gravity: 0.8,
+      scalar: Math.random() * 0.4 + 0.4,
       zIndex: 10000
     });
 
@@ -1388,72 +1451,82 @@ const fireBlessingConfetti = () => {
   }());
 };
 
-export function WishingWall() {
-  const [blessings, setBlessings] = useState<Blessing[]>([]);
-  const [formName, setFormName] = useState("");
-  const [formMessage, setFormMessage] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-
-  const seedBlessings = useMemo(() => {
-    return wedding.initialWishes.map((w, idx) => ({
-      id: `seed-${idx}`,
-      name: w.name,
-      message: w.msg,
-      at: Date.now() - 1000 * 60 * 60 * (idx + 1) * 3,
-    }));
-  }, []);
+export function Rsvp() {
+  const [step, setStep] = useState<"closed" | "thanks" | "form">("closed");
+  const [rsvp, setRsvp] = useState<RsvpForm | null>(null);
+  const [form, setForm] = useState<RsvpForm>({
+    name: "",
+    phone: "",
+    attending: "yes",
+    guests: 1,
+    meal: "veg",
+    message: "",
+  });
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as Blessing[];
-        setBlessings(parsed);
-        return;
+        const parsed = JSON.parse(raw) as RsvpForm;
+        setRsvp(parsed);
+        setForm(parsed);
       }
-    } catch {
-      /* ignore */
-    }
-    setBlessings(seedBlessings);
-  }, [seedBlessings]);
+    } catch {}
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (step !== "closed") {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "";
+      };
+    }
+  }, [step]);
+
+  // Auto-advance from thanks → form
+  useEffect(() => {
+    if (step === "thanks") {
+      const t = setTimeout(() => setStep("form"), 1600);
+      return () => clearTimeout(t);
+    }
+  }, [step]);
+
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const result = blessingSchema.safeParse({ name: formName, message: formMessage });
-    if (!result.success) {
-      toast.error(result.error.issues[0].message);
-      return;
-    }
-    setSubmitting(true);
-    const next: Blessing = {
-      id: `b-${Date.now()}`,
-      name: result.data.name,
-      message: result.data.message,
-      at: Date.now(),
+    const data = { 
+      ...form, 
+      guests: Math.max(1, Math.min(10, Number(form.guests) || 1)) 
     };
-    const list = [next, ...blessings].slice(0, 100);
-    setBlessings(list);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    } catch {
-      /* ignore */
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    setRsvp(data);
+    setStep("closed");
+    
+    if (data.attending === "yes") {
+      fireGoldConfetti();
     }
-    setFormName("");
-    setFormMessage("");
-    toast.success("Thank you for your blessings! 🙏");
-    fireBlessingConfetti();
-    setTimeout(() => setSubmitting(false), 400);
   };
 
+  const openFlow = () => {
+    if (!rsvp) {
+      fireGoldConfetti();
+      setStep("thanks");
+    } else {
+      setForm(rsvp);
+      setStep("form");
+    }
+  };
+
+  const close = () => setStep("closed");
+
   return (
-    <section id="wishes" className="relative overflow-hidden py-24 sm:py-32">
+    <section id="rsvp" className="relative overflow-hidden py-24 sm:py-32">
       {/* ── 0. Watermark Mandala watermark in background ── */}
       <div className="absolute inset-0 -z-20 opacity-[0.04] flex items-center justify-center pointer-events-none select-none">
         <MandalaBg className="w-[85vw] h-[85vh] text-[#D4AF37]" />
       </div>
 
-      <FloatingPetals count={12} />
-      <GoldenParticles count={15} />
+      <FloatingPetals count={10} />
+      <GoldenParticles count={12} />
 
       {/* ── 1. Double gold frame border ── */}
       <motion.div
@@ -1500,224 +1573,225 @@ export function WishingWall() {
         </motion.div>
       </motion.div>
 
-      <div className="relative mx-auto max-w-5xl z-10 px-6">
-        <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings from those we hold dear." light />
+      <div className="relative mx-auto max-w-3xl z-10 px-6 text-center flex flex-col items-center">
+        <SectionTitle eyebrow="Kindly Respond" title="RSVP" subtitle="Please let us know your plans by 15 days before the wedding." light />
 
-        {/* ── Embedded Form ── */}
-        <form
-          onSubmit={handleSubmit}
-          className="glass-card rounded-3xl p-6 md:p-8 max-w-xl mx-auto text-left relative overflow-hidden shadow-2xl border border-gold/15 mb-14"
-          style={{
-            background: "linear-gradient(145deg, rgba(38, 5, 9, 0.8) 0%, rgba(20, 10, 4, 0.9) 100%)",
-          }}
-        >
-          {/* Inner Frame */}
-          <div className="absolute inset-2 md:inset-3 border-[0.5px] border-gold/25 rounded-[1.5rem] pointer-events-none z-0" />
-          <MandalaBg className="absolute -top-24 -left-24 w-64 h-64 opacity-5 rotate-45 pointer-events-none z-0 text-[#D4AF37]" />
-          <MandalaBg className="absolute -bottom-24 -right-24 w-64 h-64 opacity-5 -rotate-45 pointer-events-none z-0 text-[#D4AF37]" />
+        <div className="accept-cta-wrap mx-auto mt-6">
+          <span className="accept-glow" aria-hidden="true" />
+          <button type="button" onClick={openFlow} className="btn-accept-luxe">
+            <span className="accept-sheen" aria-hidden="true" />
+            <Heart className="w-4 h-4 md:w-5 md:h-5 fill-current" strokeWidth={1.5} />
+            <span className="accept-label">
+              {rsvp ? "View / Edit RSVP" : "Accept Invitation"}
+            </span>
+            <span className="accept-deco" aria-hidden="true">❋</span>
+          </button>
+        </div>
+        <p className="mt-6 font-heading italic text-[#F5E6A8]/70 text-sm sm:text-base leading-relaxed max-w-md">
+          {rsvp
+            ? `Your RSVP is saved · ${rsvp.attending === "yes" ? "Attending" : "Unable to attend"}`
+            : "With your blessings, this celebration becomes complete."}
+        </p>
 
-          <div className="relative z-10 space-y-4">
-            <p className="font-heading text-xs uppercase tracking-[0.35em] text-[#D4AF37] text-center mb-6 font-semibold">
-              Leave Your Blessing
-            </p>
-
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="b-name"
-                  className="font-body text-[10px] uppercase tracking-[0.25em] text-[#F5E6A8] block mb-2 font-semibold"
+        {/* Confetti Thanks Splash Overlay */}
+        <AnimatePresence>
+          {step === "thanks" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center px-6 backdrop-blur-md"
+              style={{
+                background: "radial-gradient(ellipse at center, rgba(38, 5, 9, 0.98), rgba(13, 5, 2, 0.96))",
+              }}
+              role="dialog"
+              aria-modal="true"
+              onClick={close}
+            >
+              <div className="text-center max-w-md">
+                <div
+                  className="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 shadow-[0_12px_40px_-8px_rgba(212,175,55,0.55)]"
+                  style={{ background: "linear-gradient(135deg, #D4AF37 0%, #B8862A 100%)" }}
                 >
-                  Your Name
-                </label>
-                <input
-                  id="b-name"
-                  type="text"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  placeholder="Enter your name…"
-                  className="w-full bg-white/5 border border-gold/30 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 rounded-lg px-4 py-3 font-body text-white placeholder:text-white/20 shadow-inner text-sm"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="b-msg"
-                  className="font-body text-[10px] uppercase tracking-[0.25em] text-[#F5E6A8] block mb-2 font-semibold"
-                >
-                  Your Wish
-                </label>
-                <textarea
-                  id="b-msg"
-                  value={formMessage}
-                  onChange={(e) => setFormMessage(e.target.value)}
-                  maxLength={400}
-                  rows={4}
-                  placeholder="Share a blessing, prayer, or warm wish for the couple…"
-                  className="w-full bg-white/5 border border-gold/30 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 rounded-lg px-4 py-3 font-body text-white placeholder:text-white/20 resize-none shadow-inner text-sm"
-                  required
-                />
-                <p className="text-right text-[10px] text-white/40 mt-1 font-body tracking-wider">
-                  {formMessage.length}/400
+                  <Heart className="w-10 h-10 text-[#26150b] fill-current" />
+                </div>
+                <p className="font-body text-[0.7rem] uppercase tracking-[0.4em] text-[#D4AF37] mb-2">
+                  From Our Hearts
+                </p>
+                <h3 className="font-heading text-5xl sm:text-6xl text-[#F5E6A8] mb-3">
+                  Thank You
+                </h3>
+                <span aria-hidden className="block h-px w-24 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto my-4" />
+                <p className="font-body italic text-[#F5E6A8]/80 text-base sm:text-lg">
+                  Your blessings mean the world to us.
                 </p>
               </div>
-
-              <div className="text-center pt-3 max-w-[200px] mx-auto">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full relative group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-body text-sm uppercase tracking-[0.25em] text-[#3a1a10] transition-all duration-500 gold-gradient shadow-gold hover:scale-[1.03] disabled:opacity-50 disabled:scale-100 cursor-pointer"
-                >
-                  <Send className="w-4 h-4 fill-current transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                  <span className="font-semibold">{submitting ? "Sending…" : "Offer Blessing"}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
-
-        {/* Wishes Grid Wall */}
-        <div className="max-w-5xl mx-auto">
-          <div className="max-h-[58vh] overflow-y-auto pr-1 md:pr-4 custom-scrollbar">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
-              {blessings.map((b, i) => (
-                <Reveal key={b.id} delay={Math.min(i * 0.05, 0.4)}>
-                  <article
-                    className={`glass-card rounded-3xl p-6 md:p-8 relative shadow-lg transition-transform hover:-translate-y-1 hover:shadow-xl ${
-                      i % 2 === 0 ? "rotate-1" : "-rotate-1"
-                    } hover:rotate-0 overflow-hidden border border-gold/15`}
-                    style={{
-                      background: "linear-gradient(145deg, rgba(38, 5, 9, 0.4) 0%, rgba(20, 10, 4, 0.6) 100%)",
-                    }}
-                  >
-                    {/* Inner decorative border for cards */}
-                    <div className="absolute inset-2 border-[0.5px] border-gold/10 rounded-[1.2rem] pointer-events-none z-0" />
-                    <MandalaBg className="absolute -bottom-16 -right-16 w-40 h-40 opacity-[0.05] pointer-events-none z-0 text-[#D4AF37]" />
-
-                    <div className="relative z-10">
-                      <Heart className="w-5 h-5 text-[#E33434] absolute -top-1 -right-1 opacity-75 animate-pulse" aria-hidden="true" />
-                      <p className="font-heading text-base italic text-white/95 leading-relaxed pr-6">
-                        “{b.message}”
-                      </p>
-
-                      <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4 w-full" />
-
-                      <div className="flex items-center justify-between">
-                        <p className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">— {b.name}</p>
-                        <span className="font-body text-[9px] uppercase tracking-[0.25em] text-white/40">
-                          {formatWhen(b.at)}
-                        </span>
-                      </div>
-                    </div>
-                  </article>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* =========================================================
-   RSVP
-   ========================================================= */
-type RsvpForm = {
-  name: string;
-  phone: string;
-  attending: "yes" | "no";
-  guests: number;
-  meal: string;
-  message?: string;
-};
-
-export function Rsvp() {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RsvpForm>({
-    defaultValues: { attending: "yes", guests: 1, meal: "veg" },
-  });
-  const [sent, setSent] = useState(false);
-
-  async function onSubmit(data: RsvpForm) {
-    console.log("RSVP:", data);
-    await new Promise((r) => setTimeout(r, 600));
-    setSent(true);
-  }
-
-  return (
-    <section id="rsvp" className="relative overflow-hidden py-24">
-      <MandalaBg className="left-10 top-10 h-[500px] w-[500px]" />
-      <div className="mx-auto max-w-3xl px-6">
-        <SectionTitle eyebrow="Kindly Respond" title="RSVP" subtitle="Please let us know by 15 days before the wedding." />
-        <div className="glass-card rounded-3xl p-8 sm:p-12 shadow-xl">
-          {sent ? (
-            <div className="py-12 text-center">
-              <div className="mx-auto grid h-20 w-20 place-items-center rounded-full gold-gradient text-maroon-deep shadow-gold animate-glow-pulse">
-                <Check size={40} strokeWidth={3} />
-              </div>
-              <FloatingPetals count={20} className="opacity-70" />
-              <h3 className="mt-6 font-heading text-3xl gold-text">Thank you!</h3>
-              <p className="mt-2 text-sm text-muted-foreground">Your blessing is our joy. We can't wait to celebrate with you.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5 sm:grid-cols-2">
-              <Field label="Full Name" error={errors.name?.message}>
-                <input {...register("name", { required: "Name required", maxLength: 80 })} className={inp} />
-              </Field>
-              <Field label="Phone" error={errors.phone?.message}>
-                <input {...register("phone", { required: "Phone required", maxLength: 20 })} className={inp} />
-              </Field>
-              <Field label="Will you attend?" full>
-                <div className="flex gap-3">
-                  {["yes", "no"].map((v) => (
-                    <label key={v} className="flex-1 cursor-pointer">
-                      <input type="radio" value={v} {...register("attending")} className="peer sr-only" />
-                      <div className="rounded-lg gold-border px-4 py-3 text-center text-sm capitalize transition-all peer-checked:gold-gradient peer-checked:text-maroon-deep peer-checked:shadow-gold">
-                        {v === "yes" ? "Yes, joyfully!" : "Regrets"}
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </Field>
-              <Field label="Number of Guests">
-                <input type="number" min={1} max={10} {...register("guests", { valueAsNumber: true })} className={inp} />
-              </Field>
-              <Field label="Meal Preference">
-                <select {...register("meal")} className={inp}>
-                  <option value="veg">Vegetarian</option>
-                  <option value="non-veg">Non-Vegetarian</option>
-                  <option value="jain">Jain</option>
-                  <option value="vegan">Vegan</option>
-                </select>
-              </Field>
-              <Field label="Message (optional)" full>
-                <textarea rows={3} maxLength={300} {...register("message")} className={inp} />
-              </Field>
-              <div className="sm:col-span-2 flex justify-center">
-                <GoldButton type="submit">
-                  {isSubmitting ? "Sending..." : "Send RSVP ✧"}
-                </GoldButton>
-              </div>
-            </form>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
+
+        {/* Modal RSVP Form */}
+        <AnimatePresence>
+          {step === "form" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-4 backdrop-blur-md"
+              style={{
+                background: "radial-gradient(ellipse at center, rgba(38, 5, 9, 0.98), rgba(13, 5, 2, 0.96))",
+              }}
+              role="dialog"
+              aria-modal="true"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) close();
+              }}
+            >
+              {/* Double Border Frame inside modal */}
+              <div className="absolute inset-3 sm:inset-6 pointer-events-none border border-[#D4AF37]/20 rounded-2xl z-0" />
+              <CornerOrnament className="top-[14px] left-[14px] sm:top-[28px] sm:left-[28px]" />
+              <CornerOrnament className="top-[14px] right-[14px] sm:top-[28px] sm:right-[28px] rotate-90" />
+              <CornerOrnament className="bottom-[14px] left-[14px] sm:bottom-[28px] sm:left-[28px] -rotate-90" />
+              <CornerOrnament className="bottom-[14px] right-[14px] sm:bottom-[28px] sm:right-[28px] rotate-180" />
+
+              <button
+                type="button"
+                onClick={close}
+                className="absolute top-6 right-6 w-9 h-9 rounded-full flex items-center justify-center bg-[#26150b]/80 text-[#D4AF37] border border-[#D4AF37]/35 shadow-md hover:bg-[#0d0502] transition-colors z-20"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <motion.div 
+                initial={{ y: 30, scale: 0.95 }}
+                animate={{ y: 0, scale: 1 }}
+                exit={{ y: 30, scale: 0.95 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="w-full max-w-md mx-auto max-h-[92vh] flex flex-col z-10 relative overflow-y-auto px-4"
+              >
+                <div className="text-center mb-4 shrink-0">
+                  <div
+                    className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-2 shadow-[0_8px_24px_-6px_rgba(212,175,55,0.45)]"
+                    style={{ background: "linear-gradient(135deg, #D4AF37 0%, #B8862A 100%)" }}
+                  >
+                    {rsvp ? (
+                      <Check className="w-6 h-6 text-[#26150b]" strokeWidth={3} />
+                    ) : (
+                      <Heart className="w-6 h-6 text-[#26150b] fill-current" />
+                    )}
+                  </div>
+                  <h3 className="font-heading text-3xl text-[#F5E6A8] leading-tight font-semibold">
+                    Kindly RSVP
+                  </h3>
+                  <span aria-hidden className="block h-px w-16 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto my-2" />
+                </div>
+
+                <form onSubmit={submit} className="space-y-4 text-left">
+                  <div>
+                    <label className="luxe-label">Full Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      className="luxe-input"
+                      placeholder="Your full name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="luxe-label">Phone Number</label>
+                    <input
+                      type="tel"
+                      required
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      className="luxe-input"
+                      placeholder="Your contact number"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="luxe-label">Will you be joining us?</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(["yes", "no"] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setForm({ ...form, attending: opt })}
+                          className={`luxe-pill ${form.attending === opt ? "is-active" : ""}`}
+                        >
+                          {opt === "yes" ? "Joyfully Yes" : "Regretfully No"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {form.attending === "yes" && (
+                    <div>
+                      <label className="luxe-label">Number of Guests</label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={form.guests}
+                        onChange={(e) => setForm({ ...form, guests: Number(e.target.value) })}
+                        className="luxe-input"
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="luxe-label">Meal Preference</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {(["veg", "non-veg", "jain", "vegan"] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setForm({ ...form, meal: opt })}
+                          className={`luxe-pill !text-[9px] sm:!text-[10px] ${form.meal === opt ? "is-active" : ""}`}
+                        >
+                          {opt === "veg" ? "Veg" : opt === "non-veg" ? "Non-Veg" : opt === "jain" ? "Jain" : "Vegan"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="luxe-label">Message (Optional)</label>
+                    <textarea
+                      rows={2}
+                      maxLength={300}
+                      value={form.message || ""}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      className="luxe-input resize-none"
+                      placeholder="Send a blessing or notes..."
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button type="submit" className="btn-accept-luxe flex-1 !py-3 !text-[10px] w-full">
+                      <Check className="w-4 h-4" strokeWidth={2.5} />
+                      <span className="accept-label">{rsvp ? "Update RSVP" : "Submit RSVP"}</span>
+                    </button>
+                    {rsvp && (
+                      <button
+                        type="button"
+                        onClick={() => setForm(rsvp)}
+                        className="luxe-secondary-btn flex-[0.5] !py-3"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
-  );
-}
-
-const inp =
-  "w-full rounded-lg gold-border bg-ivory/60 px-4 py-2.5 text-sm outline-none transition focus:ring-2 focus:ring-[#D4AF37]";
-
-function Field({
-  label, children, error, full,
-}: { label: string; children: React.ReactNode; error?: string; full?: boolean }) {
-  return (
-    <div className={full ? "sm:col-span-2" : ""}>
-      <label className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-maroon-deep">{label}</label>
-      {children}
-      {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
-    </div>
   );
 }
 

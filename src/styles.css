@@ -267,6 +267,154 @@
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
   }
 }
+
+/* ============================================================
+   RSVP LUXURY STYLES (FROM 8TH PROJECT)
+   ============================================================ */
+@layer components {
+  .accept-cta-wrap {
+    position: relative;
+    display: inline-block;
+    padding: 3px;
+    border-radius: 999px;
+  }
+  .accept-glow {
+    position: absolute;
+    inset: -2px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(212,175,55,0.4), transparent 70%);
+    filter: blur(8px);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+  .btn-accept-luxe {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 2.25rem;
+    border-radius: 999px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    font-size: 0.78rem;
+    color: #fff8e1;
+    background:
+      linear-gradient(135deg,
+        #D4AF37 0%,
+        #B8862A 35%,
+        #6E1F2A 70%,
+        #D4AF37 100%);
+    background-size: 220% 220%;
+    border: 1px solid rgba(245,230,168,0.7);
+    box-shadow:
+      0 14px 30px -10px rgba(110,31,42,0.55),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-accept-luxe:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow:
+      0 22px 44px -12px rgba(110,31,42,0.65),
+      0 0 0 1px rgba(245,230,168,0.75) inset,
+      0 0 48px rgba(212,175,55,0.55);
+  }
+  .btn-accept-luxe:active { transform: translateY(0) scale(0.99); }
+  .btn-accept-luxe .accept-label { position: relative; z-index: 2; }
+  .btn-accept-luxe svg { position: relative; z-index: 2; }
+  .accept-deco {
+    position: relative; z-index: 2;
+    font-size: 0.85rem;
+    color: #F5E6A8;
+    text-shadow: 0 0 8px rgba(212,175,55,0.7);
+  }
+  .accept-sheen {
+    position: absolute;
+    top: 0; left: -60%;
+    width: 50%; height: 100%;
+    background: linear-gradient(120deg,
+      transparent,
+      rgba(255,245,230,0.55),
+      transparent);
+    transform: skewX(-20deg);
+    animation: acceptSheen 3.8s ease-in-out infinite;
+    z-index: 1;
+    pointer-events: none;
+  }
+  @keyframes acceptSheen {
+    0%, 65% { left: -60%; }
+    100%    { left: 130%; }
+  }
+
+  /* Luxury Modal inputs & elements */
+  .luxe-label {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: #D4AF37;
+    margin-bottom: 0.5rem;
+  }
+  .luxe-input {
+    width: 100%;
+    padding: 0.7rem 0.95rem;
+    border-radius: 0.75rem;
+    background: rgba(38, 5, 9, 0.92);
+    border: 1px solid rgba(212,175,55,0.35);
+    color: #F5E6A8;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+  .luxe-input:focus {
+    outline: none;
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.18);
+  }
+  .luxe-pill {
+    padding: 0.7rem 0.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(212,175,55,0.35);
+    background: rgba(38, 5, 9, 0.92);
+    color: #F5E6A8;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .luxe-pill:hover { border-color: rgba(212,175,55,0.7); }
+  .luxe-pill.is-active {
+    background: linear-gradient(135deg, #D4AF37 0%, #B8862A 100%);
+    color: #26150b;
+    border-color: #D4AF37;
+    box-shadow: 0 6px 16px -6px rgba(212,175,55,0.55);
+  }
+  .luxe-secondary-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: 999px;
+    border: 1px solid rgba(212,175,55,0.55);
+    background: rgba(38, 5, 9, 0.92);
+    color: #F5E6A8;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .luxe-secondary-btn:hover {
+    background: #0d0502;
+    border-color: #D4AF37;
+  }
+}
+
