@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import {
   Calendar, Clock, MapPin, Sparkles, Heart, Phone, MessageCircle,
   Gift, ChevronDown, X, Car, BedDouble, Navigation, Check,
+  ChevronLeft, ChevronRight, ArrowUpRight,
 } from "lucide-react";
 import { wedding, ganeshMantra, IMG } from "@/data/wedding";
 import {
@@ -530,54 +531,328 @@ export function Hero() {
   );
 }
 
+// ── Corner ornament ──────────────────────────────────────
+const CornerOrnament = ({ className }: { className: string }) => (
+  <svg
+    className={`absolute w-9 h-9 pointer-events-none z-20 stroke-[#D4AF37] stroke-[1.2] fill-none opacity-60 sm:w-14 sm:h-14 ${className}`}
+    viewBox="0 0 64 64"
+    aria-hidden
+  >
+    <path d="M 0 64 L 0 0 L 64 0" />
+    <path d="M 8 56 L 8 8 L 56 8" strokeDasharray="3,2" opacity="0.65" />
+    <path d="M 12 12 C 20 8, 8 20, 24 24" />
+    <path d="M 16 16 L 28 28" />
+    <circle cx="20" cy="20" r="2.5" fill="#D4AF37" />
+    <polygon points="12,12 16,12 14,15" fill="#D4AF37" />
+  </svg>
+);
+
+// ── Hanging temple bell ──────────────────────────────────
+const HangingBell = () => (
+  <svg
+    width="24"
+    height="28"
+    viewBox="0 0 24 28"
+    fill="none"
+    stroke="#D4AF37"
+    strokeWidth="1.3"
+    className="sm:w-[32px] sm:h-[36px]"
+  >
+    <path d="M12 0 L12 10" strokeDasharray="1 1.5" />
+    <path d="M12 8 C7 10, 6 18, 6 22 L18 22 C18 18, 17 10, 12 8 Z" fill="rgba(212,175,55,0.15)" />
+    <path d="M4 22 L20 22" strokeWidth="2" />
+    <circle cx="12" cy="25" r="2" fill="#D4AF37" />
+  </svg>
+);
+
+// ── Twinkling stars ──────────────────────────────────────
+const twinklingStars = [
+  { top: "8%",  left: "10%",  delay: 0,   size: 8  },
+  { top: "14%", right: "15%", delay: 1.5, size: 6  },
+  { top: "38%", left: "4%",   delay: 0.8, size: 10 },
+  { top: "55%", right: "6%",  delay: 2.2, size: 12 },
+  { top: "70%", left: "18%",  delay: 1.2, size: 7  },
+  { top: "80%", right: "20%", delay: 0.5, size: 9  },
+];
+
+// ── Mughal/Rajput arch clip path ──────────────────────────
+const ARCH_PATH = "M 8,300 L 8,110 Q 8,8 100,8 Q 192,8 192,110 L 192,300 Z";
+
 /* =========================================================
    STORY (curved timeline)
    ========================================================= */
 export function Story() {
+  const [storyIdx, setStoryIdx] = useState(0);
+
+  const nextStory = () => {
+    setStoryIdx((prev) => (prev + 1) % wedding.story.length);
+  };
+  const prevStory = () => {
+    setStoryIdx((prev) => (prev - 1 + wedding.story.length) % wedding.story.length);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextStory();
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <section id="story" className="relative overflow-hidden py-24 bg-black/10">
-      <MandalaBg className="right-0 top-10 h-[600px] w-[600px] opacity-40" />
-      <div className="mx-auto max-w-6xl px-6">
-        <SectionTitle eyebrow="Our Journey" title="Our Story" subtitle="Five moments woven into forever." />
-        <div className="relative">
-          {/* curved gold line */}
-          <svg
-            aria-hidden
-            viewBox="0 0 1000 1200"
-            preserveAspectRatio="none"
-            className="pointer-events-none absolute inset-0 hidden h-full w-full md:block"
-          >
-            <path
-              d="M500 40 C 200 200, 800 400, 200 600 S 800 900, 500 1160"
-              fill="none"
-              stroke="#D4AF37"
-              strokeWidth="2"
-              strokeDasharray="6 8"
-              opacity="0.5"
-            />
+    <section
+      id="story"
+      className="relative isolate overflow-hidden px-4 py-24 sm:py-32 text-white"
+    >
+      {/* ── 0. Faint Mandala watermark in background ── */}
+      <div className="absolute inset-0 -z-20 opacity-[0.05] flex items-center justify-center pointer-events-none select-none">
+        <MandalaBg className="w-[85vw] h-[85vh] text-[#D4AF37]" />
+      </div>
+
+      <FloatingPetals count={12} />
+      <GoldenParticles count={15} />
+
+      {/* ── 1. Double gold frame border ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.05 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.8, ease: "easeOut" }}
+        className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10"
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 1.03 }}
+        animate={{ opacity: 0.55, scale: 1 }}
+        transition={{ duration: 2, ease: "easeOut", delay: 0.3 }}
+        className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10"
+      />
+
+      {/* ── 2. Ornate corner ornaments ── */}
+      <CornerOrnament className="top-[10px]  left-[10px]  sm:top-[22px] sm:left-[22px]" />
+      <CornerOrnament className="top-[10px]  right-[10px] sm:top-[22px] sm:right-[22px] rotate-90" />
+      <CornerOrnament className="bottom-[10px] left-[10px]  sm:bottom-[22px] sm:left-[22px]  -rotate-90" />
+      <CornerOrnament className="bottom-[10px] right-[10px] sm:bottom-[22px] sm:right-[22px] rotate-180" />
+
+      {/* ── 3. Swaying Bells ── */}
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+        className="absolute left-3.5 sm:left-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
+      >
+        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
+        <motion.div animate={{ rotate: [-3, 3, -3] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
+        className="absolute right-3.5 sm:right-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
+      >
+        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
+        <motion.div animate={{ rotate: [3, -3, 3] }} transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      {/* ── 4. Twinkling stars ── */}
+      {twinklingStars.map((star, i) => (
+        <motion.div
+          key={i}
+          className="absolute pointer-events-none"
+          style={{ top: star.top, ...(star.left ? { left: star.left } : { right: star.right }) }}
+          animate={{ opacity: [0.1, 0.75, 0.1], scale: [0.7, 1.2, 0.7] }}
+          transition={{ duration: 3.5 + (i % 3), repeat: Infinity, delay: star.delay, ease: "easeInOut" }}
+        >
+          <svg width={star.size} height={star.size} viewBox="0 0 24 24" fill="#F5E6A8" opacity="0.6">
+            <polygon points="12,0 15,9 24,12 15,15 12,24 9,15 0,12 9,9" />
           </svg>
-          <div className="relative space-y-14">
-            {wedding.story.map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.05}>
-                <div className={`grid grid-cols-1 items-center gap-6 md:grid-cols-2 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
-                  <div className="glass-card rounded-2xl p-3 shadow-xl">
-                    <div className="aspect-[4/3] overflow-hidden rounded-xl">
-                      <img src={s.img} alt={s.title} className="h-full w-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" />
-                    </div>
-                  </div>
-                  <div className={`glass-card relative rounded-2xl p-8 shadow-lg`}>
-                    <div className="absolute -top-4 left-8 grid h-10 w-10 place-items-center rounded-full gold-gradient text-maroon-deep font-couple text-sm shadow-gold">
-                      {i + 1}
-                    </div>
-                    <p className="text-xs uppercase tracking-[0.35em] text-[#B8862A]">{s.date}</p>
-                    <h3 className="mt-2 font-heading text-3xl text-maroon-deep">{s.title}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
-                  </div>
+        </motion.div>
+      ))}
+
+      {/* ── 5. Main Card Content ── */}
+      <div className="relative mx-auto max-w-5xl z-10">
+        {/* Section Title */}
+        <SectionTitle eyebrow="Our Journey" title="Our Story" subtitle="Five moments woven into forever." light />
+
+        {/* Story Card */}
+        <Reveal delay={0.25}>
+          <div
+            className="flex flex-col md:flex-row items-center gap-8 md:gap-12 rounded-3xl overflow-hidden border border-[#D4AF37]/25 backdrop-blur-[18px] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(212,175,55,0.15)]"
+            style={{
+              background: "linear-gradient(145deg, rgba(38, 5, 9, 0.8) 0%, rgba(20, 10, 4, 0.9) 100%)",
+            }}
+          >
+            {/* Photo Slideshow Column */}
+            <div className="w-full md:w-[42%] shrink-0 relative group/carousel p-6 md:p-0">
+              {/* Gold light halo behind photo */}
+              <div
+                className="absolute inset-0 blur-3xl opacity-20 pointer-events-none"
+                style={{ background: "radial-gradient(ellipse at 50% 40%, #D4AF37 0%, transparent 70%)" }}
+              />
+
+              <div className="relative w-full max-w-[260px] mx-auto md:max-w-none block">
+                <svg
+                  viewBox="0 0 200 300"
+                  className="w-full block"
+                  style={{ filter: "drop-shadow(0 12px 40px rgba(212,175,55,0.3))" }}
+                >
+                  <defs>
+                    <clipPath id="story-arch-clip"><path d={ARCH_PATH} /></clipPath>
+                    <linearGradient id="storyArchGold" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%"   stopColor="#F5E6A8" />
+                      <stop offset="35%"  stopColor="#D4AF37" />
+                      <stop offset="65%"  stopColor="#F5E6A8" />
+                      <stop offset="100%" stopColor="#B8862A" />
+                    </linearGradient>
+                    <radialGradient id="storyVig" cx="50%" cy="60%" r="70%">
+                      <stop offset="0%"   stopColor="transparent" />
+                      <stop offset="100%" stopColor="#0d0502" stopOpacity="0.6" />
+                    </radialGradient>
+                  </defs>
+
+                  {/* Photo inside arch (Animated) */}
+                  <g clipPath="url(#story-arch-clip)">
+                    <AnimatePresence mode="wait">
+                      <motion.image
+                        key={storyIdx}
+                        href={wedding.story[storyIdx].img}
+                        x="0" y="0" width="200" height="300"
+                        preserveAspectRatio="xMidYMid slice"
+                        initial={{ opacity: 0, scale: 1.15 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.6, ease: "easeInOut" }}
+                      />
+                    </AnimatePresence>
+                  </g>
+
+                  {/* Vignette & gold borders */}
+                  <path d={ARCH_PATH} fill="url(#storyVig)" pointerEvents="none" />
+                  <path d={ARCH_PATH} fill="none" stroke="url(#storyArchGold)" strokeWidth="5" pointerEvents="none" />
+                  <path
+                    d="M 14,300 L 14,112 Q 14,16 100,16 Q 186,16 186,112 L 186,300 Z"
+                    fill="none" stroke="rgba(245,230,168,0.3)" strokeWidth="1.5" pointerEvents="none"
+                  />
+                  {/* Keystone circles */}
+                  <circle cx="100" cy="10" r="7" fill="#D4AF37" opacity="0.9" pointerEvents="none" />
+                  <circle cx="100" cy="10" r="4" fill="#F5E6A8" opacity="0.9" pointerEvents="none" />
+                  {/* Base corners */}
+                  <circle cx="8"   cy="300" r="6" fill="#D4AF37" opacity="0.7" pointerEvents="none" />
+                  <circle cx="192" cy="300" r="6" fill="#D4AF37" opacity="0.7" pointerEvents="none" />
+                </svg>
+
+                {/* Left chevron button */}
+                <button
+                  onClick={prevStory}
+                  className="absolute left-10 md:left-4 top-[45%] -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full border border-[#D4AF37]/45 bg-[#0d0502]/85 backdrop-blur-md text-[#F5E6A8] hover:bg-[#D4AF37] hover:text-[#0d0502] transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.5)] opacity-75 group-hover/carousel:opacity-100 focus:outline-none"
+                  aria-label="Previous story"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Right chevron button */}
+                <button
+                  onClick={nextStory}
+                  className="absolute right-10 md:right-4 top-[45%] -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full border border-[#D4AF37]/45 bg-[#0d0502]/85 backdrop-blur-md text-[#F5E6A8] hover:bg-[#D4AF37] hover:text-[#0d0502] transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.5)] opacity-75 group-hover/carousel:opacity-100 focus:outline-none"
+                  aria-label="Next story"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Dots Indicators & Labels */}
+              <div className="flex flex-col items-center mt-5 pb-2 md:pb-8">
+                {/* Dots */}
+                <div className="flex items-center gap-2 mb-2">
+                  {wedding.story.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setStoryIdx(i)}
+                      className={`h-2 rounded-full transition-all duration-300 focus:outline-none ${
+                        storyIdx === i
+                          ? "w-6 bg-[#D4AF37]"
+                          : "w-2 bg-[#F5E6A8]/30 hover:bg-[#F5E6A8]/60"
+                      }`}
+                      aria-label={`Go to story ${i + 1}`}
+                    />
+                  ))}
                 </div>
-              </Reveal>
-            ))}
+
+                {/* Date indicator */}
+                <div className="h-4 flex items-center justify-center">
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={storyIdx}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.3 }}
+                      className="font-body text-[10px] uppercase tracking-[0.45em] text-[#F5E6A8]/60 text-center"
+                    >
+                      {wedding.story[storyIdx].date}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
+
+            {/* Text description column */}
+            <div className="flex-1 px-8 pb-10 md:px-0 md:pr-12 md:py-12 relative flex flex-col justify-center">
+              {/* Subtle gold line pattern overlay */}
+              <div
+                className="pointer-events-none absolute inset-0 opacity-[0.02]"
+                style={{ backgroundImage: "repeating-linear-gradient(45deg, #D4AF37 0 2px, transparent 2px 14px)" }}
+              />
+
+              {/* Chapter Badge */}
+              <div className="mb-5">
+                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.45em] bg-gradient-to-r from-[#5a1215] to-[#D4AF37] shadow-sm text-[#F5E6A8]">
+                  <span>✦</span>
+                  Chapter {storyIdx + 1}
+                </span>
+              </div>
+
+              {/* Title & Date */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={storyIdx}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <h3 className="font-heading text-4xl sm:text-5xl font-light text-[#F5E6A8]">
+                    {wedding.story[storyIdx].title}
+                  </h3>
+
+                  {/* Separator */}
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="h-px flex-1 max-w-[60px] opacity-40 bg-gradient-to-r from-[#D4AF37] to-transparent" />
+                    <span className="text-xs opacity-35 text-[#D4AF37]">✦</span>
+                  </div>
+
+                  {/* Description blurb */}
+                  <p className="font-body mt-5 text-sm sm:text-base leading-relaxed text-[#F5E6A8]/80 max-w-lg italic">
+                    {wedding.story[storyIdx].desc}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Sacred Sanskrit Shloka */}
+              <div className="mt-8 flex flex-col gap-2 border-t border-[#D4AF37]/20 pt-6">
+                <span className="h-px w-24 bg-gradient-to-r from-[#D4AF37]/50 to-transparent" />
+                <p className="font-heading text-base sm:text-lg text-[#D4AF37] opacity-90 leading-relaxed font-semibold">
+                  यदेतद्धृदयं तव तदस्तु हृदयं मम । यदिदं हृदयं मम तदस्तु हृदयं तव ॥
+                </p>
+                <p className="font-body text-[10px] tracking-wider uppercase text-white/50">
+                  "May your heart be my heart, and may my heart be your heart." — Rigveda
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -586,114 +861,388 @@ export function Story() {
 /* =========================================================
    EVENTS
    ========================================================= */
+function getHindiEventName(name: string): string {
+  switch (name) {
+    case "Ganesh Puja":
+      return "श्री गणेश पूजा";
+    case "Haldi":
+      return "हल्दी रस्म";
+    case "Mehendi":
+      return "मेहंदी उत्सव";
+    case "Sangeet":
+      return "संगीत संध्या";
+    case "Baraat":
+      return "शुभ बारात";
+    case "Wedding Ceremony":
+      return "पाणिग्रहण संस्कार";
+    case "Reception":
+      return "प्रीतिभोज";
+    default:
+      return "शुभ विवाह";
+  }
+}
+
+function getSignificance(name: string): string {
+  switch (name) {
+    case "Ganesh Puja":
+      return "Invoking the divine blessings of Lord Vignaharta to remove all obstacles and mark an auspicious beginning.";
+    case "Haldi":
+      return "A festive turmeric bathing ceremony representing prosperity, purification, and skin-glowing beauty.";
+    case "Mehendi":
+      return "The beautiful art of sketching henna narratives on palms, celebrating color, song, and sisterhood.";
+    case "Sangeet":
+      return "A musical extravaganza where families join in laughter, choreography, and celebration.";
+    case "Baraat":
+      return "The groom's celebratory royal arrival amidst trumpets, dancing, and grand traditional fanfare.";
+    case "Wedding Ceremony":
+      return "The sacred fire circumambulations and seven lifetime vows, binding two souls into one destiny.";
+    case "Reception":
+      return "A grand banquet under the night sky, welcoming the newlyweds with toasts, music, and love.";
+    default:
+      return "A traditional custom filled with joy and ancestral blessings, uniting families in celebrations.";
+  }
+}
+
+function getCeremonyTheme(name: string) {
+  switch (name) {
+    case "Ganesh Puja":
+      return {
+        gradient: "linear-gradient(135deg, rgba(89, 13, 21, 0.95) 0%, rgba(20, 10, 4, 0.92) 50%, rgba(38, 5, 9, 0.96) 100%)",
+        accentColor: "#D4AF37",
+        shadowColor: "rgba(212,175,55,0.3)",
+      };
+    case "Haldi":
+      return {
+        gradient: "linear-gradient(135deg, rgba(166, 124, 0, 0.95) 0%, rgba(20, 10, 4, 0.92) 50%, rgba(61, 46, 11, 0.96) 100%)",
+        accentColor: "#F4C430",
+        shadowColor: "rgba(244,196,48,0.35)",
+      };
+    case "Mehendi":
+      return {
+        gradient: "linear-gradient(135deg, rgba(15, 74, 45, 0.95) 0%, rgba(20, 10, 4, 0.92) 50%, rgba(4, 28, 16, 0.96) 100%)",
+        accentColor: "#4ED39A",
+        shadowColor: "rgba(78,211,154,0.25)",
+      };
+    case "Sangeet":
+      return {
+        gradient: "linear-gradient(135deg, rgba(22, 38, 92, 0.95) 0%, rgba(20, 10, 4, 0.92) 50%, rgba(6, 12, 38, 0.96) 100%)",
+        accentColor: "#7A9CC6",
+        shadowColor: "rgba(122,156,198,0.25)",
+      };
+    case "Baraat":
+      return {
+        gradient: "linear-gradient(135deg, rgba(184, 89, 15, 0.95) 0%, rgba(20, 10, 4, 0.92) 50%, rgba(61, 26, 4, 0.96) 100%)",
+        accentColor: "#E6C280",
+        shadowColor: "rgba(230,194,128,0.3)",
+      };
+    case "Wedding Ceremony":
+      return {
+        gradient: "linear-gradient(135deg, rgba(110, 31, 42, 0.95) 0%, rgba(20, 10, 4, 0.92) 50%, rgba(38, 5, 9, 0.96) 100%)",
+        accentColor: "#D4AF37",
+        shadowColor: "rgba(212,175,55,0.35)",
+      };
+    case "Reception":
+      return {
+        gradient: "linear-gradient(135deg, rgba(20, 20, 30, 0.95) 0%, rgba(20, 10, 4, 0.92) 50%, rgba(10, 10, 15, 0.96) 100%)",
+        accentColor: "#C7A870",
+        shadowColor: "rgba(199,168,112,0.3)",
+      };
+    default:
+      return {
+        gradient: "linear-gradient(135deg, rgba(38, 5, 9, 0.92) 0%, rgba(20, 10, 4, 0.92) 50%, rgba(10, 10, 15, 0.96) 100%)",
+        accentColor: "#D4AF37",
+        shadowColor: "rgba(212,175,55,0.22)",
+      };
+  }
+}
+
+function CeremonyCard({ e }: { e: typeof wedding.events[0] }) {
+  const theme = getCeremonyTheme(e.name);
+
+  return (
+    <motion.div
+      whileHover={{
+        y: -10,
+        boxShadow: `0 35px 80px -15px ${theme.shadowColor}, 0 0 0 1px ${theme.accentColor}75`,
+        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+      }}
+      className="group cursor-default relative w-[300px] h-[300px] rounded-full aspect-square sm:w-[370px] sm:h-[370px] flex flex-col items-center justify-center text-center px-6 py-8 sm:p-8 transition-all duration-500 overflow-hidden"
+      style={{
+        background: theme.gradient,
+        border: "1px solid rgba(212,175,55,0.15)",
+        boxShadow: "0 25px 60px -25px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.06)"
+      }}
+    >
+      {/* Outer gold-spinning border */}
+      <div 
+        className="absolute inset-0 rounded-full p-[2px] animate-[spin_12s_linear_infinite] pointer-events-none select-none z-0"
+        style={{
+          background: `conic-gradient(from 0deg, transparent 15%, ${theme.accentColor} 35%, #FFFBEA 50%, ${theme.accentColor} 65%, transparent 85%)`,
+          WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+          WebkitMaskComposite: "xor",
+          maskComposite: "exclude"
+        }}
+      />
+
+      {/* Inner dotted border rotating in reverse */}
+      <svg 
+        className="absolute inset-2.5 w-[calc(100%-20px)] h-[calc(100%-20px)] animate-[spin_22s_linear_infinite_reverse] opacity-40 pointer-events-none z-0"
+        viewBox="0 0 100 100"
+      >
+        <circle cx="50" cy="50" r="46.5" stroke={theme.accentColor} strokeWidth="0.8" strokeDasharray="3 4" fill="none" />
+      </svg>
+
+      {/* Subtle central watermark mandala inside circle */}
+      <MandalaBg className="absolute inset-0 w-full h-full opacity-[0.03] scale-75 pointer-events-none" />
+
+      {/* Content Container */}
+      <div className="relative flex flex-col items-center justify-center w-full z-10 select-none gap-1.5 h-full">
+        {/* Devanagari calligraphy heading */}
+        <h3 className="font-heading text-2xl sm:text-[36px] font-semibold text-[#F5E6A8] drop-shadow-[0_2px_8px_rgba(212,175,55,0.3)] leading-none select-none">
+          {getHindiEventName(e.name)}
+        </h3>
+
+        {/* English title */}
+        <p className="font-heading text-lg sm:text-[24px] text-[#FAF8F3]/95 tracking-wide leading-none select-none transition-all duration-300 group-hover:text-white">
+          {e.name}
+        </p>
+
+        <span aria-hidden className="block h-px w-12 bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent mx-auto my-0.5" />
+
+        {/* Traditional Significance mini blurb */}
+        <p className="font-body text-[9.5px] sm:text-[11px] italic text-white/70 leading-relaxed max-w-[210px] sm:max-w-[240px] select-none text-center">
+          {getSignificance(e.name)}
+        </p>
+
+        {/* Date and Time - Royal Highlighted Style */}
+        <div className="px-3 py-1 sm:py-1.5 rounded bg-white/[0.04] border-t border-b border-[#D4AF37]/30 shadow-[0_0_12px_rgba(212,175,55,0.08)] backdrop-blur-[2px] transition-all duration-300 group-hover:bg-white/[0.07] group-hover:border-[#D4AF37]/50 w-full max-w-[200px] sm:max-w-[220px] text-center my-1">
+          <p className="font-body text-[9px] sm:text-[11.5px] text-[#FAF8F3] tracking-wide font-semibold flex items-center justify-center gap-1.5 uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse shrink-0" />
+            <span className="truncate">{e.date}</span>
+          </p>
+          <p className="font-body text-[8px] sm:text-[9px] text-[#FAF8F3]/80 mt-0.5 tracking-[0.12em] font-bold uppercase">
+            {e.time}
+          </p>
+        </div>
+
+        {/* Venue detail */}
+        <div className="max-w-[190px] sm:max-w-[210px] text-center">
+          <p className="font-heading text-[10px] sm:text-[12px] italic text-[#FAF8F3]/90 leading-tight">
+            {e.venue}
+          </p>
+        </div>
+
+        {/* Dress code */}
+        <div className="text-center mt-0.5">
+          <span className="font-body text-[7px] uppercase tracking-[0.25em] text-[#D4AF37]/85 font-semibold">Dress Code</span>
+          <p className="font-body text-[9px] sm:text-[10.5px] italic text-[#FAF8F3]/90 leading-none mt-0.5">
+            {e.dress}
+          </p>
+        </div>
+
+        {/* Action Link (Get Directions) */}
+        <div className="mt-1">
+          <a
+            href={wedding.venue.directions}
+            target="_blank"
+            rel="noreferrer"
+            className="group/link inline-flex items-center gap-1 font-body text-[8px] sm:text-[9px] uppercase tracking-[0.25em] text-[#D4AF37] border-b border-[#D4AF37]/40 pb-0.5 hover:text-white hover:border-white transition-colors"
+          >
+            Get Direction
+            <ArrowUpRight className="h-2.5 w-2.5 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export function Events() {
   return (
-    <section id="events" className="relative overflow-hidden py-24 bg-black/5">
-      <MandalaBg className="left-0 top-10 h-[600px] w-[600px] opacity-30" />
+    <section id="events" className="relative overflow-hidden py-24 sm:py-32">
+      {/* ── 0. Watermark Mandala watermark in background ── */}
+      <div className="absolute inset-0 -z-20 opacity-[0.04] flex items-center justify-center pointer-events-none select-none">
+        <MandalaBg className="w-[85vw] h-[85vh] text-[#D4AF37]" />
+      </div>
+
       <FloatingPetals count={12} />
-      <div className="mx-auto max-w-6xl px-6">
-        <SectionTitle eyebrow="Ceremonies" title="Wedding Events" subtitle="Each ritual, a chapter of our celebration." />
-        
-        <div className="relative">
-          {/* curved gold line for events */}
+      <GoldenParticles count={15} />
+
+      {/* ── 1. Double gold frame border ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.05 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.8, ease: "easeOut" }}
+        className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10"
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 1.03 }}
+        animate={{ opacity: 0.55, scale: 1 }}
+        transition={{ duration: 2, ease: "easeOut", delay: 0.3 }}
+        className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10"
+      />
+
+      {/* ── 2. Ornate corner ornaments ── */}
+      <CornerOrnament className="top-[10px]  left-[10px]  sm:top-[22px] sm:left-[22px]" />
+      <CornerOrnament className="top-[10px]  right-[10px] sm:top-[22px] sm:right-[22px] rotate-90" />
+      <CornerOrnament className="bottom-[10px] left-[10px]  sm:bottom-[22px] sm:left-[22px]  -rotate-90" />
+      <CornerOrnament className="bottom-[10px] right-[10px] sm:bottom-[22px] sm:right-[22px] rotate-180" />
+
+      {/* ── 3. Swaying Bells ── */}
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+        className="absolute left-3.5 sm:left-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
+      >
+        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
+        <motion.div animate={{ rotate: [-3, 3, -3] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
+        className="absolute right-3.5 sm:right-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
+      >
+        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
+        <motion.div animate={{ rotate: [3, -3, 3] }} transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-6xl z-10 px-6">
+        <SectionTitle eyebrow="Ceremonies" title="Wedding Events" subtitle="Each ritual, a chapter of our celebration." light />
+
+        {/* ── Unified Serpentine Timeline (Mobile + Desktop) ── */}
+        <div className="relative mt-20">
+
+          {/* Gold serpentine guide path — desktop only */}
           <svg
             aria-hidden
-            viewBox="0 0 1000 2400"
+            className="pointer-events-none absolute inset-x-0 top-0 hidden md:block h-full w-full opacity-40"
             preserveAspectRatio="none"
-            className="pointer-events-none absolute inset-0 hidden h-full w-full md:block"
+            viewBox="0 0 1000 1800"
           >
+            <defs>
+              <linearGradient id="ceremoniesPath" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%"   stopColor="#D4AF37" stopOpacity="0" />
+                <stop offset="10%"  stopColor="#D4AF37" stopOpacity="0.45" />
+                <stop offset="90%"  stopColor="#D4AF37" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#D4AF37" stopOpacity="0" />
+              </linearGradient>
+              <filter id="glowPathCeremonies">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
             <path
-              d="M500 30 C 200 350, 800 700, 200 1050 S 800 1750, 200 2100 S 800 2450, 500 2580"
-              fill="none"
-              stroke="#D4AF37"
-              strokeWidth="2"
-              strokeDasharray="6 8"
-              opacity="0.5"
+              d="M 500 0 C 150 300, 850 500, 500 800 C 150 1100, 850 1350, 500 1600 C 400 1700, 500 1760, 500 1800"
+              fill="none" stroke="#D4AF37" strokeWidth="0.6" strokeOpacity="0.2"
+              filter="url(#glowPathCeremonies)"
+            />
+            <path
+              d="M 500 0 C 150 300, 850 500, 500 800 C 150 1100, 850 1350, 500 1600 C 400 1700, 500 1760, 500 1800"
+              fill="none" stroke="url(#ceremoniesPath)" strokeWidth="1.2" strokeDasharray="5 9"
             />
           </svg>
 
-          <div className="relative space-y-16">
+          {/* Gold serpentine wave — mobile only */}
+          <svg
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 block md:hidden h-full w-full opacity-50"
+            preserveAspectRatio="none"
+            viewBox="0 0 100 600"
+          >
+            <defs>
+              <linearGradient id="mobileWavePath" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%"   stopColor="#D4AF37" stopOpacity="0"   />
+                <stop offset="10%"  stopColor="#D4AF37" stopOpacity="0.5" />
+                <stop offset="50%"  stopColor="#F5E6A8" stopOpacity="0.6" />
+                <stop offset="90%"  stopColor="#D4AF37" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#D4AF37" stopOpacity="0"   />
+              </linearGradient>
+            </defs>
+            <path
+              d="M 50 0
+                 C 10 60,  90 120, 50 180
+                 C 10 240, 90 300, 50 360
+                 C 10 420, 90 480, 50 540
+                 C 30 570, 50 585, 50 600"
+              fill="none"
+              stroke="url(#mobileWavePath)"
+              strokeWidth="1.0"
+              strokeDasharray="4 7"
+            />
+          </svg>
+
+          <ol className="space-y-12 sm:space-y-16 md:space-y-24 relative z-10">
             {wedding.events.map((e, i) => {
-              const isEven = i % 2 === 0;
+              const isLeft = i % 2 === 0;
+              const accentColor = getCeremonyTheme(e.name).accentColor;
+
               return (
-                <Reveal key={e.name} delay={i * 0.05}>
-                  <div className={`grid grid-cols-1 items-center gap-8 md:grid-cols-2 ${isEven ? "" : "md:[&>*:first-child]:order-2"}`}>
-                    {/* Column 1: Dress Code Swatch Card */}
-                    <div className="glass-card rounded-2xl p-4 shadow-xl border border-gold/15 transition-all duration-500 hover:shadow-2xl">
-                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-ivory/40 flex flex-col justify-between p-6">
-                        <MandalaBg className="absolute -right-20 -bottom-20 h-64 w-64 opacity-20" />
-                        
-                        {/* Decorative top row */}
-                        <div className="flex items-center justify-between border-b border-gold/20 pb-3">
-                          <span className="text-[10px] uppercase tracking-[0.25em] text-[#B8862A]">Ceremony Dress Palette</span>
-                          <span className="text-xl">{e.icon}</span>
-                        </div>
-                        
-                        {/* Interactive swatches */}
-                        <div className="flex gap-4 h-24 items-end justify-center w-full my-auto z-10">
-                          {e.colors?.map((c) => (
-                            <div
-                              key={c}
-                              className="group/color relative h-full flex-1 rounded-xl shadow-md transition-all duration-500 hover:flex-[1.8] hover:scale-105 flex flex-col items-center justify-end pb-3 cursor-pointer border border-gold/10"
-                              style={{ backgroundColor: c }}
-                            >
-                              <span className="opacity-0 group-hover/color:opacity-100 transition-opacity duration-300 text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded bg-nightbg/90 text-ivory shadow-lg select-none">
-                                {c}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                <li key={e.name} className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20">
 
-                        {/* Palette Details */}
-                        <div className="text-center mt-3 z-10">
-                          <h4 className="font-heading text-xl text-maroon-deep">{e.palette}</h4>
-                          <p className="text-xs text-muted-foreground mt-1 leading-normal italic px-2">{e.dressDesc}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Column 2: Ceremony Details Card */}
-                    <div className="glass-card relative rounded-2xl p-8 shadow-lg border border-gold/15 hover:shadow-2xl transition-all duration-500">
-                      {/* Floating Icon Badge */}
-                      <div className="absolute -top-6 left-8 grid h-12 w-12 place-items-center rounded-full gold-gradient text-2xl shadow-gold border border-gold/30 transition-transform duration-500 hover:rotate-12 hover:scale-110">
+                  {/* ── Node — always centred on the grid divider (desktop only) ── */}
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+                    aria-hidden
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden md:flex"
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
+                      transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+                      className="absolute inset-0 rounded-full"
+                      style={{ boxShadow: `0 0 0 8px ${accentColor}50` }}
+                    />
+                    <div
+                      className="relative flex h-8 w-8 items-center justify-center rounded-full shadow-lg"
+                      style={{
+                        background: `radial-gradient(circle at 35% 35%, #26150b, ${accentColor})`,
+                        boxShadow: `0 0 20px ${accentColor}70, 0 0 0 3px rgba(38, 5, 9, 0.8)`,
+                      }}
+                    >
+                      <span className="text-sm flex items-center justify-center">
                         {e.icon}
-                      </div>
-
-                      <div className="mt-2">
-                        <p className="text-xs uppercase tracking-[0.35em] text-[#B8862A]">{e.date}</p>
-                        <h3 className="mt-3 font-heading text-3xl text-maroon-deep">{e.name}</h3>
-                        
-                        <div className="mt-5 space-y-3 text-sm border-t border-gold/25 pt-5">
-                          <p className="flex items-center gap-3 text-muted-foreground">
-                            <Clock size={16} className="text-[#B8862A] shrink-0" />
-                            <span>
-                              <strong className="text-maroon-deep/80 font-medium">Time:</strong> {e.time}
-                            </span>
-                          </p>
-                          <p className="flex items-center gap-3 text-muted-foreground">
-                            <MapPin size={16} className="text-[#B8862A] shrink-0" />
-                            <span>
-                              <strong className="text-maroon-deep/80 font-medium">Venue:</strong> {e.venue}
-                            </span>
-                          </p>
-                          <p className="flex items-center gap-3 text-muted-foreground">
-                            <Sparkles size={16} className="text-[#B8862A] shrink-0" />
-                            <span>
-                              <strong className="text-maroon-deep/80 font-medium">Dress:</strong> {e.dress}
-                            </span>
-                          </p>
-                        </div>
-
-                        <p className="mt-5 text-sm leading-relaxed text-muted-foreground border-t border-gold/10 pt-4 italic">
-                          {e.desc}
-                        </p>
-                      </div>
+                      </span>
                     </div>
-                  </div>
-                </Reveal>
+                  </motion.div>
+
+                  {/* Card Container */}
+                  <motion.div
+                    initial={{ opacity: 0, x: isLeft ? -32 : 32, y: 12 }}
+                    whileInView={{ opacity: 1, x: 0, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+                    className={`
+                      w-full flex justify-center col-span-1
+                      ${isLeft ? "md:justify-end md:pr-16" : "md:justify-start md:pl-16 md:col-start-2"}
+                    `}
+                  >
+                    <div 
+                      className={`
+                        scale-[0.92] sm:scale-[1.0] md:scale-[0.88] lg:scale-[0.98] xl:scale-100
+                        transition-transform duration-500 ease-out hover:-translate-y-2
+                        ${isLeft ? "origin-center md:origin-top-right" : "origin-center md:origin-top-left"}
+                      `}
+                    >
+                      <CeremonyCard e={e} />
+                    </div>
+                  </motion.div>
+
+                </li>
               );
             })}
-          </div>
+          </ol>
         </div>
       </div>
     </section>
