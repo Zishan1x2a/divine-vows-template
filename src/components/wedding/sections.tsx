@@ -861,26 +861,7 @@ export function Story() {
 /* =========================================================
    EVENTS
    ========================================================= */
-function getHindiEventName(name: string): string {
-  switch (name) {
-    case "Ganesh Puja":
-      return "श्री गणेश पूजा";
-    case "Haldi":
-      return "हल्दी रस्म";
-    case "Mehendi":
-      return "मेहंदी उत्सव";
-    case "Sangeet":
-      return "संगीत संध्या";
-    case "Baraat":
-      return "शुभ बारात";
-    case "Wedding Ceremony":
-      return "पाणिग्रहण संस्कार";
-    case "Reception":
-      return "प्रीतिभोज";
-    default:
-      return "शुभ विवाह";
-  }
-}
+// Hindi name helper removed
 
 function getSignificance(name: string): string {
   switch (name) {
@@ -997,15 +978,10 @@ function CeremonyCard({ e }: { e: typeof wedding.events[0] }) {
 
       {/* Content Container */}
       <div className="relative flex flex-col items-center justify-center w-full z-10 select-none gap-1.5 h-full">
-        {/* Devanagari calligraphy heading */}
-        <h3 className="font-heading text-2xl sm:text-[36px] font-semibold text-[#F5E6A8] drop-shadow-[0_2px_8px_rgba(212,175,55,0.3)] leading-none select-none">
-          {getHindiEventName(e.name)}
-        </h3>
-
-        {/* English title */}
-        <p className="font-heading text-lg sm:text-[24px] text-[#FAF8F3]/95 tracking-wide leading-none select-none transition-all duration-300 group-hover:text-white">
+        {/* Event Title */}
+        <h3 className="font-heading text-2xl sm:text-[32px] font-semibold text-[#F5E6A8] drop-shadow-[0_2px_8px_rgba(212,175,55,0.3)] tracking-wide leading-none select-none transition-all duration-300 group-hover:text-white">
           {e.name}
-        </p>
+        </h3>
 
         <span aria-hidden className="block h-px w-12 bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent mx-auto my-0.5" />
 
