@@ -106,8 +106,8 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
   function handleEnter() {
     setLeaving(true);
     
-    // Trigger a majestic particle explosion (150 particles)
-    const newParticles = Array.from({ length: 150 }).map((_, i) => {
+    // Trigger a majestic particle explosion (60 particles)
+    const newParticles = Array.from({ length: 60 }).map((_, i) => {
       const angle = Math.random() * Math.PI * 2;
       // High variation in speeds (up to 1200px/sec) to throw them across the entire screen
       const speed = 100 + Math.random() * 1100;
@@ -158,21 +158,9 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
           transition={{ duration: 2.5, ease: "easeOut" }}
         />
 
-        {/* Light rays (Slow spin) */}
-        <div
-          aria-hidden
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-          style={{
-            width: "120vmax",
-            height: "120vmax",
-            background: "conic-gradient(from 0deg, transparent 0deg, rgba(245,230,168,.04) 10deg, transparent 20deg, transparent 45deg, rgba(245,230,168,.03) 55deg, transparent 65deg)",
-            animation: "ring-spin 80s linear infinite",
-            opacity: 0.8,
-          }}
-        />
-
-        <GoldenParticles count={35} />
-        <FloatingPetals count={8} />
+        {/* Optimized background particles for smooth performance */}
+        <GoldenParticles count={15} />
+        <FloatingPetals count={4} />
 
         {/* Particle Splash Elements */}
         {particles.length > 0 && (
@@ -198,13 +186,9 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
         {/* Central 3D Rotating Video with Golden Mandala Frame */}
         <div className="relative w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center">
           {/* Rotating golden mandala frame around the video */}
-          <motion.div
-            className="absolute w-[180%] h-[180%] pointer-events-none opacity-40 z-0"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          >
+          <div className="absolute w-[180%] h-[180%] pointer-events-none opacity-40 z-0 animate-[spin_60s_linear_infinite] will-change-transform transform-gpu">
             <GoldMandala />
-          </motion.div>
+          </div>
 
           {/* Video Container */}
           <motion.div
