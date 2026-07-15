@@ -485,6 +485,9 @@ export function Hero() {
   return (
     <section id="hero" className="relative overflow-hidden py-24 sm:py-32">
       {/* Background is handled by the global body sunset parallax backdrop */}
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       <FloatingPetals count={16} />
       <GoldenParticles count={20} />
 
@@ -604,6 +607,9 @@ export function Story() {
       id="story"
       className="relative isolate overflow-hidden px-4 py-24 sm:py-32 text-white"
     >
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       {/* ── 0. Faint Mandala watermark in background ── */}
       <div className="absolute inset-0 -z-20 opacity-[0.05] flex items-center justify-center pointer-events-none select-none">
         <MandalaBg className="w-[85vw] h-[85vh] text-[#D4AF37]" />
@@ -1233,6 +1239,9 @@ export function Gallery() {
   const [lightbox, setLightbox] = useState<number | null>(null);
   return (
     <section id="gallery" className="relative overflow-hidden py-24 bg-black/15">
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       <MandalaBg className="left-1/2 top-20 h-[900px] w-[900px] -translate-x-1/2 opacity-30" />
       <FloatingPetals count={8} />
       <div className="mx-auto max-w-6xl px-6">
@@ -1306,6 +1315,9 @@ export function Family() {
 
   return (
     <section id="family" className="relative overflow-hidden py-24 sm:py-32">
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       {/* Background Mandala */}
       <div className="absolute inset-0 -z-20 opacity-[0.03] flex items-center justify-center pointer-events-none select-none">
         <MandalaBg className="w-[85vw] h-[85vh] text-[#D4AF37]" />
@@ -1649,7 +1661,10 @@ export function WishingWall() {
   const loopedWishes = [...wishes, ...wishes];
 
   return (
-    <section id="wishes" className="relative py-24 overflow-hidden bg-black/10 border-y border-gold/10">
+    <section id="wishes" className="relative py-24 overflow-hidden bg-black/10">
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       <style>{`
         @keyframes modalScaleUp {
           from { opacity: 0; transform: scale(0.95); }
@@ -1908,6 +1923,9 @@ export function Rsvp() {
 
   return (
     <section id="rsvp" className="relative overflow-hidden py-24 sm:py-32">
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       {/* Background elements */}
       <MandalaBg className="absolute left-10 top-10 h-[500px] w-[500px] opacity-[0.04]" />
       
@@ -2260,6 +2278,9 @@ export function Countdown() {
 
   return (
     <section id="countdown" className="relative overflow-hidden py-24 sm:py-32 text-ivory">
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       <FloatingPetals count={10} />
       <GoldenParticles count={15} />
 
@@ -2323,6 +2344,9 @@ export function Countdown() {
 export function Contact() {
   return (
     <section id="contact" className="relative overflow-hidden py-24">
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       <div className="mx-auto max-w-5xl px-6">
         <SectionTitle eyebrow="Need Help?" title="Reach Out" subtitle="We'd love to hear from you." />
         <div className="grid gap-6 md:grid-cols-2">
@@ -2372,6 +2396,9 @@ export function Contact() {
 export function ThankYou() {
   return (
     <section className="relative overflow-hidden py-32 text-ivory">
+      {/* ── Double gold frame border ── */}
+      <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
+      <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
       <FloatingPetals count={18} />
       <GoldenParticles count={30} />
       <div className="relative mx-auto max-w-3xl px-6 text-center">
