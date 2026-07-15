@@ -483,8 +483,9 @@ export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { 
    ========================================================= */
 export function Hero() {
   return (
-    <section id="hero" className="relative overflow-hidden py-24 sm:py-32">
+    <section id="hero" className="relative overflow-hidden min-h-[100dvh] flex flex-col justify-center py-20 sm:py-24">
       {/* Background is handled by the global body sunset parallax backdrop */}
+      
       {/* ── Double gold frame border ── */}
       <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
       <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
@@ -505,43 +506,75 @@ export function Hero() {
       <FloatingPetals count={16} />
       <GoldenParticles count={20} />
 
-      <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2">
+      <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2 w-full z-10">
         <Reveal>
-          <ArchFrame className="mx-auto aspect-[4/5] w-full max-w-md">
-            <div className="relative m-3 h-[calc(100%-1.5rem)] overflow-hidden rounded-t-[999px]">
-              <img
-                src={IMG.couple}
-                alt="Priya & Aarav portrait"
-                className="h-full w-full object-cover animate-soft-zoom"
-                width={1024}
-                height={1280}
-                loading="eager"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-maroon-deep/40 via-transparent to-transparent" />
-            </div>
-          </ArchFrame>
+          <div className="relative flex justify-center items-center">
+            {/* Rotating background gold mandala halo */}
+            <div className="absolute w-[112%] h-[112%] max-w-[500px] aspect-square rounded-full pointer-events-none opacity-20 z-0 animate-[spin_80s_linear_infinite]"
+                 style={{
+                   background: "radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)",
+                   border: "1px dashed rgba(212,175,55,0.15)",
+                 }}
+            />
+            <MandalaBg className="absolute w-[110%] h-[110%] max-w-[480px] opacity-[0.25] pointer-events-none z-0 animate-[spin_60s_linear_infinite]" />
+            
+            <ArchFrame className="mx-auto aspect-[4/5] w-full max-w-md relative z-10 shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
+              <div className="relative m-3 h-[calc(100%-1.5rem)] overflow-hidden rounded-t-[999px] border border-[#D4AF37]/35">
+                <img
+                  src={IMG.couple}
+                  alt={`${wedding.couple.bride} & ${wedding.couple.groom}`}
+                  className="h-full w-full object-cover animate-soft-zoom"
+                  width={1024}
+                  height={1280}
+                  loading="eager"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              </div>
+            </ArchFrame>
+          </div>
         </Reveal>
 
         <Reveal delay={0.2}>
-          <div className="text-center md:text-left">
-            <p className="text-xs uppercase tracking-[0.4em] text-maroon/70">The Wedding of</p>
-            <h1 className="mt-4 font-couple gold-text text-5xl sm:text-6xl md:text-7xl leading-[1.05]">
+          <div className="text-center md:text-left relative">
+            <div className="mb-3 flex items-center justify-center md:justify-start gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+              <p className="text-[10px] uppercase tracking-[0.35em] text-[#D4AF37] font-bold">The Holy Union</p>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+            </div>
+
+            <p className="font-serif italic text-sm text-[#FAF8F3]/70 tracking-widest mb-4">
+              {ganeshMantra.sanskrit[0]}
+            </p>
+
+            <h1 className="font-couple gold-text text-5xl sm:text-7xl md:text-8xl leading-none tracking-wide drop-shadow-[0_4px_15px_rgba(212,175,55,0.25)]">
               {wedding.couple.bride.split(" ")[0]}
-              <span className="block text-2xl sm:text-3xl text-[#D4AF37] my-2 font-heading italic normal-case">&</span>
+              <div className="flex items-center justify-center md:justify-start gap-4 my-2.5">
+                <span className="h-[1px] w-12 bg-[#D4AF37]/35" />
+                <span className="font-heading italic text-[#FAF8F3] text-xl sm:text-2xl lowercase font-normal">and</span>
+                <span className="h-[1px] w-12 bg-[#D4AF37]/35" />
+              </div>
               {wedding.couple.groom.split(" ")[0]}
             </h1>
-            <p className="mt-6 font-heading italic text-lg text-maroon-deep">
+
+            <p className="mt-6 font-heading italic text-base sm:text-lg text-white/80 leading-relaxed max-w-md">
               "{wedding.couple.tagline}"
             </p>
-            <div className="mt-8 space-y-2 text-sm text-maroon-deep">
-              <p className="flex items-center justify-center gap-2 md:justify-start">
-                <Calendar size={16} className="text-[#B8862A]" /> {wedding.dateLabel}
-              </p>
-              <p className="flex items-center justify-center gap-2 md:justify-start">
-                <MapPin size={16} className="text-[#B8862A]" /> {wedding.venue.name}
-              </p>
+
+            {/* Premium Details Cards */}
+            <div className="mt-8 grid grid-cols-2 gap-4 max-w-md mx-auto md:mx-0">
+              <div className="p-4 rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-b from-[#3D070C]/35 to-black/50 backdrop-blur-sm text-center md:text-left relative overflow-hidden group hover:border-[#D4AF37]/45 transition duration-300">
+                <div className="absolute inset-0 bg-[#D4AF37]/5 opacity-0 group-hover:opacity-100 blur-md transition duration-300" />
+                <Calendar size={18} className="text-[#D4AF37] mx-auto md:mx-0 mb-2" />
+                <p className="text-[9px] uppercase tracking-widest text-white/50">Sacred Date</p>
+                <p className="font-heading text-xs sm:text-sm text-white mt-1 font-semibold">{wedding.dateLabel}</p>
+              </div>
+              <div className="p-4 rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-b from-[#3D070C]/35 to-black/50 backdrop-blur-sm text-center md:text-left relative overflow-hidden group hover:border-[#D4AF37]/45 transition duration-300">
+                <div className="absolute inset-0 bg-[#D4AF37]/5 opacity-0 group-hover:opacity-100 blur-md transition duration-300" />
+                <MapPin size={18} className="text-[#D4AF37] mx-auto md:mx-0 mb-2" />
+                <p className="text-[9px] uppercase tracking-widest text-white/50">Royal Venue</p>
+                <p className="font-heading text-xs sm:text-sm text-white mt-1 font-semibold line-clamp-2 leading-snug">{wedding.venue.name}</p>
+              </div>
             </div>
-            {/* Buttons removed as requested */}
           </div>
         </Reveal>
       </div>
