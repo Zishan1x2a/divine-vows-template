@@ -1,136 +1,242 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import { wedding } from "@/data/wedding";
-import { FloatingPetals, GoldenParticles, GoldButton } from "./decor";
+import { FloatingPetals, GoldenParticles } from "./decor";
+
+// A beautiful, highly-detailed gold mandala component
+function GoldMandala({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      className={`w-full h-full stroke-[#D4AF37] fill-none stroke-[0.8] ${className}`}
+    >
+      <circle cx="100" cy="100" r="90" strokeDasharray="3,3" className="opacity-60" />
+      <circle cx="100" cy="100" r="75" className="opacity-80" />
+      <circle cx="100" cy="100" r="60" />
+      <circle cx="100" cy="100" r="45" strokeDasharray="1,2" className="opacity-50" />
+      <circle cx="100" cy="100" r="30" />
+      <circle cx="100" cy="100" r="15" className="opacity-90" />
+      
+      {/* Ray lines */}
+      {Array.from({ length: 16 }).map((_, i) => {
+        const angle = (i * 360) / 16;
+        const rad = (angle * Math.PI) / 180;
+        const x2 = (100 + Math.cos(rad) * 90).toFixed(3);
+        const y2 = (100 + Math.sin(rad) * 90).toFixed(3);
+        return (
+          <line
+            key={i}
+            x1="100"
+            y1="100"
+            x2={x2}
+            y2={y2}
+            className="opacity-20"
+          />
+        );
+      })}
+
+      {/* Outer scallops */}
+      {Array.from({ length: 24 }).map((_, i) => {
+        const angle = (i * 360) / 24;
+        const rad = (angle * Math.PI) / 180;
+        const nextRad = (((angle + 15) * Math.PI) / 180);
+        const x1 = (100 + Math.cos(rad) * 85).toFixed(3);
+        const y1 = (100 + Math.sin(rad) * 85).toFixed(3);
+        const x2 = (100 + Math.cos(nextRad) * 85).toFixed(3);
+        const y2 = (100 + Math.sin(nextRad) * 85).toFixed(3);
+        
+        const cx1 = 100 + Math.cos(rad) * 85;
+        const cy1 = 100 + Math.sin(rad) * 85;
+        const cx2 = 100 + Math.cos(nextRad) * 85;
+        const cy2 = 100 + Math.sin(nextRad) * 85;
+        const qx = (((cx1 + cx2) / 2) * 1.03).toFixed(3);
+        const qy = (((cy1 + cy2) / 2) * 1.03).toFixed(3);
+        return (
+          <path
+            key={i}
+            d={`M ${x1} ${y1} Q ${qx} ${qy} ${x2} ${y2}`}
+            className="opacity-50"
+          />
+        );
+      })}
+    </svg>
+  );
+}
 
 export function Opening({ onEnter }: { onEnter: () => void }) {
-  const [phase, setPhase] = useState(0); // 0 dark → 1 glow → 2 arch → 3 namaste → 4 button
   const [leaving, setLeaving] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; color: string }[]>([]);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
+  // Track mouse coordinates for interactive parallax
   useEffect(() => {
-    const t: ReturnType<typeof setTimeout>[] = [];
-    t.push(setTimeout(() => setPhase(1), 400));
-    t.push(setTimeout(() => setPhase(2), 1800));
-    t.push(setTimeout(() => setPhase(3), 3200));
-    t.push(setTimeout(() => setPhase(4), 4500));
-    return () => t.forEach(clearTimeout);
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) - 0.5;
+      const y = (e.clientY / window.innerHeight) - 0.5;
+      setMousePos({ x, y });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // Set video playback rate to 1.5x and force autoplay on mount
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.playbackRate = 1.5;
+      videoRef.current.play().catch((err) => {
+        console.log("Intro video play failed:", err);
+      });
+    }
+  }, []);
+
+  // Automatically open the gates after the sped-up video duration (approx 6.9 seconds)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleEnter();
+    }, 6900); // 6.9 seconds (10.4s video played at 1.5x speed)
+    return () => clearTimeout(timer);
   }, []);
 
   function handleEnter() {
     setLeaving(true);
-    setTimeout(onEnter, 900);
+    
+    // Trigger a majestic particle explosion (150 particles)
+    const newParticles = Array.from({ length: 150 }).map((_, i) => {
+      const angle = Math.random() * Math.PI * 2;
+      // High variation in speeds (up to 1200px/sec) to throw them across the entire screen
+      const speed = 100 + Math.random() * 1100;
+      return {
+        id: i,
+        x: Math.cos(angle) * speed,
+        y: Math.sin(angle) * speed,
+        size: 1.5 + Math.random() * 6.5,
+        color: Math.random() > 0.6 
+          ? "#D4AF37" // Bright gold
+          : Math.random() > 0.25 
+            ? "#F5E6A8" // Warm ivory/champagne
+            : "#FFFFFF" // White spark
+      };
+    });
+    setParticles(newParticles);
+
+    // Call onEnter after particles fly off-screen (2.0s delay)
+    setTimeout(onEnter, 2000);
   }
 
   return (
-    <div
-      className="fixed inset-0 z-[100] overflow-hidden"
-      style={{
-        background: "radial-gradient(ellipse at center, #2a1a08 0%, #0a0603 65%, #000 100%)",
-        opacity: leaving ? 0 : 1,
-        transition: "opacity .9s ease-out",
-        pointerEvents: leaving ? "none" : "auto",
-      }}
-    >
-      {/* Golden glow orb */}
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+    <div className="fixed inset-0 z-[100] overflow-hidden select-none">
+      {/* Main Full-Screen Intro Card */}
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={leaving ? { opacity: 0, scale: 0.95, filter: "blur(8px)" } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 1.0, ease: "easeInOut" }}
+        className="relative z-50 flex w-full h-full flex-col items-center justify-center px-6 text-center"
         style={{
-          width: phase >= 1 ? "80vmin" : "0px",
-          height: phase >= 1 ? "80vmin" : "0px",
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(245,230,168,.55) 0%, rgba(212,175,55,.25) 30%, transparent 65%)",
-          transition: "all 2.2s cubic-bezier(.16,1,.3,1)",
-          filter: "blur(20px)",
+          background: "radial-gradient(ellipse at center, #26150b 0%, #0a0503 70%, #000 100%)",
         }}
-      />
-      {/* Light rays */}
-      {phase >= 1 && (
+      >
+        {/* Golden glow orb (parallax shifted) */}
+        <motion.div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          style={{
+            width: "80vmin",
+            height: "80vmin",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(245,230,168,.3) 0%, rgba(212,175,55,.1) 40%, transparent 70%)",
+            filter: "blur(40px)",
+            x: mousePos.x * -25,
+            y: mousePos.y * -25,
+          }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 2.5, ease: "easeOut" }}
+        />
+
+        {/* Light rays (Slow spin) */}
         <div
           aria-hidden
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
           style={{
             width: "120vmax",
             height: "120vmax",
-            background:
-              "conic-gradient(from 0deg, transparent 0deg, rgba(245,230,168,.08) 8deg, transparent 16deg, transparent 40deg, rgba(245,230,168,.05) 48deg, transparent 56deg)",
-            animation: "ring-spin 60s linear infinite",
-            opacity: phase >= 2 ? 0.9 : 0.3,
-            transition: "opacity 2s ease",
+            background: "conic-gradient(from 0deg, transparent 0deg, rgba(245,230,168,.04) 10deg, transparent 20deg, transparent 45deg, rgba(245,230,168,.03) 55deg, transparent 65deg)",
+            animation: "ring-spin 80s linear infinite",
+            opacity: 0.8,
           }}
         />
-      )}
-      {phase >= 2 && <GoldenParticles count={40} />}
-      {phase >= 2 && <FloatingPetals count={10} />}
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-        {/* Arch silhouette */}
-        <svg
-          viewBox="0 0 240 220"
-          className="mb-6 w-40 sm:w-48"
-          style={{
-            opacity: phase >= 2 ? 1 : 0,
-            transform: phase >= 2 ? "translateY(0)" : "translateY(20px)",
-            transition: "all 1.4s ease-out",
-          }}
-        >
-          <defs>
-            <linearGradient id="opGold" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#F5E6A8" /><stop offset="100%" stopColor="#B8862A" />
-            </linearGradient>
-          </defs>
-          <path d="M20 210 L20 100 Q 20 20 120 20 Q 220 20 220 100 L220 210" stroke="url(#opGold)" strokeWidth="2" fill="none" />
-          {/* Hanging bells */}
-          <circle cx="60" cy="60" r="4" fill="#D4AF37" />
-          <circle cx="180" cy="60" r="4" fill="#D4AF37" />
-          <line x1="60" y1="20" x2="60" y2="56" stroke="#D4AF37" strokeWidth="1" />
-          <line x1="180" y1="20" x2="180" y2="56" stroke="#D4AF37" strokeWidth="1" />
-          {/* Diyas */}
-          <ellipse cx="30" cy="212" rx="10" ry="3" fill="#D4AF37" />
-          <ellipse cx="210" cy="212" rx="10" ry="3" fill="#D4AF37" />
-          <circle cx="30" cy="205" r="2" fill="#FF9E3A" />
-          <circle cx="210" cy="205" r="2" fill="#FF9E3A" />
-        </svg>
+        <GoldenParticles count={35} />
+        <FloatingPetals count={8} />
 
-        <div
-          style={{
-            opacity: phase >= 3 ? 1 : 0,
-            transform: phase >= 3 ? "translateY(0)" : "translateY(12px)",
-            transition: "all 1.2s ease-out",
-          }}
-        >
-          <div className="mb-3 text-4xl">🙏</div>
-          <p className="font-heading text-4xl sm:text-5xl text-[#F5E6A8] italic tracking-wide">
-            Namaste
-          </p>
-          <p className="mt-2 text-xs sm:text-sm uppercase tracking-[0.35em] text-[#E8DCCB]/70">
-            Welcome to our wedding celebration
-          </p>
+        {/* Particle Splash Elements */}
+        {particles.length > 0 && (
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] pointer-events-none">
+            {particles.map((p) => (
+              <motion.span
+                key={p.id}
+                initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+                animate={{ x: p.x, y: p.y, opacity: 0, scale: 0 }}
+                transition={{ duration: 1.8, ease: "easeOut" }}
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  width: p.size,
+                  height: p.size,
+                  background: p.color,
+                  boxShadow: `0 0 8px ${p.color}`,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Central 3D Rotating Video with Golden Mandala Frame */}
+        <div className="relative w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center">
+          {/* Rotating golden mandala frame around the video */}
+          <motion.div
+            className="absolute w-[180%] h-[180%] pointer-events-none opacity-40 z-0"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          >
+            <GoldMandala />
+          </motion.div>
+
+          {/* Video Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.4 }}
+            className="w-full h-full rounded-full overflow-hidden relative z-10 flex items-center justify-center cursor-pointer"
+            onClick={() => {
+              if (videoRef.current) {
+                videoRef.current.defaultMuted = true;
+                videoRef.current.muted = true;
+                videoRef.current.play().catch(e => console.log("Intro manual play failed:", e));
+              }
+            }}
+            style={{
+              boxShadow: "0 0 50px rgba(212, 175, 55, 0.35)",
+              border: "1.5px solid rgba(212, 175, 55, 0.45)",
+              background: "#000",
+            }}
+          >
+            <video
+              ref={videoRef}
+              src="/hiiiii.mp4"
+              autoPlay
+              loop={false}
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+              style={{
+                mixBlendMode: "screen",
+              }}
+            />
+          </motion.div>
         </div>
-
-        <div
-          className="mt-6"
-          style={{
-            opacity: phase >= 4 ? 1 : 0,
-            transform: phase >= 4 ? "translateY(0)" : "translateY(12px)",
-            transition: "all 1s ease-out .2s",
-          }}
-        >
-          <p className="font-couple gold-text text-2xl sm:text-4xl leading-tight">
-            {wedding.couple.brideShort} <span className="text-[#D4AF37]">&</span> {wedding.couple.groomShort}
-          </p>
-        </div>
-
-        <div
-          className="mt-10"
-          style={{
-            opacity: phase >= 4 ? 1 : 0,
-            transform: phase >= 4 ? "translateY(0)" : "translateY(20px)",
-            transition: "all 1s ease-out .5s",
-          }}
-        >
-          <GoldButton onClick={handleEnter}>Open Invitation ✧</GoldButton>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

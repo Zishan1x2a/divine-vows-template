@@ -52,34 +52,53 @@
 :root {
   --radius: 0.75rem;
 
-  --maroon: oklch(0.34 0.11 15);
-  --maroon-deep: oklch(0.24 0.09 15);
-  --gold: oklch(0.79 0.14 85);
-  --gold-soft: oklch(0.88 0.09 88);
-  --ivory: oklch(0.98 0.008 85);
-  --beige: oklch(0.92 0.025 80);
+  /* Original light theme values stored under org namespace */
+  --org-maroon: oklch(0.34 0.11 15);
+  --org-maroon-deep: oklch(0.24 0.09 15);
+  --org-gold: oklch(0.79 0.14 85);
+  --org-gold-soft: oklch(0.88 0.09 88);
+  --org-ivory: oklch(0.98 0.008 85);
+  --org-beige: oklch(0.92 0.025 80);
+
+  /* Swapped to deep maroon/gold dark luxury theme */
+  --maroon: var(--org-ivory);
+  --maroon-deep: var(--org-gold-soft);
+  --gold: var(--org-gold);
+  --gold-soft: var(--org-gold-soft);
+  --ivory: var(--org-maroon-deep);
+  --beige: var(--org-maroon);
   --templegreen: oklch(0.44 0.06 165);
   --nightbg: oklch(0.16 0.015 40);
 
   --background: var(--ivory);
-  --foreground: oklch(0.22 0.03 30);
-  --card: oklch(0.99 0.005 85);
-  --card-foreground: oklch(0.22 0.03 30);
+  --foreground: var(--maroon);
+  --card: var(--beige);
+  --card-foreground: var(--maroon);
   --popover: var(--ivory);
-  --popover-foreground: oklch(0.22 0.03 30);
-  --primary: var(--maroon);
+  --popover-foreground: var(--maroon);
+  --primary: var(--gold);
   --primary-foreground: var(--ivory);
   --secondary: var(--beige);
   --secondary-foreground: var(--maroon);
   --muted: var(--beige);
-  --muted-foreground: oklch(0.45 0.04 30);
-  --accent: var(--gold);
-  --accent-foreground: var(--maroon-deep);
+  --muted-foreground: var(--gold-soft);
   --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: var(--ivory);
-  --border: color-mix(in oklab, var(--gold) 35%, transparent);
-  --input: color-mix(in oklab, var(--maroon) 15%, transparent);
+  --border: color-mix(in oklab, var(--gold) 20%, transparent);
+  --input: color-mix(in oklab, var(--gold) 15%, transparent);
   --ring: var(--gold);
+}
+
+/* Ensure that elements in gold-gradient containers retain dark maroon contrast */
+.gold-gradient, [class*="gold-gradient"] {
+  --maroon-deep: var(--org-maroon-deep) !important;
+  --maroon: var(--org-maroon) !important;
+}
+
+/* Peer checked selectors */
+.peer:checked + div, [class*="peer-checked:gold-gradient"] {
+  --maroon-deep: var(--org-maroon-deep) !important;
+  --maroon: var(--org-maroon) !important;
 }
 
 @layer base {
@@ -90,8 +109,11 @@
     color: var(--color-foreground);
     font-family: var(--font-body);
     background-image:
-      radial-gradient(1200px 800px at 10% -10%, color-mix(in oklab, var(--gold) 12%, transparent), transparent 60%),
-      radial-gradient(1000px 700px at 100% 20%, color-mix(in oklab, var(--maroon) 10%, transparent), transparent 60%);
+      linear-gradient(180deg, rgba(20, 10, 4, 0.9), rgba(20, 10, 4, 0.85)),
+      url("./assets/sunset-temple.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
   }
   h1,h2,h3,h4 { font-family: var(--font-heading); letter-spacing: 0.01em; }
   .font-couple { font-family: var(--font-couple); }
@@ -106,6 +128,74 @@
   color: transparent;
 }
 
+@keyframes gold-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(245, 230, 168, 0.25));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.7));
+  }
+}
+
+@utility animate-gold-glow {
+  animation: gold-glow 4s ease-in-out infinite;
+}
+
+@keyframes border-ray-flow {
+  0% {
+    stroke-dashoffset: 1150;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@utility animate-border-ray {
+  stroke-dasharray: 150 1000;
+  animation: border-ray-flow 6s linear infinite;
+}
+
+@keyframes luxury-shine {
+  0% {
+    transform: translateX(-150%) skewX(-30deg);
+  }
+  100% {
+    transform: translateX(150%) skewX(-30deg);
+  }
+}
+
+@utility animate-luxury-shine {
+  animation: luxury-shine 4s ease-in-out infinite;
+}
+
+@keyframes liquid-flow {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(-10px, 5px) scale(1.15);
+  }
+}
+
+@keyframes button-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 10px rgba(212, 175, 55, 0.25);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.65);
+    transform: scale(1.025);
+  }
+}
+
+@utility animate-button-glow-pulse {
+  animation: button-glow-pulse 3s ease-in-out infinite;
+}
+
+
+
+
+
 @utility gold-gradient {
   background: linear-gradient(135deg, #D4AF37 0%, #F5E6A8 50%, #B8862A 100%);
 }
@@ -115,7 +205,7 @@
   backdrop-filter: blur(18px) saturate(140%);
   border: 1px solid color-mix(in oklab, var(--gold) 40%, transparent);
   box-shadow:
-    0 20px 60px -20px color-mix(in oklab, var(--maroon) 30%, transparent),
+    0 20px 60px -20px color-mix(in oklab, var(--org-maroon) 30%, transparent),
     inset 0 0 0 1px color-mix(in oklab, var(--gold) 20%, transparent);
 }
 

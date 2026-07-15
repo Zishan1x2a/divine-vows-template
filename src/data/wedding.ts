@@ -7,9 +7,10 @@ import g3 from "@/assets/gallery-3.jpg";
 import g4 from "@/assets/gallery-4.jpg";
 import sunset from "@/assets/sunset-temple.jpg";
 import venueImg from "@/assets/venue.jpg";
+import templeSilhouette from "@/assets/temple-silhouette.png";
 
 export const IMG = {
-  ganesha, couple, templeArch, sunset, venue: venueImg,
+  ganesha, couple, templeArch, sunset, templeSilhouette, venue: venueImg,
   gallery: [g1, g2, g3, g4, g1, g2, g3, g4],
 };
 
@@ -17,7 +18,7 @@ export const IMG = {
 const WEDDING_DATE = new Date("2026-11-14T18:30:00+05:30");
 
 export const wedding = {
-  guest: { name: "Rajesh & Family" },
+  guest: { name: "Guest" },
   couple: {
     bride: "Priya Sharma",
     groom: "Aarav Kapoor",
@@ -43,13 +44,90 @@ export const wedding = {
     { title: "The Wedding", date: "This Season", desc: "And now, surrounded by everyone we love, we begin forever.", img: couple },
   ],
   events: [
-    { name: "Ganesh Puja", icon: "🕉️", date: "Day 1 · Morning", time: "9:00 AM", venue: "Family Residence", dress: "Traditional Ivory", desc: "Invoking the blessings of Lord Ganesha to begin our sacred journey." },
-    { name: "Haldi", icon: "🌼", date: "Day 1 · Afternoon", time: "12:00 PM", venue: "Palace Courtyard", dress: "Yellow Traditional", desc: "A joyful turmeric ceremony bathing the couple in golden blessings." },
-    { name: "Mehendi", icon: "🌿", date: "Day 1 · Evening", time: "5:00 PM", venue: "Garden Pavilion", dress: "Green & Floral", desc: "Intricate henna stories drawn on hands to the sound of dholak and song." },
-    { name: "Sangeet", icon: "🎶", date: "Day 2 · Evening", time: "7:30 PM", venue: "Grand Ballroom", dress: "Cocktail Indian", desc: "A night of music, dance, laughter — where both families become one." },
-    { name: "Baraat", icon: "🐎", date: "Day 3 · Evening", time: "6:00 PM", venue: "Palace Entrance", dress: "Royal Attire", desc: "The groom's procession — horses, drums, and dancing through torchlight." },
-    { name: "Wedding Ceremony", icon: "🔥", date: "Day 3 · Night", time: "8:30 PM", venue: "Sacred Mandap", dress: "Royal Maroon & Gold", desc: "Seven vows around the sacred fire, witnessed by earth, sky, and all we love." },
-    { name: "Reception", icon: "✨", date: "Day 4 · Evening", time: "7:00 PM", venue: "Palace Terrace", dress: "Black Tie / Indo-Western", desc: "A celebration under the stars — champagne, kababs, and endless dancing." },
+    {
+      name: "Ganesh Puja",
+      icon: "🕉️",
+      date: "Day 1 · Morning",
+      time: "9:00 AM",
+      venue: "Family Residence",
+      dress: "Traditional Ivory",
+      desc: "Invoking the blessings of Lord Ganesha to begin our sacred journey.",
+      palette: "Ivory & Gold",
+      colors: ["#FFFFF0", "#FFFDD0", "#D4AF37"],
+      dressDesc: "Elegant traditional wear in shades of ivory, cream, and gold."
+    },
+    {
+      name: "Haldi",
+      icon: "🌼",
+      date: "Day 1 · Afternoon",
+      time: "12:00 PM",
+      venue: "Palace Courtyard",
+      dress: "Yellow Traditional",
+      desc: "A joyful turmeric ceremony bathing the couple in golden blessings.",
+      palette: "Sunshine Yellow",
+      colors: ["#F4C430", "#F8E473", "#E8B60E"],
+      dressDesc: "Anything that glows like turmeric — kurtas, saris, or florals."
+    },
+    {
+      name: "Mehendi",
+      icon: "🌿",
+      date: "Day 1 · Evening",
+      time: "5:00 PM",
+      venue: "Garden Pavilion",
+      dress: "Green & Floral",
+      desc: "Intricate henna stories drawn on hands to the sound of dholak and song.",
+      palette: "Emerald & Floral",
+      colors: ["#0B6B4A", "#84C58E", "#E7E1B7"],
+      dressDesc: "Green tones with fresh floral prints, comfortable and light."
+    },
+    {
+      name: "Sangeet",
+      icon: "🎶",
+      date: "Day 2 · Evening",
+      time: "7:30 PM",
+      venue: "Grand Ballroom",
+      dress: "Cocktail Indian",
+      desc: "A night of music, dance, laughter — where both families become one.",
+      palette: "Sapphire & Silver",
+      colors: ["#1B3A6B", "#7A9CC6", "#C7CBD4"],
+      dressDesc: "Cocktail-ready jewel tones for a night of dancing."
+    },
+    {
+      name: "Baraat",
+      icon: "🐎",
+      date: "Day 3 · Evening",
+      time: "6:00 PM",
+      venue: "Palace Entrance",
+      dress: "Royal Attire",
+      desc: "The groom's procession — horses, drums, and dancing through torchlight.",
+      palette: "Regal Festive",
+      colors: ["#800020", "#D4AF37", "#E6C280"],
+      dressDesc: "Regal festive wear — colorful turbans, sherwanis, or ethnic dresses."
+    },
+    {
+      name: "Wedding Ceremony",
+      icon: "🔥",
+      date: "Day 3 · Night",
+      time: "8:30 PM",
+      venue: "Sacred Mandap",
+      dress: "Royal Maroon & Gold",
+      desc: "Seven vows around the sacred fire, witnessed by earth, sky, and all we love.",
+      palette: "Royal Maroon & Gold",
+      colors: ["#6E1F2A", "#D4AF37", "#F8F6F2"],
+      dressDesc: "Traditional finery — silks, gold jewelry, regal reds."
+    },
+    {
+      name: "Reception",
+      icon: "✨",
+      date: "Day 4 · Evening",
+      time: "7:00 PM",
+      venue: "Palace Terrace",
+      dress: "Black Tie / Indo-Western",
+      desc: "A celebration under the stars — champagne, kababs, and endless dancing.",
+      palette: "Midnight & Champagne",
+      colors: ["#0F0F17", "#C7A870", "#F2E9D8"],
+      dressDesc: "Black tie or indo-western in sleek, elegant tones."
+    },
   ],
   family: {
     groom: [
@@ -122,7 +200,6 @@ export const navSections = [
   { id: "rsvp", label: "RSVP" },
   { id: "countdown", label: "Countdown" },
   { id: "venue", label: "Venue" },
-  { id: "dresscode", label: "Dress Code" },
   { id: "registry", label: "Gifts" },
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "Contact" },

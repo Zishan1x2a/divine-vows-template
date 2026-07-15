@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useRef } from "react";
 import { Opening } from "@/components/wedding/opening";
-import { Nav } from "@/components/wedding/nav";
+
 import {
   Welcome, Hero, Story, Events, Gallery, Family, WishingWall,
-  Rsvp, Countdown, Venue, DressCode, Registry, Faq, Contact, ThankYou,
+  Rsvp, Countdown, Venue, Registry, Faq, Contact, ThankYou,
 } from "@/components/wedding/sections";
 
 export const Route = createFileRoute("/")({
@@ -13,11 +13,23 @@ export const Route = createFileRoute("/")({
 
 function WeddingPage() {
   const [entered, setEntered] = useState(false);
+  const [ganeshaStarted, setGaneshaStarted] = useState(false);
+  const [scrollUnlocked, setScrollUnlocked] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
+  const [welcomeFading, setWelcomeFading] = useState(false);
+  const [welcomeOpened, setWelcomeOpened] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Start Ganesha animation video exactly 0.2 seconds before the intro ends (6.9s - 0.2s = 6.7s)
   useEffect(() => {
-    if (entered) {
+    const timer = setTimeout(() => {
+      setGaneshaStarted(true);
+    }, 6700);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (scrollUnlocked) {
       document.body.style.overflow = "";
     } else {
       document.body.style.overflow = "hidden";
@@ -25,7 +37,39 @@ function WeddingPage() {
     return () => {
       document.body.style.overflow = "";
     };
+  }, [scrollUnlocked]);
+
+  useEffect(() => {
+    if (entered) {
+      // Keep body background dark brown during transition, then restore default
+      const timer = setTimeout(() => {
+        document.body.style.backgroundColor = "";
+      }, 1500);
+      return () => clearTimeout(timer);
+    } else {
+      document.body.style.backgroundColor = "#150a06"; // Match Welcome section background theme
+    }
   }, [entered]);
+
+  // Handle auto-playing music on any mobile/desktop touch or click interaction
+  useEffect(() => {
+    const handleInteraction = () => {
+      const el = audioRef.current;
+      if (el && !musicOn) {
+        el.play()
+          .then(() => setMusicOn(true))
+          .catch((e) => console.log("Audio play blocked by browser:", e));
+      }
+    };
+
+    window.addEventListener("click", handleInteraction);
+    window.addEventListener("touchstart", handleInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+    };
+  }, [musicOn]);
 
   function toggleMusic() {
     const el = audioRef.current;
@@ -38,9 +82,21 @@ function WeddingPage() {
     }
   }
 
+  function handleEnter() {
+    setEntered(true);
+  }
+
+  function handleOpenWelcome() {
+    setWelcomeFading(true);
+    setScrollUnlocked(true);
+    setTimeout(() => {
+      setWelcomeOpened(true);
+    }, 700);
+  }
+
   return (
     <>
-      {!entered && <Opening onEnter={() => setEntered(true)} />}
+      {!entered && <Opening onEnter={handleEnter} />}
 
       <audio
         ref={audioRef}
@@ -50,10 +106,14 @@ function WeddingPage() {
         aria-hidden
       />
 
-      <Nav musicOn={musicOn} toggleMusic={toggleMusic} />
-
       <main>
-        <Welcome />
+        {!welcomeOpened && (
+          <Welcome 
+            onOpen={handleOpenWelcome} 
+            animateGanesha={ganeshaStarted} 
+            isFading={welcomeFading} 
+          />
+        )}
         <Hero />
         <Story />
         <Events />
@@ -63,7 +123,6 @@ function WeddingPage() {
         <Rsvp />
         <Countdown />
         <Venue />
-        <DressCode />
         <Registry />
         <Faq />
         <Contact />

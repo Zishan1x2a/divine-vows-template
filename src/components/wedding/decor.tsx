@@ -12,8 +12,9 @@ export function FloatingPetals({ count = 14, className = "" }: { count?: number;
   const petals = useMemo(
     () => Array.from({ length: count }, (_, i) => ({
       left: Math.random() * 100,
-      delay: Math.random() * 12,
-      duration: 14 + Math.random() * 12,
+      // Starts falling from the top exactly 1.0 second after page load, staggered over 3.5 seconds
+      delay: 1.0 + Math.random() * 3.5, 
+      duration: 8 + Math.random() * 6,
       size: 10 + Math.random() * 16,
       drift: (Math.random() - 0.5) * 200,
       hue: Math.random() > 0.5 ? "#B93A3A" : "#D9873A",

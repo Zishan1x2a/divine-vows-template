@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import {
   Calendar, Clock, MapPin, Sparkles, Heart, Phone, MessageCircle,
@@ -13,64 +14,442 @@ import {
 /* =========================================================
    WELCOME
    ========================================================= */
-export function Welcome() {
+// A beautiful, stylized vector Ganesha line art that draws itself with a golden glow
+// matching the calligraphic brush stroke shape in the reference image.
+function GaneshaSVG({ className = "", start = false }: { className?: string; start?: boolean }) {
   return (
-    <section id="welcome" className="relative overflow-hidden py-24 sm:py-32">
-      <MandalaBg className="left-1/2 top-1/2 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2" />
-      <FloatingPetals count={10} />
-      <GoldenParticles count={16} />
-      <div className="mx-auto max-w-4xl px-6 text-center">
-        <Reveal>
-          <p className="mb-4 text-xs uppercase tracking-[0.5em] text-maroon/60">
-            Dear {wedding.guest.name}
-          </p>
-        </Reveal>
-        <Reveal delay={0.15}>
-          <div className="mx-auto w-full max-w-md">
-            <div className="relative animate-glow-pulse rounded-2xl">
-              <img
-                src={IMG.ganesha}
-                alt="Lord Ganesha, remover of obstacles"
-                width={1024}
-                height={1280}
-                className="w-full rounded-2xl gold-border animate-soft-zoom"
-                loading="eager"
+    <svg
+      viewBox="0 0 200 200"
+      className={`w-full h-full fill-none stroke-[2.8] stroke-linecap-round stroke-linejoin-round ${className}`}
+      style={{
+        filter: "drop-shadow(0 0 12px rgba(212, 175, 55, 0.8))",
+      }}
+    >
+      <defs>
+        {/* Gold gradient for realistic 3D metallic shine */}
+        <linearGradient id="gold-metal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FFE4A0" />
+          <stop offset="25%" stopColor="#D4AF37" />
+          <stop offset="50%" stopColor="#B38728" />
+          <stop offset="75%" stopColor="#F5E6A8" />
+          <stop offset="100%" stopColor="#AA7C11" />
+        </linearGradient>
+      </defs>
+
+      {/* Crown / Mukut - Top Stacked Leaf Arcs */}
+      <motion.path
+        d="M 82 35 C 90 22, 110 22, 118 35"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.2, delay: 0.2, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 90 28 C 96 18, 104 18, 110 28"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.0, delay: 0.5, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 98 18 Q 100 8 102 18"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 0.8, delay: 0.8, ease: "easeInOut" }}
+      />
+      
+      {/* Head Tilak */}
+      <motion.path
+        d="M 100 32 L 100 48"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.0, delay: 1.1, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 95 40 Q 100 37 105 40"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 0.8, delay: 1.3, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 97 44 Q 100 42 103 44"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 0.8, delay: 1.5, ease: "easeInOut" }}
+      />
+
+      {/* Left Ear */}
+      <motion.path
+        d="M 80 48 C 50 48, 48 72, 65 85 C 72 90, 78 85, 82 78"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.8, delay: 1.8, ease: "easeInOut" }}
+      />
+
+      {/* Right Ear */}
+      <motion.path
+        d="M 120 48 C 150 48, 152 72, 135 85 C 128 90, 122 85, 118 78"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.8, delay: 1.8, ease: "easeInOut" }}
+      />
+
+      {/* Face & Trunk (Calligraphy Om Shape) */}
+      <motion.path
+        d="M 98 52 C 90 70, 85 92, 92 110 C 98 125, 112 135, 122 125 C 130 115, 125 102, 110 108 C 98 112, 95 125, 105 132 C 112 138, 122 135, 128 128"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 2.5, delay: 2.8, ease: "easeInOut" }}
+      />
+
+      {/* Left Hand / Arm */}
+      <motion.path
+        d="M 72 75 C 55 80, 50 102, 70 112 C 75 115, 80 110, 80 102"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.5, delay: 4.5, ease: "easeInOut" }}
+      />
+
+      {/* Right Hand / Arm */}
+      <motion.path
+        d="M 128 75 C 145 80, 150 102, 130 112 C 125 115, 120 110, 120 102"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.5, delay: 4.5, ease: "easeInOut" }}
+      />
+
+      {/* Seated Base Legs */}
+      <motion.path
+        d="M 75 110 C 58 118, 52 142, 90 152"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.8, delay: 5.2, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 125 110 C 142 118, 148 142, 110 152"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.8, delay: 5.2, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 90 152 C 95 156, 105 156, 110 152"
+        stroke="url(#gold-metal-gradient)"
+        initial={{ pathLength: 0 }}
+        animate={start ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 1.0, delay: 6.2, ease: "easeInOut" }}
+      />
+    </svg>
+  );
+}
+
+// A beautiful, rotating golden mandala frame to give a divine look around Ganesha
+function WelcomeGaneshaFrame({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      className={`w-full h-full stroke-[#D4AF37] fill-none stroke-[0.8] ${className}`}
+      style={{
+        filter: "drop-shadow(0 0 8px rgba(212, 175, 55, 0.4))",
+      }}
+    >
+      <circle cx="100" cy="100" r="95" strokeDasharray="2,3" className="opacity-40" />
+      <circle cx="100" cy="100" r="88" className="opacity-60" />
+      <circle cx="100" cy="100" r="82" strokeDasharray="4,4" />
+      <circle cx="100" cy="100" r="75" className="opacity-80" />
+      
+      {/* Decorative rays/petals */}
+      {Array.from({ length: 16 }).map((_, i) => {
+        const angle = (i * 360) / 16;
+        return (
+          <g key={i} transform={`rotate(${angle} 100 100)`}>
+            <path
+              d="M 100 12 L 104 22 L 100 26 L 96 22 Z"
+              className="opacity-70"
+            />
+            <line x1="100" y1="26" x2="100" y2="75" className="opacity-30" />
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// Ornate glowing golden border matching the Ganesha line art animation style
+function WelcomeBorder() {
+  return (
+    <div 
+      className="absolute inset-3 sm:inset-6 pointer-events-none z-20"
+      style={{
+        boxShadow: "inset 0 0 20px rgba(212, 175, 55, 0.1), 0 0 15px rgba(212, 175, 55, 0.1)",
+      }}
+    >
+      {/* SVG Animated Border Rays */}
+      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="rayGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F5E6A8" stopOpacity="0" />
+            <stop offset="50%" stopColor="#D4AF37" stopOpacity="1" />
+            <stop offset="100%" stopColor="#F5E6A8" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {/* Static outer border line */}
+        <rect
+          x="0.5"
+          y="0.5"
+          width="100%"
+          height="100%"
+          className="fill-none stroke-[#D4AF37]/35 stroke-[1]"
+          rx="2"
+        />
+        {/* Animated glowing border ray running clockwise */}
+        <rect
+          x="0.5"
+          y="0.5"
+          width="100%"
+          height="100%"
+          stroke="url(#rayGold)"
+          strokeWidth="2"
+          fill="none"
+          className="animate-border-ray"
+          style={{
+            filter: "drop-shadow(0 0 4px #D4AF37)",
+          }}
+          rx="2"
+        />
+      </svg>
+
+      {/* Inner thin border */}
+      <div className="absolute inset-[4.5px] border-[0.5px] border-[#D4AF37]/20 rounded-sm" />
+      
+      {/* Traditional Corner Ornaments */}
+      {/* Top-Left */}
+      <div className="absolute top-2 left-2 w-6 h-6 text-[#D4AF37]/75">
+        <svg viewBox="0 0 100 100" className="w-full h-full fill-current rotate-0">
+          <path d="M0,0 L40,0 C40,25 25,40 0,40 L0,0 Z M12,12 C12,18 18,12 12,12 Z" />
+          <circle cx="12" cy="12" r="4" className="fill-[#F5E6A8]" />
+        </svg>
+      </div>
+      <div className="absolute top-0 left-0 w-8 h-8 border-t-[2.5px] border-l-[2.5px] border-[#D4AF37] rounded-tl-[3px]" />
+
+      {/* Top-Right */}
+      <div className="absolute top-2 right-2 w-6 h-6 text-[#D4AF37]/75">
+        <svg viewBox="0 0 100 100" className="w-full h-full fill-current rotate-90">
+          <path d="M0,0 L40,0 C40,25 25,40 0,40 L0,0 Z M12,12 C12,18 18,12 12,12 Z" />
+          <circle cx="12" cy="12" r="4" className="fill-[#F5E6A8]" />
+        </svg>
+      </div>
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-[2.5px] border-r-[2.5px] border-[#D4AF37] rounded-tr-[3px]" />
+
+      {/* Bottom-Left */}
+      <div className="absolute bottom-2 left-2 w-6 h-6 text-[#D4AF37]/75">
+        <svg viewBox="0 0 100 100" className="w-full h-full fill-current -rotate-90">
+          <path d="M0,0 L40,0 C40,25 25,40 0,40 L0,0 Z M12,12 C12,18 18,12 12,12 Z" />
+          <circle cx="12" cy="12" r="4" className="fill-[#F5E6A8]" />
+        </svg>
+      </div>
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[2.5px] border-l-[2.5px] border-[#D4AF37] rounded-bl-[3px]" />
+
+      {/* Bottom-Right */}
+      <div className="absolute bottom-2 right-2 w-6 h-6 text-[#D4AF37]/75">
+        <svg viewBox="0 0 100 100" className="w-full h-full fill-current rotate-180">
+          <path d="M0,0 L40,0 C40,25 25,40 0,40 L0,0 Z M12,12 C12,18 18,12 12,12 Z" />
+          <circle cx="12" cy="12" r="4" className="fill-[#F5E6A8]" />
+        </svg>
+      </div>
+      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-[2.5px] border-r-[2.5px] border-[#D4AF37] rounded-br-[3px]" />
+
+      {/* Mid-line glowing gold dots */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1.5 w-3 h-3 bg-[#D4AF37] rounded-full border border-[#150a06] shadow-[0_0_8px_#D4AF37]" />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1.5 w-3 h-3 bg-[#D4AF37] rounded-full border border-[#150a06] shadow-[0_0_8px_#D4AF37]" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1.5 w-3 h-3 bg-[#D4AF37] rounded-full border border-[#150a06] shadow-[0_0_8px_#D4AF37]" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1.5 w-3 h-3 bg-[#D4AF37] rounded-full border border-[#150a06] shadow-[0_0_8px_#D4AF37]" />
+    </div>
+  );
+}
+
+export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { onOpen?: () => void; animateGanesha?: boolean; isFading?: boolean }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (animateGanesha && videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.currentTime = 0;
+      videoRef.current.playbackRate = 1.6; // Speed up the video to 1.6x speed
+      videoRef.current.play().catch((err) => {
+        console.log("Welcome video play failed:", err);
+      });
+    }
+  }, [animateGanesha]);
+
+  return (
+    <section 
+      id="welcome" 
+      className={`fixed inset-0 w-full h-[100dvh] py-10 sm:py-16 flex flex-col items-center justify-center overflow-hidden bg-[#150a06] text-ivory px-6 text-center select-none z-40 transition-opacity duration-700 ease-in-out ${
+        isFading ? "opacity-0 pointer-events-none" : "opacity-100"
+      }`}
+    >
+      {/* Elegant custom golden border matching Ganesha animation style */}
+      <WelcomeBorder />
+      
+      {/* Temple background image with subtle overlays */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden select-none">
+        <img
+          src={IMG.templeSilhouette}
+          alt="Temple Background"
+          className="w-full h-full object-cover opacity-15 mix-blend-luminosity scale-105"
+        />
+        {/* Vignette gradient to blend edges and keep text readable */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#150a06] via-transparent to-[#150a06] opacity-90" />
+        <div className="absolute inset-0 bg-[#150a06]/50" />
+      </div>
+      <MandalaBg className="left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 opacity-[0.03]" />
+      <FloatingPetals count={8} />
+      <GoldenParticles count={15} />
+      <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center justify-center">
+
+        <Reveal delay={0.25}>
+          <div className="relative w-48 h-48 sm:w-60 sm:h-60 mb-2 sm:mb-4 flex items-center justify-center">
+            {/* Slowly rotating golden mandala frame */}
+            <div className="absolute inset-0 w-full h-full animate-[spin_40s_linear_infinite] opacity-75 pointer-events-none">
+              <WelcomeGaneshaFrame />
+            </div>
+            
+            {/* Ganesha video container circle */}
+            <div 
+              className="w-32 h-32 sm:w-44 sm:h-44 relative flex items-center justify-center rounded-full overflow-hidden shadow-xl cursor-pointer"
+              onClick={() => {
+                if (videoRef.current) {
+                  videoRef.current.defaultMuted = true;
+                  videoRef.current.muted = true;
+                  videoRef.current.play().catch(e => console.log("Ganesha manual play failed:", e));
+                }
+              }}
+              style={{
+                border: "1.5px solid rgba(212, 175, 55, 0.45)",
+                boxShadow: "0 0 25px rgba(212, 175, 55, 0.35)",
+              }}
+            >
+              <video
+                ref={videoRef}
+                src="/byy.mp4"
+                autoPlay
+                muted
+                playsInline
+                loop
+                className="w-full h-full object-cover"
+                style={{
+                  mixBlendMode: "screen",
+                }}
               />
             </div>
           </div>
         </Reveal>
-        <Reveal delay={0.35}>
-          <div className="mt-10 space-y-2 font-heading text-xl sm:text-2xl italic text-maroon-deep">
-            {ganeshMantra.sanskrit.map((line, i) => (
-              <p key={i}>{line}</p>
-            ))}
-          </div>
-          <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground italic">
-            {ganeshMantra.english}
+        <Reveal delay={0.45}>
+          <p className="font-heading text-sm sm:text-base italic text-[#F5E6A8] leading-relaxed max-w-lg mx-auto">
+            {ganeshMantra.sanskrit.join(" ")}
           </p>
         </Reveal>
-        <Reveal delay={0.5}>
-          <Ornament className="mt-10" />
-          <p className="mt-6 text-xs uppercase tracking-[0.4em] text-maroon/70">
+        <Reveal delay={0.55}>
+          <Ornament className="mt-3 mb-1 sm:mt-5 sm:mb-3" />
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-[#E8DCCB]/70">
             With the blessings of Lord Ganesha
           </p>
-          <p className="mt-4 font-heading text-2xl sm:text-3xl text-maroon-deep">
+        </Reveal>
+        <Reveal delay={0.65}>
+          <h2 className="mt-2.5 sm:mt-4 font-couple gold-text text-3xl sm:text-[40px] leading-tight animate-gold-glow">
+            Dear {wedding.guest.name}
+          </h2>
+        </Reveal>
+        <Reveal delay={0.75}>
+          <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl text-white font-medium">
             You are cordially invited
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">to celebrate the wedding of</p>
-          <h1 className="mt-6 font-couple gold-text text-5xl sm:text-7xl md:text-8xl leading-[1.1]">
-            {wedding.couple.brideShort}
-            <span className="mx-3 text-3xl sm:text-5xl text-[#D4AF37]">&</span>
-            {wedding.couple.groomShort}
-          </h1>
-          <div className="mt-8">
-            <GoldButton
-              as="a"
-              href="#hero"
-              onClick={undefined as unknown as () => void}
+          <p className="text-xs text-white/70 mt-1">to celebrate the wedding of</p>
+        </Reveal>
+        <Reveal delay={0.85}>
+          <h2 className="mt-2 sm:mt-3 font-couple gold-text text-4xl sm:text-5xl leading-tight animate-gold-glow">
+            {wedding.couple.brideShort} <span className="text-[#D4AF37] text-2xl sm:text-3xl">&</span> {wedding.couple.groomShort}
+          </h2>
+        </Reveal>
+        <Reveal delay={0.95}>
+          <div className="mt-3.5 sm:mt-5 px-6 py-2 border-y border-[#D4AF37]/20">
+            <p className="font-heading text-sm sm:text-base text-[#F5E6A8] tracking-widest uppercase">
+              {wedding.dateLabel}
+            </p>
+          </div>
+        </Reveal>
+        <Reveal delay={1.05}>
+          <div className="flex items-center justify-center gap-4 mt-4 sm:mt-7">
+            {/* Left decorative flourish line */}
+            <span className="hidden sm:inline-block h-[1px] w-8 bg-gradient-to-r from-transparent to-[#D4AF37]" />
+            <span className="text-[#D4AF37] text-xs hidden sm:inline">✧</span>
+            
+            {/* Luxury Glassmorphic Glowing Button */}
+            <button
+              onClick={onOpen}
+              className="relative px-12 py-4 overflow-hidden rounded-full font-heading text-xs font-bold tracking-[0.25em] uppercase text-white transition-all duration-500 active:scale-[0.98] cursor-pointer group animate-button-glow-pulse"
+              style={{
+                background: "#0d0502", // Dark base matching the image reference
+              }}
             >
-              Open Invitation ✧
-            </GoldButton>
+              {/* Asymmetrical 3D Glass Edge Border */}
+              <div 
+                className="absolute inset-0 rounded-full pointer-events-none"
+                style={{
+                  borderTop: "1.5px solid rgba(255, 255, 255, 0.45)",
+                  borderRight: "2px solid rgba(255, 255, 255, 0.75)",
+                  borderBottom: "0.8px solid rgba(212, 175, 55, 0.15)",
+                  borderLeft: "0.8px solid rgba(212, 175, 55, 0.15)",
+                }}
+              />
+              
+              {/* Glowing Liquid Orb on the right (breathing/moving) */}
+              <div 
+                className="absolute -right-4 -top-8 w-28 h-28 opacity-70 rounded-full blur-xl pointer-events-none"
+                style={{
+                  background: "radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(212, 175, 55, 0.15) 50%, transparent 70%)",
+                  animation: "liquid-flow 4s ease-in-out infinite alternate",
+                }}
+              />
+
+              {/* Glowing aura under text */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.15)_0%,_transparent_60%)]" />
+
+              {/* Sparkling Stardust Particles */}
+              <div className="absolute top-2 left-6 w-1 h-1 bg-white rounded-full opacity-40 animate-[pulse_2s_infinite]" />
+              <div className="absolute bottom-2.5 left-1/3 w-0.5 h-0.5 bg-white rounded-full opacity-60 animate-[pulse_1.5s_infinite]" />
+              <div className="absolute top-3 right-1/3 w-1 h-1 bg-white rounded-full opacity-30 animate-[pulse_3s_infinite]" />
+              <div className="absolute bottom-2 right-8 w-0.5 h-0.5 bg-white rounded-full opacity-50 animate-[pulse_2.5s_infinite]" />
+              
+              {/* Soft inner shadow overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+
+              {/* Glowing Text */}
+              <span 
+                className="relative z-10 flex items-center justify-center gap-2 text-white"
+                style={{
+                  textShadow: "0 0 8px rgba(255, 255, 255, 0.7), 0 0 16px rgba(212, 175, 55, 0.4)",
+                }}
+              >
+                Open Invitation <span className="text-[10px] animate-[pulse_1.5s_infinite]">✧</span>
+              </span>
+            </button>
+            
+            <span className="text-[#D4AF37] text-xs hidden sm:inline">✧</span>
+            {/* Right decorative flourish line */}
+            <span className="hidden sm:inline-block h-[1px] w-8 bg-gradient-to-l from-transparent to-[#D4AF37]" />
           </div>
         </Reveal>
       </div>
@@ -84,16 +463,7 @@ export function Welcome() {
 export function Hero() {
   return (
     <section id="hero" className="relative overflow-hidden py-24 sm:py-32">
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `linear-gradient(180deg, color-mix(in oklab, var(--ivory) 90%, transparent), color-mix(in oklab, var(--ivory) 60%, transparent)), url(${IMG.templeArch})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "saturate(1.1)",
-        }}
-      />
+      {/* Background is handled by the global body sunset parallax backdrop */}
       <FloatingPetals count={16} />
       <GoldenParticles count={20} />
 
@@ -154,7 +524,7 @@ export function Hero() {
    ========================================================= */
 export function Story() {
   return (
-    <section id="story" className="relative overflow-hidden py-24 bg-[color-mix(in_oklab,var(--beige)_55%,var(--ivory))]">
+    <section id="story" className="relative overflow-hidden py-24 bg-black/10">
       <MandalaBg className="right-0 top-10 h-[600px] w-[600px] opacity-40" />
       <div className="mx-auto max-w-6xl px-6">
         <SectionTitle eyebrow="Our Journey" title="Our Story" subtitle="Five moments woven into forever." />
@@ -206,45 +576,113 @@ export function Story() {
    EVENTS
    ========================================================= */
 export function Events() {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
   return (
-    <section id="events" className="relative overflow-hidden py-24">
-      <FloatingPetals count={10} />
+    <section id="events" className="relative overflow-hidden py-24 bg-black/5">
+      <MandalaBg className="left-0 top-10 h-[600px] w-[600px] opacity-30" />
+      <FloatingPetals count={12} />
       <div className="mx-auto max-w-6xl px-6">
         <SectionTitle eyebrow="Ceremonies" title="Wedding Events" subtitle="Each ritual, a chapter of our celebration." />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {wedding.events.map((e, i) => (
-            <Reveal key={e.name} delay={i * 0.04}>
-              <button
-                onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                className={`group relative w-full text-left glass-card rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${
-                  i % 2 ? "md:translate-y-6" : ""
-                }`}
-              >
-                <div className="mb-3 flex items-start justify-between">
-                  <span className="text-4xl">{e.icon}</span>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#B8862A]">{e.date}</span>
-                </div>
-                <h3 className="font-heading text-2xl text-maroon-deep">{e.name}</h3>
-                <div className="mt-3 space-y-1 text-xs text-muted-foreground">
-                  <p className="flex items-center gap-2"><Clock size={12} /> {e.time}</p>
-                  <p className="flex items-center gap-2"><MapPin size={12} /> {e.venue}</p>
-                  <p className="flex items-center gap-2"><Sparkles size={12} /> {e.dress}</p>
-                </div>
-                <div
-                  className="grid overflow-hidden transition-[grid-template-rows] duration-500"
-                  style={{ gridTemplateRows: openIdx === i ? "1fr" : "0fr" }}
-                >
-                  <div className="min-h-0">
-                    <p className="mt-4 border-t border-gold/30 pt-4 text-sm italic text-maroon-deep">{e.desc}</p>
+        
+        <div className="relative">
+          {/* curved gold line for events */}
+          <svg
+            aria-hidden
+            viewBox="0 0 1000 2400"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute inset-0 hidden h-full w-full md:block"
+          >
+            <path
+              d="M500 30 C 200 350, 800 700, 200 1050 S 800 1750, 200 2100 S 800 2450, 500 2580"
+              fill="none"
+              stroke="#D4AF37"
+              strokeWidth="2"
+              strokeDasharray="6 8"
+              opacity="0.5"
+            />
+          </svg>
+
+          <div className="relative space-y-16">
+            {wedding.events.map((e, i) => {
+              const isEven = i % 2 === 0;
+              return (
+                <Reveal key={e.name} delay={i * 0.05}>
+                  <div className={`grid grid-cols-1 items-center gap-8 md:grid-cols-2 ${isEven ? "" : "md:[&>*:first-child]:order-2"}`}>
+                    {/* Column 1: Dress Code Swatch Card */}
+                    <div className="glass-card rounded-2xl p-4 shadow-xl border border-gold/15 transition-all duration-500 hover:shadow-2xl">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-ivory/40 flex flex-col justify-between p-6">
+                        <MandalaBg className="absolute -right-20 -bottom-20 h-64 w-64 opacity-20" />
+                        
+                        {/* Decorative top row */}
+                        <div className="flex items-center justify-between border-b border-gold/20 pb-3">
+                          <span className="text-[10px] uppercase tracking-[0.25em] text-[#B8862A]">Ceremony Dress Palette</span>
+                          <span className="text-xl">{e.icon}</span>
+                        </div>
+                        
+                        {/* Interactive swatches */}
+                        <div className="flex gap-4 h-24 items-end justify-center w-full my-auto z-10">
+                          {e.colors?.map((c) => (
+                            <div
+                              key={c}
+                              className="group/color relative h-full flex-1 rounded-xl shadow-md transition-all duration-500 hover:flex-[1.8] hover:scale-105 flex flex-col items-center justify-end pb-3 cursor-pointer border border-gold/10"
+                              style={{ backgroundColor: c }}
+                            >
+                              <span className="opacity-0 group-hover/color:opacity-100 transition-opacity duration-300 text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded bg-nightbg/90 text-ivory shadow-lg select-none">
+                                {c}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Palette Details */}
+                        <div className="text-center mt-3 z-10">
+                          <h4 className="font-heading text-xl text-maroon-deep">{e.palette}</h4>
+                          <p className="text-xs text-muted-foreground mt-1 leading-normal italic px-2">{e.dressDesc}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Column 2: Ceremony Details Card */}
+                    <div className="glass-card relative rounded-2xl p-8 shadow-lg border border-gold/15 hover:shadow-2xl transition-all duration-500">
+                      {/* Floating Icon Badge */}
+                      <div className="absolute -top-6 left-8 grid h-12 w-12 place-items-center rounded-full gold-gradient text-2xl shadow-gold border border-gold/30 transition-transform duration-500 hover:rotate-12 hover:scale-110">
+                        {e.icon}
+                      </div>
+
+                      <div className="mt-2">
+                        <p className="text-xs uppercase tracking-[0.35em] text-[#B8862A]">{e.date}</p>
+                        <h3 className="mt-3 font-heading text-3xl text-maroon-deep">{e.name}</h3>
+                        
+                        <div className="mt-5 space-y-3 text-sm border-t border-gold/25 pt-5">
+                          <p className="flex items-center gap-3 text-muted-foreground">
+                            <Clock size={16} className="text-[#B8862A] shrink-0" />
+                            <span>
+                              <strong className="text-maroon-deep/80 font-medium">Time:</strong> {e.time}
+                            </span>
+                          </p>
+                          <p className="flex items-center gap-3 text-muted-foreground">
+                            <MapPin size={16} className="text-[#B8862A] shrink-0" />
+                            <span>
+                              <strong className="text-maroon-deep/80 font-medium">Venue:</strong> {e.venue}
+                            </span>
+                          </p>
+                          <p className="flex items-center gap-3 text-muted-foreground">
+                            <Sparkles size={16} className="text-[#B8862A] shrink-0" />
+                            <span>
+                              <strong className="text-maroon-deep/80 font-medium">Dress:</strong> {e.dress}
+                            </span>
+                          </p>
+                        </div>
+
+                        <p className="mt-5 text-sm leading-relaxed text-muted-foreground border-t border-gold/10 pt-4 italic">
+                          {e.desc}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="mt-4 flex items-center gap-1 text-[10px] uppercase tracking-[0.3em] text-[#B8862A]">
-                  {openIdx === i ? "Less" : "More"} <ChevronDown size={12} className={`transition-transform ${openIdx === i ? "rotate-180" : ""}`} />
-                </div>
-              </button>
-            </Reveal>
-          ))}
+                </Reveal>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
@@ -257,7 +695,7 @@ export function Events() {
 export function Gallery() {
   const [lightbox, setLightbox] = useState<number | null>(null);
   return (
-    <section id="gallery" className="relative overflow-hidden py-24 bg-[color-mix(in_oklab,var(--beige)_45%,var(--ivory))]">
+    <section id="gallery" className="relative overflow-hidden py-24 bg-black/15">
       <MandalaBg className="left-1/2 top-20 h-[900px] w-[900px] -translate-x-1/2 opacity-30" />
       <FloatingPetals count={8} />
       <div className="mx-auto max-w-6xl px-6">
@@ -367,7 +805,7 @@ export function WishingWall() {
   }
 
   return (
-    <section id="wishes" className="relative overflow-hidden py-24 bg-[color-mix(in_oklab,var(--maroon)_8%,var(--ivory))]">
+    <section id="wishes" className="relative overflow-hidden py-24 bg-black/10">
       <GoldenParticles count={20} />
       <div className="mx-auto max-w-6xl px-6">
         <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings from those we hold dear." />
@@ -575,12 +1013,7 @@ export function Countdown() {
   return (
     <section
       id="countdown"
-      className="relative overflow-hidden py-24 text-ivory"
-      style={{
-        backgroundImage: `linear-gradient(180deg, rgba(20,10,4,.85), rgba(20,10,4,.75)), url(${IMG.sunset})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className="relative overflow-hidden py-24 text-ivory bg-black/10"
     >
       <GoldenParticles count={40} />
       <FloatingPetals count={10} />
@@ -661,39 +1094,6 @@ export function Venue() {
 }
 
 /* =========================================================
-   DRESS CODE
-   ========================================================= */
-export function DressCode() {
-  return (
-    <section id="dresscode" className="relative overflow-hidden py-24 bg-[color-mix(in_oklab,var(--beige)_45%,var(--ivory))]">
-      <div className="mx-auto max-w-6xl px-6">
-        <SectionTitle eyebrow="What to Wear" title="Dress Code" subtitle="A palette for every ceremony." />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {wedding.dressCode.map((d, i) => (
-            <Reveal key={d.event} delay={i * 0.05}>
-              <div className="group glass-card rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl">
-                <div className="flex gap-2 mb-4">
-                  {d.colors.map((c) => (
-                    <span
-                      key={c}
-                      className="h-10 flex-1 rounded-lg shadow-inner transition-transform group-hover:scale-y-110"
-                      style={{ background: c }}
-                    />
-                  ))}
-                </div>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-[#B8862A]">{d.event}</p>
-                <h3 className="mt-2 font-heading text-2xl text-maroon-deep">{d.palette}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{d.desc}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* =========================================================
    GIFT REGISTRY
    ========================================================= */
 export function Registry() {
@@ -733,7 +1133,7 @@ export function Registry() {
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section id="faq" className="relative overflow-hidden py-24 bg-[color-mix(in_oklab,var(--maroon)_6%,var(--ivory))]">
+    <section id="faq" className="relative overflow-hidden py-24 bg-black/10">
       <div className="mx-auto max-w-3xl px-6">
         <SectionTitle eyebrow="Good to Know" title="Frequently Asked" />
         <div className="space-y-3">
@@ -817,14 +1217,7 @@ export function Contact() {
    ========================================================= */
 export function ThankYou() {
   return (
-    <section
-      className="relative overflow-hidden py-32 text-ivory"
-      style={{
-        backgroundImage: `linear-gradient(180deg, rgba(10,6,3,.55), rgba(10,6,3,.9)), url(${IMG.sunset})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <section className="relative overflow-hidden py-32 text-ivory">
       <FloatingPetals count={18} />
       <GoldenParticles count={30} />
       <div className="relative mx-auto max-w-3xl px-6 text-center">
