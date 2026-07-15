@@ -68,6 +68,7 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; size: number; color: string }[]>([]);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
   // Track mouse coordinates for interactive parallax
   useEffect(() => {
@@ -86,9 +87,11 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
       videoRef.current.defaultMuted = true;
       videoRef.current.muted = true;
       videoRef.current.playbackRate = 1.5;
-      videoRef.current.play().catch((err) => {
-        console.log("Intro video play failed:", err);
-      });
+      videoRef.current.play()
+        .then(() => setVideoPlaying(true))
+        .catch((err) => {
+          console.log("Intro video play failed:", err);
+        });
     }
   }, []);
 
@@ -213,7 +216,9 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
               if (videoRef.current) {
                 videoRef.current.defaultMuted = true;
                 videoRef.current.muted = true;
-                videoRef.current.play().catch(e => console.log("Intro manual play failed:", e));
+                videoRef.current.play()
+                  .then(() => setVideoPlaying(true))
+                  .catch(e => console.log("Intro manual play failed:", e));
               }
             }}
             style={{
@@ -223,6 +228,13 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
               mixBlendMode: "screen",
             }}
           >
+            {/* Static Gold Mandala Fallback: visible only when video is not playing */}
+            {!videoPlaying && (
+              <div className="absolute inset-0 flex items-center justify-center w-full h-full bg-[#000]">
+                <GoldMandala className="w-[85%] h-[85%] opacity-80 animate-[spin_60s_linear_infinite]" />
+              </div>
+            )}
+
             <video
               ref={videoRef}
               src="/hiiiii.mp4"
@@ -230,7 +242,10 @@ export function Opening({ onEnter }: { onEnter: () => void }) {
               loop={false}
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover"
+              onPlay={() => setVideoPlaying(true)}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                videoPlaying ? "opacity-100" : "opacity-0"
+              }`}
             />
           </motion.div>
         </div>

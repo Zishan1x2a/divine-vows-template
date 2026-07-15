@@ -280,6 +280,7 @@ function WelcomeBorder() {
 
 export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { onOpen?: () => void; animateGanesha?: boolean; isFading?: boolean }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
   useEffect(() => {
     if (animateGanesha && videoRef.current) {
@@ -287,9 +288,11 @@ export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { 
       videoRef.current.muted = true;
       videoRef.current.currentTime = 0;
       videoRef.current.playbackRate = 1.6; // Speed up the video to 1.6x speed
-      videoRef.current.play().catch((err) => {
-        console.log("Welcome video play failed:", err);
-      });
+      videoRef.current.play()
+        .then(() => setVideoPlaying(true))
+        .catch((err) => {
+          console.log("Welcome video play failed:", err);
+        });
     }
   }, [animateGanesha]);
 
@@ -333,7 +336,9 @@ export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { 
                 if (videoRef.current) {
                   videoRef.current.defaultMuted = true;
                   videoRef.current.muted = true;
-                  videoRef.current.play().catch(e => console.log("Ganesha manual play failed:", e));
+                  videoRef.current.play()
+                    .then(() => setVideoPlaying(true))
+                    .catch(e => console.log("Ganesha manual play failed:", e));
                 }
               }}
               style={{
@@ -343,6 +348,18 @@ export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { 
                 mixBlendMode: "screen",
               }}
             >
+              {/* Static Ganesha Fallback Image: visible only when video is not playing */}
+              {!videoPlaying && (
+                <img
+                  src={IMG.ganesha}
+                  alt="Ganesha Fallback"
+                  className="absolute inset-0 w-full h-full object-cover opacity-80"
+                  style={{
+                    filter: "contrast(1.15) brightness(0.9)",
+                  }}
+                />
+              )}
+
               <video
                 ref={videoRef}
                 src="/byy.mp4"
@@ -350,7 +367,10 @@ export function Welcome({ onOpen, animateGanesha = false, isFading = false }: { 
                 muted
                 playsInline
                 loop
-                className="absolute inset-0 w-full h-full object-cover"
+                onPlay={() => setVideoPlaying(true)}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                  videoPlaying ? "opacity-100" : "opacity-0"
+                }`}
               />
             </div>
           </div>
