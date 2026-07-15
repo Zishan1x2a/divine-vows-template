@@ -5,7 +5,7 @@ import confetti from "canvas-confetti";
 import {
   Calendar, Clock, MapPin, Sparkles, Heart, Phone, MessageCircle,
   Gift, ChevronDown, X, Car, BedDouble, Navigation, Check, Pencil,
-  ChevronLeft, ChevronRight, ArrowUpRight,
+  ChevronLeft, ChevronRight, ArrowUpRight, Play, Pause, Maximize2,
 } from "lucide-react";
 import { wedding, ganeshMantra, IMG } from "@/data/wedding";
 import {
@@ -1250,17 +1250,81 @@ export function Events() {
    GALLERY
    ========================================================= */
 export function Gallery() {
-  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [isAutoplay, setIsAutoplay] = useState<boolean>(true);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const CATEGORY_MAP: Record<string, string> = {
+    all: "All Moments",
+    couple: "Couple Portraits",
+    events: "Ceremonies",
+    decor: "Venue & Decor",
+  };
+
   const galleryItems = [
-    { src: IMG.gallery[0], alt: "Sacred Moments" },
-    { src: IMG.gallery[1], alt: "Joyful Celebrations" },
-    { src: IMG.gallery[2], alt: "Together Forever" },
-    { src: IMG.gallery[3], alt: "Traditional Splendor" },
-    { src: IMG.gallery[4], alt: "Pure Happiness" },
-    { src: IMG.gallery[5], alt: "A Beautiful Union" },
-    { src: IMG.gallery[6], alt: "Golden Memories" },
-    { src: IMG.gallery[7], alt: "With Family & Friends" },
+    { url: IMG.gallery[0], category: "couple", caption: "Vows of Eternal Love" },
+    { url: IMG.gallery[1], category: "events", caption: "Sacred Haldi Ceremony" },
+    { url: IMG.gallery[2], category: "couple", caption: "Together in Every Step" },
+    { url: IMG.gallery[3], category: "events", caption: "Intricate Henna Shimmer" },
+    { url: IMG.gallery[4] || IMG.gallery[0], category: "decor", caption: "Royal Venue Splendor" },
+    { url: IMG.gallery[5] || IMG.gallery[1], category: "events", caption: "Sacred Nuptial Fire" },
+    { url: IMG.gallery[6] || IMG.gallery[2], category: "decor", caption: "Luxurious Floral Decor" },
+    { url: IMG.gallery[7] || IMG.gallery[3], category: "couple", caption: "Infinite Journey Together" },
   ];
+
+  // Filter gallery items based on selected category
+  const filteredGallery = galleryItems.filter(
+    (item) => activeCategory === "all" || item.category === activeCategory
+  );
+
+  // Reset index to 0 when active category changes to avoid out-of-bounds
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [activeCategory]);
+
+  // Autoplay loop
+  useEffect(() => {
+    if (!isAutoplay || lightboxIndex !== null || filteredGallery.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % filteredGallery.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAutoplay, filteredGallery.length, lightboxIndex]);
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setLightboxIndex(null);
+      } else if (e.key === "ArrowRight") {
+        setLightboxIndex((prev) =>
+          prev !== null ? (prev + 1) % filteredGallery.length : null
+        );
+      } else if (e.key === "ArrowLeft") {
+        setLightboxIndex((prev) =>
+          prev !== null ? (prev - 1 + filteredGallery.length) % filteredGallery.length : null
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [lightboxIndex, filteredGallery.length]);
+
+  const handlePrev = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setActiveIndex((prev) => (prev - 1 + filteredGallery.length) % filteredGallery.length);
+  };
+
+  const handleNext = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setActiveIndex((prev) => (prev + 1) % filteredGallery.length);
+  };
 
   return (
     <section id="gallery" className="relative overflow-hidden min-h-[100dvh] flex flex-col justify-center py-20 sm:py-24 bg-black/15">
@@ -1283,62 +1347,289 @@ export function Gallery() {
       </motion.div>
       <MandalaBg className="left-1/2 top-20 h-[900px] w-[900px] -translate-x-1/2 opacity-30" />
       <FloatingPetals count={8} />
+
       <div className="mx-auto max-w-6xl px-6 relative z-10 w-full">
         <SectionTitle eyebrow="Memories" title="Our Gallery" subtitle="Moments we've collected on the way to now." />
-        
-        <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-[1fr] gap-4 sm:gap-6 max-h-[60vh] overflow-y-auto pr-1 hide-scrollbar">
-          {galleryItems.map((img, i) => (
-            <div
-              key={i}
-              onClick={() => setLightbox(i)}
-              className={`group relative p-1.5 sm:p-2.5 bg-gradient-to-br from-[#590d18]/25 to-black/40 border border-[#D4AF37]/20 rounded-2xl sm:rounded-3xl shadow-xl transition-all duration-700 hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(212,175,55,0.2)] hover:z-20 cursor-pointer ${i === 0 ? "col-span-2 row-span-2" : "aspect-square"} ${i % 2 === 0 ? "rotate-0.5 hover:rotate-0" : "-rotate-0.5 hover:rotate-0"}`}
+
+        {/* ── Category Filters ── */}
+        <div className="flex flex-wrap justify-center gap-2 mt-6 mb-6">
+          {Object.entries(CATEGORY_MAP).map(([key, label]) => {
+            const isActive = activeCategory === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setActiveCategory(key)}
+                className={`relative px-4 py-1.5 text-xs font-heading font-medium tracking-widest uppercase transition-all duration-300 rounded-full border cursor-pointer select-none ${
+                  isActive
+                    ? "text-[#260508] bg-gradient-to-r from-[#D4AF37] to-[#E6C280] border-transparent font-bold shadow-[0_4px_12px_rgba(212,175,55,0.3)]"
+                    : "text-white/70 border-[#D4AF37]/20 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── Interactive Main Gallery Viewport ── */}
+        <div className="max-w-3xl mx-auto">
+          {filteredGallery.length > 0 ? (
+            <div 
+              className="relative p-1 bg-gradient-to-br from-[#590d18]/25 to-black/40 border border-[#D4AF37]/35 rounded-3xl shadow-[0_15px_45px_rgba(0,0,0,0.6)] group overflow-hidden"
+              style={{
+                aspectRatio: "16/10",
+              }}
             >
-              <div className="relative w-full h-full overflow-hidden rounded-[10px] sm:rounded-2xl shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]">
-                {/* Decorative corners */}
-                <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[#D4AF37]/50 pointer-events-none z-10" />
-                <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-[#D4AF37]/50 pointer-events-none z-10" />
-                <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-[#D4AF37]/50 pointer-events-none z-10" />
-                <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[#D4AF37]/50 pointer-events-none z-10" />
-                
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-115"
-                />
-                
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                
-                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out flex items-end justify-center pointer-events-none">
-                  <p className="font-heading gold-text text-xs sm:text-lg text-center leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    {img.alt}
-                  </p>
+              <div className="relative w-full h-full overflow-hidden rounded-2xl bg-black/20">
+                {/* Framer motion transition on active image */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={filteredGallery[activeIndex]?.url}
+                    initial={{ opacity: 0, scale: 1.03 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute inset-0 w-full h-full"
+                  >
+                    <img
+                      src={filteredGallery[activeIndex]?.url}
+                      alt={filteredGallery[activeIndex]?.caption}
+                      className="w-full h-full object-cover select-none cursor-pointer"
+                      onClick={() => setLightboxIndex(activeIndex)}
+                      loading="eager"
+                    />
+                    
+                    {/* Hover Shimmer/Glow Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
+                    
+                    {/* Zoom / Maximize hover icon */}
+                    <div 
+                      onClick={() => setLightboxIndex(activeIndex)}
+                      className="absolute top-4 right-4 bg-black/60 hover:bg-[#D4AF37] text-white hover:text-[#260508] p-3 rounded-full border border-[#D4AF37]/20 hover:border-transparent scale-0 group-hover:scale-100 transition-all duration-300 cursor-pointer z-30 shadow-lg"
+                    >
+                      <Maximize2 className="w-4 h-4" />
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Corner Ornaments */}
+                <div className="absolute inset-0 pointer-events-none z-20">
+                  <div className="absolute top-3 left-3 w-4.5 h-4.5 border-t border-l border-[#D4AF37]" />
+                  <div className="absolute top-3 right-3 w-4.5 h-4.5 border-t border-r border-[#D4AF37]" />
+                  <div className="absolute bottom-3 left-3 w-4.5 h-4.5 border-b border-l border-[#D4AF37]" />
+                  <div className="absolute bottom-3 right-3 w-4.5 h-4.5 border-b border-r border-[#D4AF37]" />
                 </div>
+
+                {/* Left Navigation Arrow */}
+                <button
+                  onClick={handlePrev}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-[#D4AF37] text-[#FAF8F3] hover:text-[#260508] p-2.5 rounded-full border border-[#D4AF37]/20 hover:border-transparent hover:scale-110 transition-all duration-300 z-30 opacity-0 group-hover:opacity-100 shadow-md cursor-pointer"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Right Navigation Arrow */}
+                <button
+                  onClick={handleNext}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-[#D4AF37] text-[#FAF8F3] hover:text-[#260508] p-2.5 rounded-full border border-[#D4AF37]/20 hover:border-transparent hover:scale-110 transition-all duration-300 z-30 opacity-0 group-hover:opacity-100 shadow-md cursor-pointer"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
             </div>
-          ))}
+          ) : (
+            <div className="text-center py-20 border border-[#D4AF37]/20 rounded-2xl bg-black/25">
+              <p className="text-white/60 font-body">No photos in this category yet.</p>
+            </div>
+          )}
+
+          {/* ── Caption and Controls Center ── */}
+          {filteredGallery.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-5 px-1 gap-4">
+              <div className="text-center sm:text-left">
+                <motion.h3
+                  key={filteredGallery[activeIndex]?.caption}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-lg sm:text-xl font-heading text-[#F5E6A8] tracking-wide"
+                >
+                  {filteredGallery[activeIndex]?.caption}
+                </motion.h3>
+                <p className="text-[10px] font-body text-white/50 mt-0.5 uppercase tracking-[0.2em]">
+                  {CATEGORY_MAP[filteredGallery[activeIndex]?.category] || ""}
+                </p>
+              </div>
+
+              {/* Controls: Play/Pause with Progress and Count */}
+              <div className="flex items-center gap-4 shrink-0">
+                <span className="text-xs font-body text-[#FAF8F3]/60 tracking-wider">
+                  {activeIndex + 1} / {filteredGallery.length}
+                </span>
+
+                <button
+                  onClick={() => setIsAutoplay(!isAutoplay)}
+                  className="relative p-2.5 rounded-full border border-[#D4AF37]/20 text-[#D4AF37] hover:bg-white/5 transition-colors cursor-pointer"
+                  aria-label={isAutoplay ? "Pause slideshow" : "Play slideshow"}
+                >
+                  {/* Autoplay Circular Progress SVG */}
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 36 36">
+                    <circle
+                      cx="18"
+                      cy="18"
+                      r="16.5"
+                      stroke="rgba(212, 175, 55, 0.1)"
+                      strokeWidth="1.5"
+                      fill="transparent"
+                    />
+                    <motion.circle
+                      key={`${activeIndex}-${isAutoplay}`}
+                      cx="18"
+                      cy="18"
+                      r="16.5"
+                      stroke="#D4AF37"
+                      strokeWidth="1.5"
+                      fill="transparent"
+                      strokeDasharray="103.6"
+                      initial={{ strokeDashoffset: 103.6 }}
+                      animate={isAutoplay ? { strokeDashoffset: 0 } : { strokeDashoffset: 103.6 }}
+                      transition={isAutoplay ? { duration: 5, ease: "linear" } : {}}
+                      className="origin-center -rotate-90"
+                    />
+                  </svg>
+                  
+                  {isAutoplay ? <Pause className="w-3.5 h-3.5 z-10" /> : <Play className="w-3.5 h-3.5 z-10" />}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── Scrollable Thumbnail Ribbon ── */}
+          {filteredGallery.length > 1 && (
+            <div className="relative mt-6 max-w-2xl mx-auto px-4">
+              <div className="flex gap-2.5 overflow-x-auto py-2 px-4 justify-start sm:justify-center hide-scrollbar">
+                {filteredGallery.map((item, idx) => {
+                  const isActive = idx === activeIndex;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveIndex(idx)}
+                      className={`relative flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border transition-all duration-300 cursor-pointer ${
+                        isActive
+                          ? "border-[#D4AF37] scale-105 shadow-[0_0_12px_rgba(212,175,55,0.4)]"
+                          : "border-[#D4AF37]/25 opacity-50 hover:opacity-100"
+                      }`}
+                    >
+                      <img
+                        src={item.url}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {lightbox !== null && (
-        <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/95 p-4 backdrop-blur-xl"
-          onClick={() => setLightbox(null)}
-        >
-          <button
-            aria-label="Close"
-            className="absolute right-6 top-6 grid h-10 w-10 place-items-center rounded-full gold-border text-white hover:bg-white/10 transition cursor-pointer"
-            onClick={() => setLightbox(null)}
+      {/* ── Cinematic Fullscreen Lightbox ── */}
+      <AnimatePresence>
+        {lightboxIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4"
           >
-            <X size={18} />
-          </button>
-          <img
-            src={IMG.gallery[lightbox]}
-            alt=""
-            className="max-h-[85vh] max-w-full rounded-xl gold-border"
-          />
-        </div>
-      )}
+            {/* Background click to close */}
+            <div className="absolute inset-0 cursor-zoom-out" onClick={() => setLightboxIndex(null)} />
+
+            {/* Close Button */}
+            <button
+              onClick={() => setLightboxIndex(null)}
+              className="absolute top-6 right-6 text-white hover:text-[#D4AF37] hover:scale-110 p-3 rounded-full border border-white/20 hover:border-[#D4AF37] transition-all duration-300 z-[110] cursor-pointer bg-black/50"
+              aria-label="Close fullscreen view"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Image & Navigation Frame */}
+            <div className="relative w-full max-w-4xl aspect-[16/10] flex items-center justify-center z-10 max-h-[75vh]">
+              {/* Prev Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex((prev) =>
+                    prev !== null ? (prev - 1 + filteredGallery.length) % filteredGallery.length : null
+                  );
+                }}
+                className="absolute left-2 sm:left-4 text-white hover:text-[#D4AF37] hover:scale-110 p-2.5 rounded-full border border-white/20 hover:border-[#D4AF37] transition-all duration-300 bg-black/50 z-20 cursor-pointer"
+                aria-label="Previous lightbox image"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              {/* Active Image Box */}
+              <div className="relative max-h-[70vh] max-w-[85vw] overflow-hidden border border-[#D4AF37]/35 shadow-[0_0_50px_rgba(212,175,55,0.25)] bg-black/40 rounded-2xl">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={filteredGallery[lightboxIndex]?.url}
+                    src={filteredGallery[lightboxIndex]?.url}
+                    alt={filteredGallery[lightboxIndex]?.caption}
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.03 }}
+                    transition={{ duration: 0.3 }}
+                    className="max-h-[68vh] max-w-full object-contain rounded-2xl"
+                  />
+                </AnimatePresence>
+
+                {/* Lightbox Corners */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute top-3 left-3 w-4.5 h-4.5 border-t border-l border-[#D4AF37]" />
+                  <div className="absolute top-3 right-3 w-4.5 h-4.5 border-t border-r border-[#D4AF37]" />
+                  <div className="absolute bottom-3 left-3 w-4.5 h-4.5 border-b border-l border-[#D4AF37]" />
+                  <div className="absolute bottom-3 right-3 w-4.5 h-4.5 border-b border-r border-[#D4AF37]" />
+                </div>
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex((prev) =>
+                    prev !== null ? (prev + 1) % filteredGallery.length : null
+                  );
+                }}
+                className="absolute right-2 sm:right-4 text-white hover:text-[#D4AF37] hover:scale-110 p-2.5 rounded-full border border-white/20 hover:border-[#D4AF37] transition-all duration-300 bg-black/50 z-20 cursor-pointer"
+                aria-label="Next lightbox image"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Caption & Indicator */}
+            <div className="mt-6 text-center z-10 max-w-xl px-4 pointer-events-none">
+              <motion.h4
+                key={filteredGallery[lightboxIndex]?.caption}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-lg sm:text-2xl font-heading text-[#F5E6A8] tracking-wide"
+              >
+                {filteredGallery[lightboxIndex]?.caption}
+              </motion.h4>
+              <p className="text-white/50 text-xs mt-1.5 font-body tracking-[0.2em] uppercase">
+                {CATEGORY_MAP[filteredGallery[lightboxIndex]?.category] || ""} • Image {lightboxIndex + 1} of {filteredGallery.length}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
