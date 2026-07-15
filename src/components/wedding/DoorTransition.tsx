@@ -6,6 +6,49 @@ interface DoorTransitionProps {
   onComplete?: () => void;
 }
 
+// ── Symmetrical Folded Hands (Namaste / Anjali Mudra) SVG ──
+const NamasteSVG = () => (
+  <svg
+    viewBox="0 0 120 120"
+    className="w-36 h-36 sm:w-40 sm:h-40 stroke-[#D4AF37] fill-none stroke-[1.4] opacity-95 filter drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]"
+  >
+    {/* Elegant Aura rays behind the hands */}
+    <circle cx="60" cy="52" r="44" strokeDasharray="3 4" opacity="0.35" />
+    <circle cx="60" cy="52" r="32" strokeDasharray="2 3" opacity="0.25" />
+
+    {/* Left hand sleeve / wrist details */}
+    <path d="M 40,98 C 40,92 43,84 46,76" />
+    <path d="M 37,100 C 37,94 40,86 43,78" opacity="0.6" />
+    
+    {/* Right hand sleeve / wrist details */}
+    <path d="M 80,98 C 80,92 77,84 74,76" />
+    <path d="M 83,100 C 83,94 80,86 77,78" opacity="0.6" />
+    
+    {/* Hands contour (folded palms) */}
+    {/* Left hand boundary */}
+    <path d="M 46,76 Q 40,55 52,24 C 55,17 58,11 60,6" strokeLinecap="round" />
+    {/* Right hand boundary */}
+    <path d="M 74,76 Q 80,55 68,24 C 65,17 62,11 60,6" strokeLinecap="round" />
+    
+    {/* Seam / boundary where palms meet */}
+    <line x1="60" y1="6" x2="60" y2="88" strokeDasharray="1.5 1.5" opacity="0.5" />
+    
+    {/* Thumb lines */}
+    <path d="M 50,56 Q 56,49 57,41" />
+    <path d="M 70,56 Q 64,49 63,41" />
+    
+    {/* Finger separations / creases (Left Hand) */}
+    <path d="M 48,61 Q 55,42 58,25" opacity="0.85" />
+    <path d="M 49,68 Q 54,54 58,34" opacity="0.85" />
+    <path d="M 50,74 Q 53,66 56,51" opacity="0.75" />
+
+    {/* Finger separations / creases (Right Hand) */}
+    <path d="M 72,61 Q 65,42 62,25" opacity="0.85" />
+    <path d="M 71,68 Q 66,54 62,34" opacity="0.85" />
+    <path d="M 70,74 Q 67,66 64,51" opacity="0.75" />
+  </svg>
+);
+
 // ── Hanging temple bell for the doors ──
 const DoorHangingBell = () => (
   <svg
@@ -120,15 +163,13 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               <div className="absolute inset-2 sm:inset-3 border border-dashed border-[#D4AF37]/25 rounded-t-[90px] sm:rounded-t-[125px]" />
             </div>
 
-            {/* Left Half of Rotating Gold Mandala */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] pointer-events-none z-25 overflow-visible">
-              <motion.img
-                src="/mandala.png"
-                alt=""
-                className="w-full h-full opacity-90 drop-shadow-[0_0_35px_rgba(212,175,55,0.85)] mix-blend-screen filter brightness-110"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              />
+            {/* Left Half of Namaste Medallion */}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-24 h-48 sm:w-28 sm:h-56 z-25 overflow-hidden flex items-center justify-end">
+              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-[#D4AF37]/65 bg-[#260508] shadow-[inset_-10px_0_20px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center">
+                <div className="translate-x-[48px] sm:translate-x-[56px] scale-100 sm:scale-110">
+                  <NamasteSVG />
+                </div>
+              </div>
             </div>
 
             {/* Edge Glow Strip */}
@@ -204,15 +245,13 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               <div className="absolute inset-2 sm:inset-3 border border-dashed border-[#D4AF37]/25 rounded-t-[90px] sm:rounded-t-[125px]" />
             </div>
 
-            {/* Right Half of Rotating Gold Mandala */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] pointer-events-none z-25 overflow-visible">
-              <motion.img
-                src="/mandala.png"
-                alt=""
-                className="w-full h-full opacity-90 drop-shadow-[0_0_35px_rgba(212,175,55,0.85)] mix-blend-screen filter brightness-110"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              />
+            {/* Right Half of Namaste Medallion */}
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 h-48 sm:w-28 sm:h-56 z-25 overflow-hidden flex items-center justify-start">
+              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-[#D4AF37]/65 bg-[#260508] shadow-[inset_10px_0_20px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center">
+                <div className="-translate-x-[48px] sm:-translate-x-[56px] scale-100 sm:scale-110">
+                  <NamasteSVG />
+                </div>
+              </div>
             </div>
 
             {/* Edge Glow Strip */}
