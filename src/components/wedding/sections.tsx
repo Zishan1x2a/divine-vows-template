@@ -1593,48 +1593,44 @@ function WishCard({ wish, index, onCardClick }: { wish: { name: string; msg: str
       onClick={() => onCardClick(wish)}
       className="group relative shrink-0 cursor-pointer transition-all duration-500 hover:-translate-y-1.5 select-none w-[320px] h-[180px]"
     >
-      {/* 3D Fluffy Cloud SVG Wrapper styled in Maroon/Gold */}
-      <svg
-        viewBox="0 0 320 180"
-        preserveAspectRatio="none"
-        className="absolute inset-0 w-full h-full pointer-events-none z-0 drop-shadow-[0_12px_30px_rgba(0,0,0,0.65)] backdrop-blur-[4px]"
-      >
-        <defs>
-          <linearGradient id={`cloudGrad-${index}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="rgba(89, 13, 21, 0.9)" />
-            <stop offset="50%" stopColor="rgba(38, 5, 9, 0.85)" />
-            <stop offset="100%" stopColor="rgba(20, 10, 4, 0.95)" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M 55,130 C 20,130 10,100 25,80 C 15,60 30,30 65,35 C 85,15 125,15 145,35 C 165,10 220,15 245,45 C 280,35 305,60 300,85 C 315,105 305,135 270,135 C 255,155 200,160 175,145 C 145,160 90,155 70,135 Z"
-          fill={`url(#cloudGrad-${index})`}
-          stroke="rgba(212, 175, 55, 0.35)"
-          strokeWidth="1.6"
-          className="group-hover:stroke-[#D4AF37] transition-colors duration-500"
-        />
-      </svg>
+      {/* Premium Luxury Background Card */}
+      <div 
+        className="absolute inset-0 rounded-2xl border border-[#D4AF37]/30 backdrop-blur-[6px] overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, rgba(89, 13, 21, 0.85) 0%, rgba(38, 5, 9, 0.9) 50%, rgba(20, 10, 4, 0.95) 100%)",
+          boxShadow: "0 12px 30px rgba(0,0,0,0.65), inset 0 0 15px rgba(212,175,55,0.05)"
+        }}
+      />
+      
+      {/* Double gold inner border frame */}
+      <div className="absolute inset-1.5 rounded-[10px] border border-[#D4AF37]/15 pointer-events-none z-10 group-hover:border-[#D4AF37]/45 transition-colors duration-500" />
+      
+      {/* Golden Corner Accents */}
+      <div className="absolute top-3.5 left-3.5 w-3.5 h-3.5 border-t border-l border-[#D4AF37]/50 pointer-events-none z-10" />
+      <div className="absolute top-3.5 right-3.5 w-3.5 h-3.5 border-t border-r border-[#D4AF37]/50 pointer-events-none z-10" />
+      <div className="absolute bottom-3.5 left-3.5 w-3.5 h-3.5 border-b border-l border-[#D4AF37]/50 pointer-events-none z-10" />
+      <div className="absolute bottom-3.5 right-3.5 w-3.5 h-3.5 border-b border-r border-[#D4AF37]/50 pointer-events-none z-10" />
 
       {/* Mini gold star top-right */}
-      <span className="absolute top-8 right-12 opacity-35 pointer-events-none z-10">
+      <span className="absolute top-4 right-4 opacity-40 pointer-events-none z-10">
         <svg viewBox="0 0 12 12" className="w-3.5 h-3.5 animate-spin-slow" fill="none" stroke="#D4AF37" strokeWidth="1.2">
           <line x1="6" y1="0" x2="6" y2="12" /><line x1="0" y1="6" x2="12" y2="6" />
           <line x1="1.8" y1="1.8" x2="10.2" y2="10.2" /><line x1="10.2" y1="1.8" x2="1.8" y2="10.2" />
         </svg>
       </span>
 
-      <div className="relative z-10 p-6 pt-10 pb-14 px-12 flex flex-col h-[180px] justify-between">
+      <div className="relative z-10 p-5 pt-8 pb-10 px-8 flex flex-col h-[180px] justify-between">
         {/* Message preview */}
-        <div className="flex-1 flex items-center justify-center text-center max-h-[50px] overflow-hidden">
-          <p className="text-white/85 italic leading-relaxed text-[11px] sm:text-[11.5px] break-words">
+        <div className="flex-1 flex items-center justify-center text-center max-h-[70px] overflow-hidden">
+          <p className="text-white/90 italic leading-relaxed text-xs sm:text-[12.5px] break-words font-body">
             "{previewText}"
           </p>
         </div>
 
         {/* Footer */}
-        <div className="pt-2.5 border-t border-white/10 flex justify-between items-end shrink-0">
-          <span className="font-heading text-xs text-[#D4AF37] leading-none">{wish.name}</span>
-          <span className="text-[8px] uppercase tracking-[0.2em] text-white/40">Blessings</span>
+        <div className="pt-2.5 border-t border-[#D4AF37]/25 flex justify-between items-end shrink-0">
+          <span className="font-heading text-sm text-[#D4AF37] leading-none">{wish.name}</span>
+          <span className="text-[9px] uppercase tracking-[0.20em] text-white/40">Blessings</span>
         </div>
       </div>
     </article>
@@ -2471,7 +2467,7 @@ export function Contact() {
    ========================================================= */
 export function ThankYou() {
   return (
-    <section className="relative overflow-hidden py-32 text-ivory">
+    <section className="relative overflow-hidden min-h-[100dvh] flex flex-col justify-center py-20 text-ivory">
       {/* ── Double gold frame border ── */}
       <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
       <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
