@@ -1251,8 +1251,19 @@ export function Events() {
    ========================================================= */
 export function Gallery() {
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const galleryItems = [
+    { src: IMG.gallery[0], alt: "Sacred Moments" },
+    { src: IMG.gallery[1], alt: "Joyful Celebrations" },
+    { src: IMG.gallery[2], alt: "Together Forever" },
+    { src: IMG.gallery[3], alt: "Traditional Splendor" },
+    { src: IMG.gallery[4], alt: "Pure Happiness" },
+    { src: IMG.gallery[5], alt: "A Beautiful Union" },
+    { src: IMG.gallery[6], alt: "Golden Memories" },
+    { src: IMG.gallery[7], alt: "With Family & Friends" },
+  ];
+
   return (
-    <section id="gallery" className="relative overflow-hidden py-24 bg-black/15">
+    <section id="gallery" className="relative overflow-hidden min-h-[100dvh] flex flex-col justify-center py-20 sm:py-24 bg-black/15">
       {/* ── Double gold frame border ── */}
       <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
       <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
@@ -1272,35 +1283,51 @@ export function Gallery() {
       </motion.div>
       <MandalaBg className="left-1/2 top-20 h-[900px] w-[900px] -translate-x-1/2 opacity-30" />
       <FloatingPetals count={8} />
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto max-w-6xl px-6 relative z-10 w-full">
         <SectionTitle eyebrow="Memories" title="Our Gallery" subtitle="Moments we've collected on the way to now." />
-        <div className="columns-2 gap-4 sm:columns-3 [column-fill:balance] md:columns-4">
-          {IMG.gallery.map((src, i) => (
-            <button
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-[1fr] gap-4 sm:gap-6 max-h-[60vh] overflow-y-auto pr-1 hide-scrollbar">
+          {galleryItems.map((img, i) => (
+            <div
               key={i}
               onClick={() => setLightbox(i)}
-              className="group relative mb-4 block w-full overflow-hidden rounded-xl gold-border shadow-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+              className={`group relative p-1.5 sm:p-2.5 bg-gradient-to-br from-[#590d18]/25 to-black/40 border border-[#D4AF37]/20 rounded-2xl sm:rounded-3xl shadow-xl transition-all duration-700 hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(212,175,55,0.2)] hover:z-20 cursor-pointer ${i === 0 ? "col-span-2 row-span-2" : "aspect-square"} ${i % 2 === 0 ? "rotate-0.5 hover:rotate-0" : "-rotate-0.5 hover:rotate-0"}`}
             >
-              <img
-                src={src}
-                alt={`Wedding memory ${i + 1}`}
-                loading="lazy"
-                className="w-full transition-transform duration-700 group-hover:scale-110"
-              />
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-maroon-deep/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-            </button>
+              <div className="relative w-full h-full overflow-hidden rounded-[10px] sm:rounded-2xl shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]">
+                {/* Decorative corners */}
+                <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[#D4AF37]/50 pointer-events-none z-10" />
+                <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-[#D4AF37]/50 pointer-events-none z-10" />
+                <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-[#D4AF37]/50 pointer-events-none z-10" />
+                <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[#D4AF37]/50 pointer-events-none z-10" />
+                
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-115"
+                />
+                
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out flex items-end justify-center pointer-events-none">
+                  <p className="font-heading gold-text text-xs sm:text-lg text-center leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {img.alt}
+                  </p>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
 
       {lightbox !== null && (
         <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-nightbg/95 p-4 backdrop-blur-xl"
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/95 p-4 backdrop-blur-xl"
           onClick={() => setLightbox(null)}
         >
           <button
             aria-label="Close"
-            className="absolute right-6 top-6 grid h-10 w-10 place-items-center rounded-full gold-border text-ivory"
+            className="absolute right-6 top-6 grid h-10 w-10 place-items-center rounded-full gold-border text-white hover:bg-white/10 transition cursor-pointer"
             onClick={() => setLightbox(null)}
           >
             <X size={18} />
@@ -1891,7 +1918,7 @@ export function Rsvp() {
   const [step, setStep] = useState<Step>("closed");
   const [rsvp, setRsvp] = useState<RsvpData | null>(null);
   const [form, setForm] = useState<RsvpData>({
-    name: "",
+    name: "Honored Guest",
     attending: "yes",
     guests: 1,
     meal: "veg",
@@ -2077,15 +2104,24 @@ export function Rsvp() {
 
             <form onSubmit={submit} className="space-y-4 text-left">
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] mb-2">Your Name</label>
-                <input
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full rounded-xl border border-[#D4AF37]/30 bg-black/40 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#D4AF37] transition"
-                  placeholder="Your name"
-                />
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] mb-2">Number of Guests</label>
+                <select
+                  value={form.guests}
+                  onChange={(e) => setForm({ ...form, guests: Number(e.target.value) })}
+                  className="w-full rounded-xl border border-[#D4AF37]/30 bg-[#260508] px-4 py-3 text-sm text-white focus:outline-none focus:border-[#D4AF37] transition appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 1rem center",
+                    backgroundSize: "1.2em",
+                  }}
+                >
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                    <option key={num} value={num} className="bg-[#260508] text-white">
+                      {num} {num === 1 ? "Guest" : "Guests"}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -2098,7 +2134,7 @@ export function Rsvp() {
                       onClick={() => setForm({ ...form, attending: opt })}
                       className={`py-3 px-4 rounded-xl text-center text-xs uppercase tracking-[0.15em] border transition cursor-pointer select-none
                                  ${form.attending === opt 
-                                   ? "bg-gradient-to-r from-[#D4AF37] to-[#E6C280] text-maroon-deep border-[#D4AF37] font-semibold" 
+                                   ? "bg-gradient-to-r from-[#D4AF37] to-[#E6C280] text-[#260508] font-bold border-[#D4AF37]" 
                                    : "bg-transparent border-white/20 text-white/80 hover:bg-white/5"}`}
                     >
                       {opt === "yes" ? "Joyfully Yes" : "Regretfully No"}
@@ -2106,20 +2142,6 @@ export function Rsvp() {
                   ))}
                 </div>
               </div>
-
-              {form.attending === "yes" && (
-                <div>
-                  <label className="block text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] mb-2">Number of Guests</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={10}
-                    value={form.guests}
-                    onChange={(e) => setForm({ ...form, guests: Number(e.target.value) })}
-                    className="w-full rounded-xl border border-[#D4AF37]/30 bg-black/40 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#D4AF37] transition"
-                  />
-                </div>
-              )}
 
               <div>
                 <label className="block text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] mb-2">Meal Preference</label>
@@ -2131,7 +2153,7 @@ export function Rsvp() {
                       onClick={() => setForm({ ...form, meal: opt })}
                       className={`py-2 px-1.5 rounded-xl text-center text-[10px] uppercase tracking-[0.1em] border transition cursor-pointer select-none
                                  ${form.meal === opt 
-                                   ? "bg-gradient-to-r from-[#D4AF37] to-[#E6C280] text-maroon-deep border-[#D4AF37] font-semibold" 
+                                   ? "bg-gradient-to-r from-[#D4AF37] to-[#E6C280] text-[#260508] font-bold border-[#D4AF37]" 
                                    : "bg-transparent border-white/20 text-white/80 hover:bg-white/5"}`}
                     >
                       {opt === "veg" ? "Veg" : opt === "nonveg" ? "Non-Veg" : "Jain"}
@@ -2143,7 +2165,7 @@ export function Rsvp() {
               <div className="flex gap-2 pt-3">
                 <button 
                   type="submit" 
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full cursor-pointer py-3.5 text-xs uppercase tracking-[0.2em] text-maroon-deep font-semibold"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-full cursor-pointer py-3.5 text-xs uppercase tracking-[0.2em] text-[#260508] font-bold"
                   style={{ background: "var(--gradient-gold)" }}
                 >
                   <Check className="w-4 h-4" strokeWidth={2.5} />
@@ -2409,40 +2431,53 @@ export function Contact() {
         <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
         <motion.div animate={{ rotate: [3, -3, 3] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1"><HangingBell /></motion.div>
       </motion.div>
-      <div className="mx-auto max-w-5xl px-6">
+      <div className="mx-auto max-w-5xl px-6 w-full relative z-10">
         <SectionTitle eyebrow="Need Help?" title="Reach Out" subtitle="We'd love to hear from you." />
-        <div className="grid gap-6 md:grid-cols-2">
-          {(["bride", "groom"] as const).map((side) => (
-            <div key={side} className="glass-card rounded-2xl p-8">
-              <h3 className="font-heading text-2xl text-maroon-deep capitalize">
-                {side}'s Side
-              </h3>
-              <div className="mt-6 space-y-4">
-                {wedding.contacts[side].map((c) => (
-                  <div key={c.name} className="flex flex-wrap items-center justify-between gap-3 rounded-xl gold-border p-4">
-                    <div>
-                      <p className="font-heading text-base text-maroon-deep">{c.name}</p>
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#B8862A]">{c.role}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <a
-                        href={`tel:${c.phone}`}
-                        aria-label={`Call ${c.name}`}
-                        className="grid h-10 w-10 place-items-center rounded-full gold-gradient text-maroon-deep hover:scale-105 transition"
-                      >
-                        <Phone size={14} />
-                      </a>
-                      <a
-                        href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
-                        target="_blank" rel="noreferrer"
-                        aria-label={`WhatsApp ${c.name}`}
-                        className="grid h-10 w-10 place-items-center rounded-full gold-border text-maroon-deep hover:bg-gold/10 transition"
-                      >
-                        <MessageCircle size={14} />
-                      </a>
-                    </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {([...wedding.contacts.bride.map(c => ({ ...c, side: "bride" })), ...wedding.contacts.groom.map(c => ({ ...c, side: "groom" }))]).map((c, idx) => (
+            <div 
+              key={c.name} 
+              className="relative rounded-2xl p-6 text-center border border-[#D4AF37]/25 overflow-hidden group shadow-lg hover:-translate-y-1.5 transition-all duration-500"
+              style={{
+                background: "linear-gradient(135deg, rgba(89, 13, 21, 0.85) 0%, rgba(20, 10, 4, 0.95) 100%)",
+              }}
+            >
+              {/* Inner Decorative Border */}
+              <div className="absolute inset-2.5 border border-dashed border-[#D4AF37]/15 rounded-xl pointer-events-none group-hover:border-[#D4AF37]/35 transition-colors duration-500" />
+              
+              {/* Corner Mandala watermark */}
+              <MandalaBg className="absolute -bottom-10 -right-10 w-28 h-28 opacity-[0.04] pointer-events-none transition-all duration-700 group-hover:opacity-[0.1] group-hover:rotate-12" />
+
+              <div className="relative z-10 flex flex-col h-full justify-between min-h-[160px]">
+                <div>
+                  <p className="font-body text-[8px] uppercase tracking-[0.25em] text-[#D4AF37]/80 mb-2.5">
+                    {c.side === "bride" ? "Bride's Side" : "Groom's Side"}
+                  </p>
+                  <h3 className="font-heading text-lg sm:text-xl font-semibold text-white leading-tight mb-1">{c.name}</h3>
+                  <p className="font-body text-[10px] text-white/50">{c.role}</p>
+                </div>
+                
+                <div>
+                  <span aria-hidden className="block h-px w-10 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent mx-auto my-3 group-hover:w-16 transition-all duration-500" />
+                  
+                  <div className="flex justify-center gap-2 mt-2">
+                    <a 
+                      href={`tel:${c.phone}`} 
+                      className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FAF8F3] text-[10px] uppercase tracking-wider hover:bg-[#D4AF37] hover:text-[#260508] transition-all duration-300 font-medium"
+                    >
+                      <Phone size={10} /> Call
+                    </a>
+                    <a 
+                      href={`https://wa.me/${c.phone.replace(/\D/g, "")}`} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FAF8F3] text-[10px] uppercase tracking-wider hover:bg-[#D4AF37] hover:text-[#260508] transition-all duration-300 font-medium"
+                    >
+                      <MessageCircle size={10} /> WhatsApp
+                    </a>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           ))}
@@ -2451,6 +2486,7 @@ export function Contact() {
     </section>
   );
 }
+
 
 /* =========================================================
    THANK YOU
