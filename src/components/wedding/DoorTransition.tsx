@@ -6,49 +6,6 @@ interface DoorTransitionProps {
   onComplete?: () => void;
 }
 
-// ── Symmetrical Folded Hands (Namaste / Anjali Mudra) SVG ──
-const NamasteSVG = () => (
-  <svg
-    viewBox="0 0 120 120"
-    className="w-36 h-36 sm:w-40 sm:h-40 stroke-[#D4AF37] fill-none stroke-[1.4] opacity-95 filter drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]"
-  >
-    {/* Elegant Aura rays behind the hands */}
-    <circle cx="60" cy="52" r="44" strokeDasharray="3 4" opacity="0.35" />
-    <circle cx="60" cy="52" r="32" strokeDasharray="2 3" opacity="0.25" />
-
-    {/* Left hand sleeve / wrist details */}
-    <path d="M 40,98 C 40,92 43,84 46,76" />
-    <path d="M 37,100 C 37,94 40,86 43,78" opacity="0.6" />
-    
-    {/* Right hand sleeve / wrist details */}
-    <path d="M 80,98 C 80,92 77,84 74,76" />
-    <path d="M 83,100 C 83,94 80,86 77,78" opacity="0.6" />
-    
-    {/* Hands contour (folded palms) */}
-    {/* Left hand boundary */}
-    <path d="M 46,76 Q 40,55 52,24 C 55,17 58,11 60,6" strokeLinecap="round" />
-    {/* Right hand boundary */}
-    <path d="M 74,76 Q 80,55 68,24 C 65,17 62,11 60,6" strokeLinecap="round" />
-    
-    {/* Seam / boundary where palms meet */}
-    <line x1="60" y1="6" x2="60" y2="88" strokeDasharray="1.5 1.5" opacity="0.5" />
-    
-    {/* Thumb lines */}
-    <path d="M 50,56 Q 56,49 57,41" />
-    <path d="M 70,56 Q 64,49 63,41" />
-    
-    {/* Finger separations / creases (Left Hand) */}
-    <path d="M 48,61 Q 55,42 58,25" opacity="0.85" />
-    <path d="M 49,68 Q 54,54 58,34" opacity="0.85" />
-    <path d="M 50,74 Q 53,66 56,51" opacity="0.75" />
-
-    {/* Finger separations / creases (Right Hand) */}
-    <path d="M 72,61 Q 65,42 62,25" opacity="0.85" />
-    <path d="M 71,68 Q 66,54 62,34" opacity="0.85" />
-    <path d="M 70,74 Q 67,66 64,51" opacity="0.75" />
-  </svg>
-);
-
 // ── Hanging temple bell for the doors ──
 const DoorHangingBell = () => (
   <svg
@@ -79,6 +36,49 @@ const DoorCornerOrnament = ({ className }: { className: string }) => (
     <path d="M 16 16 L 28 28" />
     <circle cx="20" cy="20" r="2.5" fill="#D4AF37" />
     <polygon points="12,12 16,12 14,15" fill="#D4AF37" />
+  </svg>
+);
+
+// ── Namaste Folded Hands SVG Motif ──
+const NamasteSVG = () => (
+  <svg
+    viewBox="0 0 100 100"
+    className="w-32 h-32 sm:w-36 sm:h-36 stroke-[#D4AF37] fill-none stroke-[1.4] filter drop-shadow-[0_0_12px_rgba(212,175,55,0.5)]"
+  >
+    {/* Decorative outer circle halo */}
+    <circle cx="50" cy="50" r="38" strokeDasharray="3 4" opacity="0.5" strokeWidth="0.8" />
+    <circle cx="50" cy="50" r="42" strokeWidth="0.5" opacity="0.3" />
+    
+    {/* Light rays emanating */}
+    <path d="M 50 8 L 50 14" opacity="0.6" />
+    <path d="M 50 92 L 50 86" opacity="0.6" />
+    <path d="M 8 50 L 14 50" opacity="0.6" />
+    <path d="M 92 50 L 86 50" opacity="0.6" />
+    <path d="M 20 20 L 25 25" opacity="0.6" />
+    <path d="M 80 20 L 75 25" opacity="0.6" />
+    <path d="M 20 80 L 25 75" opacity="0.6" />
+    <path d="M 80 80 L 75 75" opacity="0.6" />
+
+    {/* Folded Hands (Namaste) */}
+    {/* Left Hand */}
+    <path d="M 43,80 C 43,80 38,72 38,62 C 38,52 46,38 48.5,25 C 49,22 50,22 50,25" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Right Hand */}
+    <path d="M 57,80 C 57,80 62,72 62,62 C 62,52 54,38 51.5,25 C 51,22 50,22 50,25" strokeLinecap="round" strokeLinejoin="round" />
+    
+    {/* Hand details / fingers junction line */}
+    <path d="M 50,25 L 50,68" strokeWidth="1" strokeDasharray="1 1" opacity="0.6" />
+    
+    {/* Left thumb */}
+    <path d="M 43,62 Q 40,55 45,50" strokeLinecap="round" />
+    {/* Right thumb */}
+    <path d="M 57,62 Q 60,55 55,50" strokeLinecap="round" />
+
+    {/* Wrist / cuffs at bottom */}
+    <path d="M 37,80 C 37,80 43,84 50,84 C 57,84 63,80 63,80" strokeLinecap="round" />
+    <path d="M 35,83 C 35,83 42,88 50,88 C 58,88 65,83 65,83" strokeLinecap="round" opacity="0.8" />
+    
+    {/* Bindi dot */}
+    <circle cx="50" cy="18" r="1.5" fill="#D4AF37" stroke="none" />
   </svg>
 );
 
@@ -164,12 +164,16 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
             </div>
 
             {/* Left Half of Namaste Medallion */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-24 h-48 sm:w-28 sm:h-56 z-25 overflow-hidden flex items-center justify-end">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-[#D4AF37]/65 bg-[#260508] shadow-[inset_-10px_0_20px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-25 overflow-hidden w-24 h-48 sm:w-28 sm:h-56 flex items-center justify-end">
+              <motion.div 
+                className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-[#D4AF37]/65 bg-[#260508] shadow-[inset_-10px_0_20px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center"
+                animate={{ scale: [0.97, 1.03, 0.97] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
                 <div className="translate-x-[48px] sm:translate-x-[56px] scale-100 sm:scale-110">
                   <NamasteSVG />
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Edge Glow Strip */}
@@ -246,12 +250,16 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
             </div>
 
             {/* Right Half of Namaste Medallion */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 h-48 sm:w-28 sm:h-56 z-25 overflow-hidden flex items-center justify-start">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-[#D4AF37]/65 bg-[#260508] shadow-[inset_10px_0_20px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center">
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-25 overflow-hidden w-24 h-48 sm:w-28 sm:h-56 flex items-center justify-start">
+              <motion.div 
+                className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-[#D4AF37]/65 bg-[#260508] shadow-[inset_10px_0_20px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center"
+                animate={{ scale: [0.97, 1.03, 0.97] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
                 <div className="-translate-x-[48px] sm:-translate-x-[56px] scale-100 sm:scale-110">
                   <NamasteSVG />
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Edge Glow Strip */}
