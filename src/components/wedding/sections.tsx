@@ -1342,7 +1342,7 @@ export function Family() {
   };
 
   return (
-    <section id="family" className="relative overflow-hidden py-24 sm:py-32">
+    <section id="family" className="relative overflow-hidden min-h-[100dvh] flex flex-col justify-center py-20 sm:py-24">
       {/* ── Double gold frame border ── */}
       <motion.div initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: "easeOut" }} className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10" />
       <motion.div initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 0.55, scale: 1 }} transition={{ duration: 2, ease: "easeOut", delay: 0.3 }} className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10" />
@@ -1546,16 +1546,12 @@ export function Family() {
                                   {m.name}
                                 </h4>
 
-                                <div className="flex justify-center mt-2">
-                                  <span className="font-body inline-flex items-center gap-1 border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-0.5 rounded-full text-[#F5E6A8] text-[9.5px]">
+                                <div className="flex justify-center mt-2.5">
+                                  <span className="font-body inline-flex items-center gap-1 border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3.5 py-1 rounded-full text-[#F5E6A8] text-[10px] uppercase tracking-wider font-medium">
                                     <Sparkles size={8} className="text-[#D4AF37]" />
-                                    {getHindiRelation(m.relation)}
+                                    {m.relation}
                                   </span>
                                 </div>
-
-                                <p className="mt-2.5 font-body text-[9px] uppercase tracking-[0.15em] text-[#D4AF37]/50 select-none leading-none">
-                                  {m.relation}
-                                </p>
                               </motion.div>
                             );
                           })}
@@ -1977,7 +1973,7 @@ export function Rsvp() {
       <MandalaBg className="absolute left-10 top-10 h-[500px] w-[500px] opacity-[0.04]" />
       
       <div className="mx-auto max-w-3xl px-6 text-center">
-        <SectionTitle eyebrow="Kindly Respond" title="RSVP" subtitle="Please let us know by 15 days before the wedding." light />
+        <SectionTitle eyebrow="Kindly Respond" title="RSVP" subtitle="Please let us know by 15 days before the wedding." light subtitleClassName="text-white font-medium" />
 
         <div className="mt-12 max-w-lg mx-auto p-8 rounded-3xl border border-[#D4AF37]/25 backdrop-blur-xl shadow-2xl bg-black/10">
           <div className="accept-cta-wrap mx-auto relative flex flex-col items-center">

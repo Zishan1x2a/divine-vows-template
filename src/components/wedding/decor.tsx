@@ -158,12 +158,14 @@ export function SectionTitle({
   subtitle,
   center = true,
   light = false,
+  subtitleClassName,
 }: {
   eyebrow?: string;
   title: string;
   subtitle?: string;
   center?: boolean;
   light?: boolean;
+  subtitleClassName?: string;
 }) {
   return (
     <div className={`${center ? "text-center" : ""} mb-10`}>
@@ -175,7 +177,7 @@ export function SectionTitle({
       <h2 className={`gold-text text-4xl sm:text-5xl md:text-6xl font-semibold`}>{title}</h2>
       <Ornament className="mt-4" />
       {subtitle && (
-        <p className={`mx-auto mt-4 max-w-2xl text-sm sm:text-base ${light ? "text-ivory/80" : "text-muted-foreground"}`}>
+        <p className={`mx-auto mt-4 max-w-2xl text-sm sm:text-base ${subtitleClassName || (light ? "text-ivory/80" : "text-muted-foreground")}`}>
           {subtitle}
         </p>
       )}
