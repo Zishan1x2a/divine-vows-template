@@ -1751,7 +1751,7 @@ export function Family() {
       </motion.div>
 
       <div className="relative mx-auto max-w-6xl z-10 px-6">
-        <SectionTitle eyebrow="With Blessings From" title="Our Families" subtitle="Two hearts, two families, one beautiful union." light />
+        <SectionTitle eyebrow="With Blessings From" title="Our Families" subtitle="Two hearts, two families, one beautiful union." light subtitleClassName="!text-white font-medium" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14 mt-16 max-w-5xl mx-auto items-start">
           {([
