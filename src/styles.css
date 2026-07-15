@@ -51,6 +51,7 @@
 
 :root {
   --radius: 0.75rem;
+  --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #F5E6A8 50%, #B8862A 100%);
 
   /* Original light theme values stored under org namespace */
   --org-maroon: oklch(0.34 0.11 15);
