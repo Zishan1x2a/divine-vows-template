@@ -6,6 +6,155 @@ interface DoorTransitionProps {
   onComplete?: () => void;
 }
 
+// ── Left Temple Gateway SVG Carving ──
+const DoorGatewayLeft = () => (
+  <svg
+    className="absolute inset-0 w-full h-full pointer-events-none"
+    viewBox="0 0 400 800"
+    preserveAspectRatio="none"
+    fill="none"
+    stroke="#D4AF37"
+    strokeWidth="1.2"
+    opacity="0.22"
+  >
+    {/* Outer border frame */}
+    <rect x="15" y="15" width="370" height="770" rx="10" strokeWidth="1.5" strokeDasharray="3 3" />
+    
+    {/* Left Pillar Column (representing temple pillar) */}
+    <g strokeWidth="1.5">
+      <rect x="30" y="40" width="30" height="720" rx="3" />
+      {/* Pillar base details */}
+      <rect x="25" y="700" width="40" height="60" rx="2" />
+      <line x1="25" y1="720" x2="65" y2="720" />
+      <line x1="25" y1="740" x2="65" y2="740" />
+      {/* Pillar capital details at top */}
+      <rect x="25" y="40" width="40" height="50" rx="2" />
+      <path d="M20 90 L70 90 L60 110 L30 110 Z" fill="rgba(212,175,55,0.1)" />
+      {/* Flute lines down the pillar */}
+      <line x1="40" y1="120" x2="40" y2="690" strokeWidth="0.8" strokeDasharray="5 5" />
+      <line x1="50" y1="120" x2="50" y2="690" strokeWidth="0.8" strokeDasharray="5 5" />
+    </g>
+
+    {/* Hanging Leaf Toran Garland along the top arch */}
+    <g strokeWidth="1.2">
+      {/* Swag lines */}
+      <path d="M 60,90 Q 150,110 240,90 Q 320,105 400,90" strokeWidth="1.5" />
+      {/* Mango leaves hanging */}
+      {Array.from({ length: 9 }).map((_, idx) => {
+        const x = 70 + idx * 40;
+        return (
+          <path
+            key={idx}
+            d={`M ${x},96 Q ${x-6},120 ${x},130 Q ${x+6},120 ${x},96`}
+            fill="rgba(212,175,55,0.15)"
+          />
+        );
+      })}
+    </g>
+
+    {/* Half of Top Gateway Arch (Mandap Arch) */}
+    <path
+      d="M 60,90 L 60,250 C 60,380 220,480 400,480"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M 80,90 L 80,260 C 80,370 230,460 400,460"
+      strokeWidth="1.2"
+      strokeDasharray="4 4"
+    />
+    <path
+      d="M 100,90 L 100,270 C 100,360 240,440 400,440"
+      strokeWidth="0.8"
+    />
+
+    {/* Traditional Diya lamp bottom left */}
+    <g transform="translate(100, 680)" strokeWidth="1.5">
+      <path d="M 0,20 Q -20,20 -15,0 Q -5,-15 0,-25 Q 5,-15 15,0 Q 20,20 0,20 Z" fill="rgba(212,175,55,0.15)" />
+      {/* Flame */}
+      <path d="M 0,-25 Q -4,-35 0,-45 Q 4,-35 0,-25" fill="#D4AF37" stroke="none" />
+      {/* Stand */}
+      <line x1="0" y1="20" x2="0" y2="50" />
+      <path d="M -15,50 L 15,50" />
+    </g>
+  </svg>
+);
+
+// ── Right Temple Gateway SVG Carving ──
+const DoorGatewayRight = () => (
+  <svg
+    className="absolute inset-0 w-full h-full pointer-events-none"
+    viewBox="0 0 400 800"
+    preserveAspectRatio="none"
+    fill="none"
+    stroke="#D4AF37"
+    strokeWidth="1.2"
+    opacity="0.22"
+    style={{ transform: 'scaleX(-1)' }}
+  >
+    {/* Outer border frame */}
+    <rect x="15" y="15" width="370" height="770" rx="10" strokeWidth="1.5" strokeDasharray="3 3" />
+    
+    {/* Left Pillar Column (representing temple pillar) */}
+    <g strokeWidth="1.5">
+      <rect x="30" y="40" width="30" height="720" rx="3" />
+      {/* Pillar base details */}
+      <rect x="25" y="700" width="40" height="60" rx="2" />
+      <line x1="25" y1="720" x2="65" y2="720" />
+      <line x1="25" y1="740" x2="65" y2="740" />
+      {/* Pillar capital details at top */}
+      <rect x="25" y="40" width="40" height="50" rx="2" />
+      <path d="M20 90 L70 90 L60 110 L30 110 Z" fill="rgba(212,175,55,0.1)" />
+      {/* Flute lines down the pillar */}
+      <line x1="40" y1="120" x2="40" y2="690" strokeWidth="0.8" strokeDasharray="5 5" />
+      <line x1="50" y1="120" x2="50" y2="690" strokeWidth="0.8" strokeDasharray="5 5" />
+    </g>
+
+    {/* Hanging Leaf Toran Garland along the top arch */}
+    <g strokeWidth="1.2">
+      {/* Swag lines */}
+      <path d="M 60,90 Q 150,110 240,90 Q 320,105 400,90" strokeWidth="1.5" />
+      {/* Mango leaves hanging */}
+      {Array.from({ length: 9 }).map((_, idx) => {
+        const x = 70 + idx * 40;
+        return (
+          <path
+            key={idx}
+            d={`M ${x},96 Q ${x-6},120 ${x},130 Q ${x+6},120 ${x},96`}
+            fill="rgba(212,175,55,0.15)"
+          />
+        );
+      })}
+    </g>
+
+    {/* Half of Top Gateway Arch (Mandap Arch) */}
+    <path
+      d="M 60,90 L 60,250 C 60,380 220,480 400,480"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M 80,90 L 80,260 C 80,370 230,460 400,460"
+      strokeWidth="1.2"
+      strokeDasharray="4 4"
+    />
+    <path
+      d="M 100,90 L 100,270 C 100,360 240,440 400,440"
+      strokeWidth="0.8"
+    />
+
+    {/* Traditional Diya lamp bottom left */}
+    <g transform="translate(100, 680)" strokeWidth="1.5">
+      <path d="M 0,20 Q -20,20 -15,0 Q -5,-15 0,-25 Q 5,-15 15,0 Q 20,20 0,20 Z" fill="rgba(212,175,55,0.15)" />
+      {/* Flame */}
+      <path d="M 0,-25 Q -4,-35 0,-45 Q 4,-35 0,-25" fill="#D4AF37" stroke="none" />
+      {/* Stand */}
+      <line x1="0" y1="20" x2="0" y2="50" />
+      <path d="M -15,50 L 15,50" />
+    </g>
+  </svg>
+);
+
 // ── Hanging temple bell for the doors ──
 const DoorHangingBell = () => (
   <svg
@@ -119,6 +268,9 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
               }}
             />
 
+            {/* Custom Temple Gateway Carving */}
+            <DoorGatewayLeft />
+
             {/* Corner Ornaments */}
             <DoorCornerOrnament className="top-[10px] left-[10px] sm:top-[22px] sm:left-[22px]" />
             <DoorCornerOrnament className="bottom-[10px] left-[10px] sm:bottom-[22px] sm:left-[22px] -rotate-90" />
@@ -190,6 +342,9 @@ const DoorTransition = ({ isOpen, onComplete }: DoorTransitionProps) => {
                 backgroundPosition: "center",
               }}
             />
+
+            {/* Custom Temple Gateway Carving */}
+            <DoorGatewayRight />
 
             {/* Corner Ornaments */}
             <DoorCornerOrnament className="top-[10px] right-[10px] sm:top-[22px] sm:right-[22px] rotate-90" />
