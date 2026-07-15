@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
+import confetti from "canvas-confetti";
 import {
   Calendar, Clock, MapPin, Sparkles, Heart, Phone, MessageCircle,
-  Gift, ChevronDown, X, Car, BedDouble, Navigation, Check,
+  Gift, ChevronDown, X, Car, BedDouble, Navigation, Check, Pencil,
   ChevronLeft, ChevronRight, ArrowUpRight,
 } from "lucide-react";
 import { wedding, ganeshMantra, IMG } from "@/data/wedding";
-import confetti from "canvas-confetti";
 import {
   ArchFrame, FloatingPetals, GoldenParticles, MandalaBg,
   Ornament, Reveal, SectionTitle, GoldButton,
@@ -1282,43 +1282,257 @@ export function Gallery() {
 /* =========================================================
    FAMILY
    ========================================================= */
-function FamilyRow({ title, members }: { title: string; members: { name: string; relation: string }[] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  return (
-    <div>
-      <h3 className="mb-4 font-heading text-2xl text-maroon-deep text-center">{title}</h3>
-      <div
-        ref={ref}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-2 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {members.map((m) => (
-          <div
-            key={m.name}
-            className="snap-center shrink-0 w-40 sm:w-48 glass-card rounded-2xl p-4 text-center"
-          >
-            <div
-              className="mx-auto mb-3 grid h-24 w-24 place-items-center rounded-full gold-gradient text-maroon-deep font-couple text-2xl shadow-gold"
-              aria-hidden
-            >
-              {m.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
-            </div>
-            <p className="font-heading text-base text-maroon-deep">{m.name}</p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-[#B8862A]">{m.relation}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+function getHindiRelation(relation: string): string {
+  const rel = relation.toLowerCase();
+  if (rel.includes("mother of the groom")) return "वर की माता जी";
+  if (rel.includes("mother of the bride")) return "वधू की माता जी";
+  if (rel.includes("father of the groom")) return "वर के पिता जी";
+  if (rel.includes("father of the bride")) return "वधू के पिता जी";
+  if (rel.includes("brother of the groom")) return "वर के भ्राता";
+  if (rel.includes("brother of the bride")) return "वधू के भ्राता";
+  if (rel.includes("sister of the groom")) return "वर की भगिनी";
+  if (rel.includes("sister of the bride")) return "वधू की भगिनी";
+  if (rel.includes("grandfather")) return "दादा जी / नाना जी";
+  if (rel.includes("grandmother")) return "दादी जी / नानी जी";
+  return relation;
 }
 
 export function Family() {
+  const [activeSide, setActiveSide] = useState<"groom" | "bride" | null>(null);
+
+  const toggleSide = (side: "groom" | "bride") => {
+    setActiveSide((prev) => (prev === side ? null : side));
+  };
+
   return (
-    <section id="family" className="relative overflow-hidden py-24">
-      <div className="mx-auto max-w-6xl px-6">
-        <SectionTitle eyebrow="With Blessings From" title="Our Families" subtitle="Two families, becoming one." />
-        <div className="grid gap-12 md:grid-cols-2">
-          <FamilyRow title="Groom's Family" members={wedding.family.groom} />
-          <FamilyRow title="Bride's Family" members={wedding.family.bride} />
+    <section id="family" className="relative overflow-hidden py-24 sm:py-32">
+      {/* Background Mandala */}
+      <div className="absolute inset-0 -z-20 opacity-[0.03] flex items-center justify-center pointer-events-none select-none">
+        <MandalaBg className="w-[85vw] h-[85vh] text-[#D4AF37]" />
+      </div>
+
+      <FloatingPetals count={10} />
+      <GoldenParticles count={15} />
+
+      {/* Double gold frame border */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.05 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.8, ease: "easeOut" }}
+        className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10"
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 1.03 }}
+        animate={{ opacity: 0.55, scale: 1 }}
+        transition={{ duration: 2, ease: "easeOut", delay: 0.3 }}
+        className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10"
+      />
+
+      {/* Corner Ornaments */}
+      <CornerOrnament className="top-[10px] left-[10px] sm:top-[22px] sm:left-[22px]" />
+      <CornerOrnament className="top-[10px] right-[10px] sm:top-[22px] sm:right-[22px] rotate-90" />
+      <CornerOrnament className="bottom-[10px] left-[10px] sm:bottom-[22px] sm:left-[22px] -rotate-90" />
+      <CornerOrnament className="bottom-[10px] right-[10px] sm:bottom-[22px] sm:right-[22px] rotate-180" />
+
+      {/* Hanging Bells */}
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+        className="absolute left-3.5 sm:left-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
+      >
+        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
+        <motion.div animate={{ rotate: [-3, 3, -3] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
+        className="absolute right-3.5 sm:right-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
+      >
+        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
+        <motion.div animate={{ rotate: [3, -3, 3] }} transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-6xl z-10 px-6">
+        <SectionTitle eyebrow="With Blessings From" title="Our Families" subtitle="Two hearts, two families, one beautiful union." light />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14 mt-16 max-w-5xl mx-auto items-start">
+          {([
+            { side: "Groom's Family", key: "groom", titleHindi: "वर पक्ष", descHindi: "आदरणीय वर परिवार के स्नेही सदस्य" },
+            { side: "Bride's Family", key: "bride", titleHindi: "वधू पक्ष", descHindi: "आदरणीय वधू परिवार के स्नेही सदस्य" }
+          ] as const).map((f) => {
+            const sideKey = f.key;
+            const isOpen = activeSide === sideKey;
+            const isAnyOpen = activeSide !== null;
+            const isDimmed = isAnyOpen && !isOpen;
+            const members = wedding.family[sideKey];
+
+            return (
+              <motion.div
+                key={f.side}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: isDimmed ? 0.45 : 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                animate={{ 
+                  opacity: isDimmed ? 0.45 : 1,
+                  scale: isOpen ? 1.02 : 1
+                }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className={`relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between
+                           border border-[#D4AF37]/25 backdrop-blur-xl cursor-pointer
+                           shadow-[0_25px_60px_-20px_rgba(0,0,0,0.7)]
+                           transition-shadow duration-500 overflow-hidden group
+                           ${isOpen ? 'shadow-[0_0_50px_rgba(212,175,55,0.35)] border-[#D4AF37]/50' : 'hover:shadow-[0_20px_45px_rgba(212,175,55,0.15)]'}`}
+                style={{
+                  background: "linear-gradient(145deg, rgba(89, 13, 21, 0.85) 0%, rgba(20, 10, 4, 0.92) 100%)",
+                }}
+                onClick={() => toggleSide(sideKey)}
+              >
+                {/* Golden corner designs */}
+                <span className="absolute left-3 top-3 w-5 h-5 border-l border-t border-[#D4AF37]/35 rounded-tl-lg pointer-events-none group-hover:border-[#D4AF37] transition-colors duration-300" />
+                <span className="absolute right-3 top-3 w-5 h-5 border-r border-t border-[#D4AF37]/35 rounded-tr-lg pointer-events-none group-hover:border-[#D4AF37] transition-colors duration-300" />
+                <span className="absolute left-3 bottom-3 w-5 h-5 border-l border-b border-[#D4AF37]/35 rounded-bl-lg pointer-events-none group-hover:border-[#D4AF37] transition-colors duration-300" />
+                <span className="absolute right-3 bottom-3 w-5 h-5 border-r border-b border-[#D4AF37]/35 rounded-br-lg pointer-events-none group-hover:border-[#D4AF37] transition-colors duration-300" />
+
+                {/* Inner gold dashed ring */}
+                <div
+                  className="pointer-events-none absolute inset-1.5 rounded-[1.35rem] transition-colors duration-300"
+                  style={{ border: isOpen ? "1px dashed rgba(212,175,55,0.3)" : "1px dashed rgba(212,175,55,0.12)" }}
+                />
+
+                {/* Golden Border Chase on hover/open */}
+                <div
+                  className={`absolute inset-0 rounded-3xl p-[1.5px] pointer-events-none select-none overflow-hidden transition-opacity duration-700
+                             ${isOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-60'}`}
+                  style={{
+                    WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+                    WebkitMaskComposite: "xor",
+                    maskComposite: "exclude",
+                  }}
+                >
+                  <div
+                    className="absolute top-1/2 left-1/2 w-[250%] h-[250%] -translate-x-1/2 -translate-y-1/2 aspect-square animate-[spin_6s_linear_infinite] pointer-events-none"
+                    style={{
+                      background: "conic-gradient(from 0deg, transparent 30%, #D4AF37 50%, #FFFBEA 55%, #D4AF37 60%, transparent 80%)",
+                    }}
+                  />
+                </div>
+
+                {/* Header info */}
+                <div className="text-center pb-5 select-none relative z-10">
+                  <span className="font-heading text-2xl sm:text-3xl text-[#F5E6A8] block leading-none mb-2 font-semibold">
+                    {f.titleHindi}
+                  </span>
+                  <h3 className="font-heading text-lg sm:text-xl font-medium tracking-widest text-[#FFF3D6] opacity-90">
+                    {f.side}
+                  </h3>
+                  <p className="font-body mt-2.5 text-xs text-[#FAF8F3]/75 max-w-sm mx-auto leading-relaxed border-t border-[#D4AF37]/20 pt-2.5">
+                    {f.descHindi}
+                  </p>
+                </div>
+
+                {/* Expand indicator */}
+                <div className="flex flex-col items-center justify-center mt-3 mb-1 select-none relative z-10">
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="p-2.5 rounded-full border border-[#D4AF37]/30 bg-black/40 shadow-lg text-[#D4AF37] group-hover:border-[#D4AF37]/70 group-hover:text-white transition-all duration-300"
+                  >
+                    <ChevronDown size={18} />
+                  </motion.div>
+                  <span className="font-body text-[10px] tracking-wider text-[#D4AF37]/80 mt-2 font-light">
+                    {isOpen ? "विवरण छुपाएं" : "आशीर्वाद देने वाले आदरणीय सदस्य देखें"}
+                  </span>
+                </div>
+
+                {/* Members list */}
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                      animate={{ height: "auto", opacity: 1, marginTop: 24 }}
+                      exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden relative z-10 w-full"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="max-h-[360px] overflow-y-auto pr-1
+                                      [&::-webkit-scrollbar]:w-1.5 
+                                      [&::-webkit-scrollbar-track]:bg-black/20 
+                                      [&::-webkit-scrollbar-thumb]:bg-[#D4AF37]/50 
+                                      [&::-webkit-scrollbar-thumb]:rounded-full">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
+                          {members.map((m, i) => {
+                            const initials = m.name.split(" ").map(s => s[0]).slice(0, 2).join("");
+                            return (
+                              <motion.div
+                                key={`${m.name}-${i}`}
+                                initial={{ opacity: 0, y: 15 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                whileHover={{ y: -4, scale: 1.02 }}
+                                transition={{ duration: 0.4, delay: i * 0.05 }}
+                                className="group/member relative rounded-2xl border border-[#D4AF37]/20 p-4 text-center
+                                           backdrop-blur-md transition-all duration-300
+                                           hover:shadow-[0_0_24px_rgba(212,175,55,0.25)]
+                                           hover:border-[#D4AF37]/50"
+                                style={{
+                                  background: "linear-gradient(145deg, rgba(89, 13, 21, 0.6) 0%, rgba(20, 10, 4, 0.75) 100%)",
+                                }}
+                              >
+                                <span className="pointer-events-none absolute inset-x-4 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
+
+                                <div className="relative mx-auto h-14 w-14 mb-2">
+                                  <div
+                                    className="absolute inset-0 rounded-full p-[1.2px] animate-[spin_8s_linear_infinite] pointer-events-none"
+                                    style={{
+                                      background: "conic-gradient(from 0deg, transparent 30%, #D4AF37 55%, #FFFBEA 60%, #D4AF37 70%, transparent 90%)",
+                                      WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+                                      WebkitMaskComposite: "xor",
+                                      maskComposite: "exclude",
+                                    }}
+                                  />
+                                  <div
+                                    className="relative flex h-full w-full items-center justify-center rounded-full font-heading text-lg text-[#F5E6A8]"
+                                    style={{
+                                      background: "linear-gradient(145deg, #3d070c, #140a04)",
+                                      boxShadow: "0 0 0 1px rgba(212,175,55,0.3)",
+                                    }}
+                                  >
+                                    {initials}
+                                  </div>
+                                </div>
+
+                                <h4 className="font-heading text-base font-semibold text-[#FFF3D6] leading-tight select-none">
+                                  {m.name}
+                                </h4>
+
+                                <div className="flex justify-center mt-2">
+                                  <span className="font-body inline-flex items-center gap-1 border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-0.5 rounded-full text-[#F5E6A8] text-[9.5px]">
+                                    <Sparkles size={8} className="text-[#D4AF37]" />
+                                    {getHindiRelation(m.relation)}
+                                  </span>
+                                </div>
+
+                                <p className="mt-2.5 font-body text-[9px] uppercase tracking-[0.15em] text-[#D4AF37]/50 select-none leading-none">
+                                  {m.relation}
+                                </p>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1328,85 +1542,265 @@ export function Family() {
 /* =========================================================
    WISHING WALL
    ========================================================= */
-export function WishingWall() {
-  const [wishes, setWishes] = useState(wedding.initialWishes);
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", msg: "" });
+const GUEST_NAME = "Honored Guest";
 
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!form.name.trim() || !form.msg.trim()) return;
-    setWishes((w) => [{ name: form.name, msg: form.msg }, ...w]);
-    setForm({ name: "", msg: "" });
-    setOpen(false);
-  }
+function WishCard({ wish, index, onCardClick }: { wish: { name: string; msg: string }; index: number; onCardClick: (w: typeof wish) => void }) {
+  const isLong = wish.msg.length > 70;
+  const previewText = isLong ? wish.msg.slice(0, 68) + "..." : wish.msg;
 
   return (
-    <section id="wishes" className="relative overflow-hidden py-24 bg-black/10">
-      <GoldenParticles count={20} />
-      <div className="mx-auto max-w-6xl px-6">
-        <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings from those we hold dear." />
-        <div className="mb-8 text-center">
-          <GoldButton onClick={() => setOpen(true)}>
-            <Heart size={14} /> Add Your Blessing
-          </GoldButton>
+    <article
+      onClick={() => onCardClick(wish)}
+      className="group relative shrink-0 cursor-pointer transition-all duration-500 hover:-translate-y-1.5 select-none w-[320px] h-[180px]"
+    >
+      {/* 3D Fluffy Cloud SVG Wrapper styled in Maroon/Gold */}
+      <svg
+        viewBox="0 0 320 180"
+        preserveAspectRatio="none"
+        className="absolute inset-0 w-full h-full pointer-events-none z-0 drop-shadow-[0_12px_30px_rgba(0,0,0,0.65)] backdrop-blur-[4px]"
+      >
+        <defs>
+          <linearGradient id={`cloudGrad-${index}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="rgba(89, 13, 21, 0.9)" />
+            <stop offset="50%" stopColor="rgba(38, 5, 9, 0.85)" />
+            <stop offset="100%" stopColor="rgba(20, 10, 4, 0.95)" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M 55,130 C 20,130 10,100 25,80 C 15,60 30,30 65,35 C 85,15 125,15 145,35 C 165,10 220,15 245,45 C 280,35 305,60 300,85 C 315,105 305,135 270,135 C 255,155 200,160 175,145 C 145,160 90,155 70,135 Z"
+          fill={`url(#cloudGrad-${index})`}
+          stroke="rgba(212, 175, 55, 0.35)"
+          strokeWidth="1.6"
+          className="group-hover:stroke-[#D4AF37] transition-colors duration-500"
+        />
+      </svg>
+
+      {/* Mini gold star top-right */}
+      <span className="absolute top-8 right-12 opacity-35 pointer-events-none z-10">
+        <svg viewBox="0 0 12 12" className="w-3.5 h-3.5 animate-spin-slow" fill="none" stroke="#D4AF37" strokeWidth="1.2">
+          <line x1="6" y1="0" x2="6" y2="12" /><line x1="0" y1="6" x2="12" y2="6" />
+          <line x1="1.8" y1="1.8" x2="10.2" y2="10.2" /><line x1="10.2" y1="1.8" x2="1.8" y2="10.2" />
+        </svg>
+      </span>
+
+      <div className="relative z-10 p-6 pt-10 pb-14 px-12 flex flex-col h-[180px] justify-between">
+        {/* Message preview */}
+        <div className="flex-1 flex items-center justify-center text-center max-h-[50px] overflow-hidden">
+          <p className="text-white/85 italic leading-relaxed text-[11px] sm:text-[11.5px] break-words">
+            "{previewText}"
+          </p>
         </div>
-        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [column-fill:balance]">
-          {wishes.map((w, i) => (
-            <Reveal key={i} delay={Math.min(i * 0.05, 0.4)}>
-              <div className="mb-6 break-inside-avoid glass-card rounded-2xl p-6 shadow-lg">
-                <p className="font-heading text-base italic text-maroon-deep">"{w.msg}"</p>
-                <div className="mt-4 flex items-center gap-3">
-                  <div className="grid h-9 w-9 place-items-center rounded-full gold-gradient font-couple text-xs text-maroon-deep">
-                    {w.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
-                  </div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#B8862A]">— {w.name}</p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
+
+        {/* Footer */}
+        <div className="pt-2.5 border-t border-white/10 flex justify-between items-end shrink-0">
+          <span className="font-heading text-xs text-[#D4AF37] leading-none">{wish.name}</span>
+          <span className="text-[8px] uppercase tracking-[0.2em] text-white/40">Blessings</span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export function WishingWall() {
+  const [wishes, setWishes] = useState(wedding.initialWishes);
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [selectedWish, setSelectedWish] = useState<typeof wishes[0] | null>(null);
+
+  const tickerRef = useRef<HTMLDivElement>(null);
+  const animRef = useRef<number>(0);
+  const posRef = useRef(0);
+  const pausedRef = useRef(false);
+  const SPEED = 0.55;
+
+  /* Ticker animation loop */
+  useEffect(() => {
+    const el = tickerRef.current;
+    if (!el) return;
+    const CARD_W = 320 + 20; // card width + gap
+
+    const step = () => {
+      if (!pausedRef.current) {
+        posRef.current += SPEED;
+        const totalW = wishes.length * CARD_W;
+        if (posRef.current >= totalW) posRef.current = 0;
+        el.style.transform = `translateX(-${posRef.current}px)`;
+      }
+      animRef.current = requestAnimationFrame(step);
+    };
+    animRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animRef.current);
+  }, [wishes.length]);
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim()) return;
+    setSending(true);
+    setTimeout(() => {
+      setWishes((w) => [{ name: GUEST_NAME, msg: message.trim() }, ...w]);
+      setMessage("");
+      setSending(false);
+      setSent(true);
+      setTimeout(() => setSent(false), 3000);
+    }, 850);
+  };
+
+  const loopedWishes = [...wishes, ...wishes];
+
+  return (
+    <section id="wishes" className="relative py-24 overflow-hidden bg-black/10 border-y border-gold/10">
+      <style>{`
+        @keyframes modalScaleUp {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-modal-scale {
+          animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+      `}</style>
+
+      <GoldenParticles count={15} />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings and warm wishes from those we hold dear." light />
+
+        {/* Compose Form */}
+        <form
+          onSubmit={submit}
+          className="mt-14 max-w-2xl mx-auto relative border border-[#D4AF37]/35 backdrop-blur-xl overflow-hidden rounded-[40px] sm:rounded-[60px]"
+          style={{
+            background: "linear-gradient(135deg, rgba(89, 13, 21, 0.85) 0%, rgba(20, 10, 4, 0.9) 100%)",
+            boxShadow: "0 25px 55px -15px rgba(0,0,0,0.85), inset 0 0 20px rgba(255, 255, 255, 0.05)",
+          }}
+        >
+          {/* Subtle Mandala background */}
+          <MandalaBg className="absolute -right-24 -bottom-24 w-80 h-80 opacity-[0.06] pointer-events-none" />
+
+          <div className="relative z-10 p-8 pt-10 pb-10 px-10 md:px-14">
+            {/* Auto-name badge */}
+            <div className="flex items-center gap-2.5 mb-5 px-3 py-2 rounded-lg border border-[#D4AF37]/25 bg-[#D4AF37]/5 w-fit">
+              <span className="text-[9px] uppercase tracking-[0.4em] text-[#D4AF37]">Sending as</span>
+              <span className="text-[11px] font-heading text-white">{GUEST_NAME}</span>
+            </div>
+
+            {/* Textarea */}
+            <div className="relative mb-5">
+              <textarea
+                placeholder="Leave a heartfelt wish for Aarav & Priya..."
+                value={message}
+                maxLength={500}
+                rows={4}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full bg-black/30 border border-[#D4AF37]/20 rounded-xl py-3.5 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-[#D4AF37]/65 transition-colors text-sm resize-none leading-relaxed"
+                style={{ minHeight: 100, maxHeight: 180, overflowY: "auto" }}
+              />
+              <span className="absolute bottom-2.5 right-3 text-[9px] text-white/30 select-none pointer-events-none">
+                {message.length}/500
+              </span>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={!message.trim() || sending}
+                className="group relative overflow-hidden rounded-full disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                style={{ background: "var(--gradient-gold)", boxShadow: "0 0 15px rgba(212,175,55,0.4)" }}
+              >
+                <span className="absolute inset-[-6px] rounded-full border border-dashed border-white/20 animate-spin-slow pointer-events-none" />
+                <span className="relative z-10 flex items-center gap-2 px-6 py-3 text-maroon-deep">
+                  {sending ? (
+                    <span className="w-4 h-4 rounded-full border-2 border-t-transparent border-maroon-deep animate-spin" />
+                  ) : sent ? (
+                    <Check className="w-4 h-4" strokeWidth={2.5} />
+                  ) : (
+                    <Heart className="w-4 h-4 animate-pulse fill-current" />
+                  )}
+                  <span className="text-[10px] uppercase tracking-[0.4em] font-semibold">
+                    {sending ? "Sending..." : sent ? "Sent! ✧" : "Send Wish"}
+                  </span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        {/* Section Divider */}
+        <div className="mt-14 mb-6 flex items-center gap-4">
+          <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
+          <span className="text-[9px] uppercase tracking-[0.4em] text-[#D4AF37]">Wishes from loved ones</span>
+          <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
         </div>
       </div>
 
-      {open && (
+      {/* Infinite marquee ticker */}
+      <div
+        className="relative w-full overflow-hidden mt-2"
+        onMouseEnter={() => { pausedRef.current = true; }}
+        onMouseLeave={() => { pausedRef.current = false; }}
+        onTouchStart={() => { pausedRef.current = true; }}
+        onTouchEnd={() => { setTimeout(() => { pausedRef.current = false; }, 1500); }}
+        style={{ cursor: "grab" }}
+      >
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-nightbg to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-nightbg to-transparent" />
+
         <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-nightbg/80 p-4 backdrop-blur-md"
-          onClick={() => setOpen(false)}
+          ref={tickerRef}
+          className="flex gap-5 will-change-transform"
+          style={{ width: "max-content", paddingBottom: 8 }}
         >
-          <form
+          {loopedWishes.map((w, i) => (
+            <WishCard key={i} wish={w} index={i} onCardClick={setSelectedWish} />
+          ))}
+        </div>
+
+        <p className="text-center text-[9px] uppercase tracking-[0.4em] text-white/30 mt-4 pb-2 select-none pointer-events-none">
+          Hover or tap to pause · Click cards to read full wishes
+        </p>
+      </div>
+
+      {/* Dialog modal */}
+      {selectedWish && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-[2px] p-4 transition-opacity duration-300 pointer-events-auto"
+          onClick={() => setSelectedWish(null)}
+        >
+          <div
+            className="relative max-w-md w-full p-8 md:p-10 border border-[#D4AF37]/35 backdrop-blur-2xl rounded-[40px] text-center animate-modal-scale"
+            style={{
+              background: "linear-gradient(135deg, rgba(89, 13, 21, 0.95) 0%, rgba(20, 10, 4, 0.98) 100%)",
+              boxShadow: "0 30px 70px rgba(0,0,0,0.85), inset 0 0 25px rgba(212,175,55,0.15)",
+            }}
             onClick={(e) => e.stopPropagation()}
-            onSubmit={submit}
-            className="w-full max-w-md glass-card rounded-2xl p-8 shadow-2xl"
           >
-            <h3 className="font-heading text-2xl gold-text">Leave a Blessing</h3>
-            <label className="mt-6 block text-xs uppercase tracking-[0.3em] text-maroon-deep">Your Name</label>
-            <input
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              maxLength={60}
-              required
-              className="mt-2 w-full rounded-lg gold-border bg-ivory/60 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-[#D4AF37]"
-            />
-            <label className="mt-4 block text-xs uppercase tracking-[0.3em] text-maroon-deep">Your Wish</label>
-            <textarea
-              value={form.msg}
-              onChange={(e) => setForm({ ...form, msg: e.target.value })}
-              maxLength={280}
-              required
-              rows={4}
-              className="mt-2 w-full rounded-lg gold-border bg-ivory/60 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-[#D4AF37]"
-            />
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-full px-6 py-2 text-xs uppercase tracking-[0.3em] text-maroon-deep hover:bg-beige/60"
-              >
-                Cancel
-              </button>
-              <GoldButton type="submit">Send Blessing</GoldButton>
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedWish(null)}
+              className="absolute top-4 right-5 text-white/40 hover:text-white transition-colors p-2 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Quote icon */}
+            <div className="w-12 h-12 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center mx-auto mb-6 text-[#D4AF37] text-2xl font-serif">
+              “
             </div>
-          </form>
+
+            {/* Full Message */}
+            <div className="max-h-[220px] overflow-y-auto pr-2 text-center mb-6">
+              <p className="text-white italic leading-relaxed text-base font-body">
+                "{selectedWish.msg}"
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div className="pt-5 border-t border-[#D4AF37]/20 flex justify-between items-center">
+              <span className="font-heading text-[#D4AF37] text-base">{selectedWish.name}</span>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-white/40">Warm Blessings</span>
+            </div>
+          </div>
         </div>
       )}
     </section>
@@ -1416,27 +1810,26 @@ export function WishingWall() {
 /* =========================================================
    RSVP
    ========================================================= */
-type RsvpForm = {
+type RsvpData = {
   name: string;
-  phone: string;
   attending: "yes" | "no";
   guests: number;
-  meal: "veg" | "non-veg" | "jain" | "vegan";
-  message?: string;
+  meal: "veg" | "nonveg" | "jain";
 };
 
 const STORAGE_KEY = "wedding-rsvp-v2";
+type Step = "closed" | "thanks" | "form";
 
 const fireGoldConfetti = () => {
   const end = Date.now() + 3000;
-  const colors = ["#d4af37", "#f3e5ab", "#aa7c11", "#ffdf00"];
+  const colors = ["#D4AF37", "#F5E6A8", "#AA7C11", "#FFDF00"];
 
   (function frame() {
     confetti({
       particleCount: 6,
-      startVelocity: 20,
+      startVelocity: 25,
       spread: 360,
-      ticks: 200,
+      ticks: 150,
       origin: { x: Math.random(), y: -0.1 },
       colors: colors,
       shapes: ['circle'],
@@ -1452,22 +1845,20 @@ const fireGoldConfetti = () => {
 };
 
 export function Rsvp() {
-  const [step, setStep] = useState<"closed" | "thanks" | "form">("closed");
-  const [rsvp, setRsvp] = useState<RsvpForm | null>(null);
-  const [form, setForm] = useState<RsvpForm>({
+  const [step, setStep] = useState<Step>("closed");
+  const [rsvp, setRsvp] = useState<RsvpData | null>(null);
+  const [form, setForm] = useState<RsvpData>({
     name: "",
-    phone: "",
     attending: "yes",
     guests: 1,
     meal: "veg",
-    message: "",
   });
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as RsvpForm;
+        const parsed = JSON.parse(raw) as RsvpData;
         setRsvp(parsed);
         setForm(parsed);
       }
@@ -1493,10 +1884,7 @@ export function Rsvp() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const data = { 
-      ...form, 
-      guests: Math.max(1, Math.min(10, Number(form.guests) || 1)) 
-    };
+    const data = { ...form, guests: Math.max(1, Math.min(10, Number(form.guests) || 1)) };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     setRsvp(data);
     setStep("closed");
@@ -1520,277 +1908,201 @@ export function Rsvp() {
 
   return (
     <section id="rsvp" className="relative overflow-hidden py-24 sm:py-32">
-      {/* ── 0. Watermark Mandala watermark in background ── */}
-      <div className="absolute inset-0 -z-20 opacity-[0.04] flex items-center justify-center pointer-events-none select-none">
-        <MandalaBg className="w-[85vw] h-[85vh] text-[#D4AF37]" />
-      </div>
+      {/* Background elements */}
+      <MandalaBg className="absolute left-10 top-10 h-[500px] w-[500px] opacity-[0.04]" />
+      
+      <div className="mx-auto max-w-3xl px-6 text-center">
+        <SectionTitle eyebrow="Kindly Respond" title="RSVP" subtitle="Please let us know by 15 days before the wedding." light />
 
-      <FloatingPetals count={10} />
-      <GoldenParticles count={12} />
+        <div className="mt-12 max-w-lg mx-auto p-8 rounded-3xl border border-[#D4AF37]/25 backdrop-blur-xl shadow-2xl bg-black/10">
+          <div className="accept-cta-wrap mx-auto relative flex flex-col items-center">
+            {/* Acceptance glowing background effect */}
+            <span className="absolute inset-0 bg-[#D4AF37]/15 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            
+            <button 
+              type="button" 
+              onClick={openFlow} 
+              className="group relative overflow-hidden rounded-full cursor-pointer transition-transform duration-300 hover:scale-105 active:scale-95"
+              style={{ background: "var(--gradient-gold)", boxShadow: "0 10px 30px rgba(212,175,55,0.4)" }}
+            >
+              <span className="absolute inset-[-6px] rounded-full border border-dashed border-white/20 animate-spin-slow pointer-events-none" />
+              <span className="relative z-10 flex items-center gap-3 px-8 py-4 text-maroon-deep font-heading text-sm uppercase tracking-[0.25em] font-semibold">
+                <Heart className="w-4.5 h-4.5 fill-current animate-pulse" />
+                <span>{rsvp ? "View / Edit RSVP" : "Accept Invitation"}</span>
+                <span>❋</span>
+              </span>
+            </button>
+          </div>
 
-      {/* ── 1. Double gold frame border ── */}
-      <motion.div
-        initial={{ opacity: 0, scale: 1.05 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.8, ease: "easeOut" }}
-        className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10"
-      />
-      <motion.div
-        initial={{ opacity: 0, scale: 1.03 }}
-        animate={{ opacity: 0.55, scale: 1 }}
-        transition={{ duration: 2, ease: "easeOut", delay: 0.3 }}
-        className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10"
-      />
-
-      {/* ── 2. Ornate corner ornaments ── */}
-      <CornerOrnament className="top-[10px]  left-[10px]  sm:top-[22px] sm:left-[22px]" />
-      <CornerOrnament className="top-[10px]  right-[10px] sm:top-[22px] sm:right-[22px] rotate-90" />
-      <CornerOrnament className="bottom-[10px] left-[10px]  sm:bottom-[22px] sm:left-[22px]  -rotate-90" />
-      <CornerOrnament className="bottom-[10px] right-[10px] sm:bottom-[22px] sm:right-[22px] rotate-180" />
-
-      {/* ── 3. Swaying Bells ── */}
-      <motion.div
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
-        className="absolute left-3.5 sm:left-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
-      >
-        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
-        <motion.div animate={{ rotate: [-3, 3, -3] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
-          <HangingBell />
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
-        className="absolute right-3.5 sm:right-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
-      >
-        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
-        <motion.div animate={{ rotate: [3, -3, 3] }} transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
-          <HangingBell />
-        </motion.div>
-      </motion.div>
-
-      <div className="relative mx-auto max-w-3xl z-10 px-6 text-center flex flex-col items-center">
-        <SectionTitle eyebrow="Kindly Respond" title="RSVP" subtitle="Please let us know your plans by 15 days before the wedding." light />
-
-        <div className="accept-cta-wrap mx-auto mt-6">
-          <span className="accept-glow" aria-hidden="true" />
-          <button type="button" onClick={openFlow} className="btn-accept-luxe">
-            <span className="accept-sheen" aria-hidden="true" />
-            <Heart className="w-4 h-4 md:w-5 md:h-5 fill-current" strokeWidth={1.5} />
-            <span className="accept-label">
-              {rsvp ? "View / Edit RSVP" : "Accept Invitation"}
-            </span>
-            <span className="accept-deco" aria-hidden="true">❋</span>
-          </button>
+          <p className="mt-6 font-body italic text-[#FAF8F3]/80 text-sm sm:text-base">
+            {rsvp
+              ? `Your RSVP is saved · ${rsvp.attending === "yes" ? "Attending" : "Unable to attend"}`
+              : "With your blessings, this celebration becomes complete."}
+          </p>
         </div>
-        <p className="mt-6 font-heading italic text-[#F5E6A8]/70 text-sm sm:text-base leading-relaxed max-w-md">
-          {rsvp
-            ? `Your RSVP is saved · ${rsvp.attending === "yes" ? "Attending" : "Unable to attend"}`
-            : "With your blessings, this celebration becomes complete."}
-        </p>
-
-        {/* Confetti Thanks Splash Overlay */}
-        <AnimatePresence>
-          {step === "thanks" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center px-6 backdrop-blur-md"
-              style={{
-                background: "radial-gradient(ellipse at center, rgba(38, 5, 9, 0.98), rgba(13, 5, 2, 0.96))",
-              }}
-              role="dialog"
-              aria-modal="true"
-              onClick={close}
-            >
-              <div className="text-center max-w-md">
-                <div
-                  className="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 shadow-[0_12px_40px_-8px_rgba(212,175,55,0.55)]"
-                  style={{ background: "linear-gradient(135deg, #D4AF37 0%, #B8862A 100%)" }}
-                >
-                  <Heart className="w-10 h-10 text-[#26150b] fill-current" />
-                </div>
-                <p className="font-body text-[0.7rem] uppercase tracking-[0.4em] text-[#D4AF37] mb-2">
-                  From Our Hearts
-                </p>
-                <h3 className="font-heading text-5xl sm:text-6xl text-[#F5E6A8] mb-3">
-                  Thank You
-                </h3>
-                <span aria-hidden className="block h-px w-24 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto my-4" />
-                <p className="font-body italic text-[#F5E6A8]/80 text-base sm:text-lg">
-                  Your blessings mean the world to us.
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Modal RSVP Form */}
-        <AnimatePresence>
-          {step === "form" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-4 backdrop-blur-md"
-              style={{
-                background: "radial-gradient(ellipse at center, rgba(38, 5, 9, 0.98), rgba(13, 5, 2, 0.96))",
-              }}
-              role="dialog"
-              aria-modal="true"
-              onClick={(e) => {
-                if (e.target === e.currentTarget) close();
-              }}
-            >
-              {/* Double Border Frame inside modal */}
-              <div className="absolute inset-3 sm:inset-6 pointer-events-none border border-[#D4AF37]/20 rounded-2xl z-0" />
-              <CornerOrnament className="top-[14px] left-[14px] sm:top-[28px] sm:left-[28px]" />
-              <CornerOrnament className="top-[14px] right-[14px] sm:top-[28px] sm:right-[28px] rotate-90" />
-              <CornerOrnament className="bottom-[14px] left-[14px] sm:bottom-[28px] sm:left-[28px] -rotate-90" />
-              <CornerOrnament className="bottom-[14px] right-[14px] sm:bottom-[28px] sm:right-[28px] rotate-180" />
-
-              <button
-                type="button"
-                onClick={close}
-                className="absolute top-6 right-6 w-9 h-9 rounded-full flex items-center justify-center bg-[#26150b]/80 text-[#D4AF37] border border-[#D4AF37]/35 shadow-md hover:bg-[#0d0502] transition-colors z-20"
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <motion.div 
-                initial={{ y: 30, scale: 0.95 }}
-                animate={{ y: 0, scale: 1 }}
-                exit={{ y: 30, scale: 0.95 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="w-full max-w-md mx-auto max-h-[92vh] flex flex-col z-10 relative overflow-y-auto px-4"
-              >
-                <div className="text-center mb-4 shrink-0">
-                  <div
-                    className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-2 shadow-[0_8px_24px_-6px_rgba(212,175,55,0.45)]"
-                    style={{ background: "linear-gradient(135deg, #D4AF37 0%, #B8862A 100%)" }}
-                  >
-                    {rsvp ? (
-                      <Check className="w-6 h-6 text-[#26150b]" strokeWidth={3} />
-                    ) : (
-                      <Heart className="w-6 h-6 text-[#26150b] fill-current" />
-                    )}
-                  </div>
-                  <h3 className="font-heading text-3xl text-[#F5E6A8] leading-tight font-semibold">
-                    Kindly RSVP
-                  </h3>
-                  <span aria-hidden className="block h-px w-16 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto my-2" />
-                </div>
-
-                <form onSubmit={submit} className="space-y-4 text-left">
-                  <div>
-                    <label className="luxe-label">Full Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="luxe-input"
-                      placeholder="Your full name"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="luxe-label">Phone Number</label>
-                    <input
-                      type="tel"
-                      required
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="luxe-input"
-                      placeholder="Your contact number"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="luxe-label">Will you be joining us?</label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {(["yes", "no"] as const).map((opt) => (
-                        <button
-                          key={opt}
-                          type="button"
-                          onClick={() => setForm({ ...form, attending: opt })}
-                          className={`luxe-pill ${form.attending === opt ? "is-active" : ""}`}
-                        >
-                          {opt === "yes" ? "Joyfully Yes" : "Regretfully No"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {form.attending === "yes" && (
-                    <div>
-                      <label className="luxe-label">Number of Guests</label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={10}
-                        value={form.guests}
-                        onChange={(e) => setForm({ ...form, guests: Number(e.target.value) })}
-                        className="luxe-input"
-                      />
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="luxe-label">Meal Preference</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {(["veg", "non-veg", "jain", "vegan"] as const).map((opt) => (
-                        <button
-                          key={opt}
-                          type="button"
-                          onClick={() => setForm({ ...form, meal: opt })}
-                          className={`luxe-pill !text-[9px] sm:!text-[10px] ${form.meal === opt ? "is-active" : ""}`}
-                        >
-                          {opt === "veg" ? "Veg" : opt === "non-veg" ? "Non-Veg" : opt === "jain" ? "Jain" : "Vegan"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="luxe-label">Message (Optional)</label>
-                    <textarea
-                      rows={2}
-                      maxLength={300}
-                      value={form.message || ""}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      className="luxe-input resize-none"
-                      placeholder="Send a blessing or notes..."
-                    />
-                  </div>
-
-                  <div className="flex gap-3 pt-2">
-                    <button type="submit" className="btn-accept-luxe flex-1 !py-3 !text-[10px] w-full">
-                      <Check className="w-4 h-4" strokeWidth={2.5} />
-                      <span className="accept-label">{rsvp ? "Update RSVP" : "Submit RSVP"}</span>
-                    </button>
-                    {rsvp && (
-                      <button
-                        type="button"
-                        onClick={() => setForm(rsvp)}
-                        className="luxe-secondary-btn flex-[0.5] !py-3"
-                      >
-                        Reset
-                      </button>
-                    )}
-                  </div>
-                </form>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
+
+      {/* STEP 1: Thanks Overlay */}
+      {step === "thanks" && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center px-6 bg-black/90 backdrop-blur-md animate-in fade-in duration-500"
+          role="dialog"
+          aria-modal="true"
+          onClick={close}
+        >
+          <div className="text-center max-w-md">
+            <div
+              className="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 shadow-[0_12px_40px_-8px_rgba(212,175,55,0.55)] animate-in zoom-in duration-700"
+              style={{ background: "var(--gradient-gold)" }}
+            >
+              <Heart className="w-10 h-10 text-maroon-deep fill-current animate-pulse" />
+            </div>
+            <p className="font-heading text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] mb-2">
+              From Our Hearts
+            </p>
+            <h3 className="font-couple text-5xl md:text-6xl gold-text mb-3 leading-none">
+              Thank You
+            </h3>
+            <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto my-4" />
+            <p className="font-body italic text-[#FAF8F3]/80 text-base md:text-lg">
+              Your love means the world to us.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 2: Form Modal */}
+      {step === "form" && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-400"
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) close();
+          }}
+        >
+          <button
+            type="button"
+            onClick={close}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center bg-black/40 border border-[#D4AF37]/30 text-white hover:bg-black/60 transition z-10 cursor-pointer"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <div 
+            className="w-full max-w-md mx-auto max-h-[90vh] flex flex-col p-8 border border-[#D4AF37]/35 rounded-[32px] overflow-y-auto animate-modal-scale"
+            style={{
+              background: "linear-gradient(135deg, rgba(89, 13, 21, 0.98) 0%, rgba(20, 10, 4, 0.98) 100%)",
+              boxShadow: "0 30px 70px rgba(0,0,0,0.85), inset 0 0 25px rgba(212,175,55,0.15)",
+            }}
+          >
+            <div className="text-center mb-6 shrink-0">
+              <div
+                className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3 shadow-[0_8px_24px_-6px_rgba(212,175,55,0.45)]"
+                style={{ background: "var(--gradient-gold)" }}
+              >
+                {rsvp ? (
+                  <Check className="w-6 h-6 text-maroon-deep" strokeWidth={3} />
+                ) : (
+                  <Heart className="w-5 h-5 text-maroon-deep fill-current animate-pulse" />
+                )}
+              </div>
+              <h3 className="font-heading text-2xl text-[#F5E6A8] leading-none">
+                Kindly RSVP
+              </h3>
+              <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto my-3" />
+            </div>
+
+            <form onSubmit={submit} className="space-y-4 text-left">
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] mb-2">Your Name</label>
+                <input
+                  type="text"
+                  required
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full rounded-xl border border-[#D4AF37]/30 bg-black/40 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#D4AF37] transition"
+                  placeholder="Your name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] mb-2">Will you be joining us?</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(["yes", "no"] as const).map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setForm({ ...form, attending: opt })}
+                      className={`py-3 px-4 rounded-xl text-center text-xs uppercase tracking-[0.15em] border transition cursor-pointer select-none
+                                 ${form.attending === opt 
+                                   ? "bg-gradient-to-r from-[#D4AF37] to-[#E6C280] text-maroon-deep border-[#D4AF37] font-semibold" 
+                                   : "bg-transparent border-white/20 text-white/80 hover:bg-white/5"}`}
+                    >
+                      {opt === "yes" ? "Joyfully Yes" : "Regretfully No"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {form.attending === "yes" && (
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] mb-2">Number of Guests</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={form.guests}
+                    onChange={(e) => setForm({ ...form, guests: Number(e.target.value) })}
+                    className="w-full rounded-xl border border-[#D4AF37]/30 bg-black/40 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#D4AF37] transition"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] mb-2">Meal Preference</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(["veg", "nonveg", "jain"] as const).map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setForm({ ...form, meal: opt })}
+                      className={`py-2 px-1.5 rounded-xl text-center text-[10px] uppercase tracking-[0.1em] border transition cursor-pointer select-none
+                                 ${form.meal === opt 
+                                   ? "bg-gradient-to-r from-[#D4AF37] to-[#E6C280] text-maroon-deep border-[#D4AF37] font-semibold" 
+                                   : "bg-transparent border-white/20 text-white/80 hover:bg-white/5"}`}
+                    >
+                      {opt === "veg" ? "Veg" : opt === "nonveg" ? "Non-Veg" : "Jain"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-3">
+                <button 
+                  type="submit" 
+                  className="flex-1 flex items-center justify-center gap-2 rounded-full cursor-pointer py-3.5 text-xs uppercase tracking-[0.2em] text-maroon-deep font-semibold"
+                  style={{ background: "var(--gradient-gold)" }}
+                >
+                  <Check className="w-4 h-4" strokeWidth={2.5} />
+                  <span>{rsvp ? "Update RSVP" : "Submit RSVP"}</span>
+                </button>
+                {rsvp && (
+                  <button
+                    type="button"
+                    onClick={() => setForm(rsvp)}
+                    className="px-6 rounded-full border border-white/20 text-white text-xs uppercase tracking-[0.2em] hover:bg-white/5 transition flex items-center gap-2 cursor-pointer"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    <span>Reset</span>
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -1820,34 +2132,179 @@ function useCountdown(target: Date) {
   };
 }
 
+const COUNTDOWN_MAX = { days: 365, hours: 24, minutes: 60, seconds: 60 } as const;
+
+function RingTimer({
+  value,
+  max,
+  label,
+  hindi,
+}: {
+  value: number;
+  max: number;
+  label: string;
+  hindi: string;
+}) {
+  const R = 62;
+  const C = 2 * Math.PI * R;
+  const pct = Math.min(1, value / max);
+  const dash = C * pct;
+
+  return (
+    <div
+      className="relative group overflow-hidden rounded-2xl p-[1px] transition-all duration-500 z-10"
+      style={{
+        background: "linear-gradient(135deg, rgba(212, 175, 55, 0.3), transparent 40%, rgba(212, 175, 55, 0.15))"
+      }}
+    >
+      {/* Glow on hover */}
+      <div className="absolute -inset-10 bg-[#D4AF37]/5 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500 -z-10" />
+
+      {/* Card body */}
+      <div className="relative rounded-2xl bg-gradient-to-b from-[#3d070c]/50 via-[#140a04]/80 to-[#260508]/90 p-5 sm:p-6 flex flex-col items-center justify-center border border-white/10 backdrop-blur-xl">
+        <span className="absolute inset-1.5 border border-dashed border-[#D4AF37]/25 rounded-xl pointer-events-none select-none z-10" />
+        <span className="absolute left-2.5 top-2.5 w-2 h-2 border-l border-t border-[#D4AF37]/45 rounded-tl z-10" />
+        <span className="absolute right-2.5 top-2.5 w-2 h-2 border-r border-t border-[#D4AF37]/45 rounded-tr z-10" />
+        <span className="absolute left-2.5 bottom-2.5 w-2 h-2 border-l border-b border-[#D4AF37]/45 rounded-bl z-10" />
+        <span className="absolute right-2.5 bottom-2.5 w-2 h-2 border-r border-b border-[#D4AF37]/45 rounded-br z-10" />
+
+        <div
+          className="absolute inset-0 rounded-2xl p-[1.5px] opacity-60 group-hover:opacity-100 pointer-events-none select-none overflow-hidden transition-opacity duration-500 z-10"
+          style={{
+            WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+            WebkitMaskComposite: "xor",
+            maskComposite: "exclude",
+          }}
+        >
+          <div
+            className="absolute top-1/2 left-1/2 w-[250%] h-[250%] -translate-x-1/2 -translate-y-1/2 aspect-square animate-[spin_5s_linear_infinite] pointer-events-none"
+            style={{
+              background: "conic-gradient(from 0deg, transparent 30%, #D4AF37 55%, #FFFBEA 60%, #D4AF37 70%, transparent 90%)",
+            }}
+          />
+        </div>
+
+        {/* Circular progress bar */}
+        <div className="relative">
+          <div className="anim-pulse-glow pointer-events-none absolute inset-0 -m-3 rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.22),transparent_70%)]" />
+          <svg width="150" height="150" viewBox="0 0 150 150" className="drop-shadow-[0_0_12px_rgba(212,175,55,0.25)]">
+            <defs>
+              <linearGradient id={`grad-${label}`} x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#FFF3D6" />
+                <stop offset="50%" stopColor="#D4AF37" />
+                <stop offset="100%" stopColor="#AA7C11" />
+              </linearGradient>
+            </defs>
+            <circle cx="75" cy="75" r={R} fill="none" stroke="rgba(212,175,55,0.12)" strokeWidth="3" />
+            <motion.circle
+              cx="75"
+              cy="75"
+              r={R}
+              fill="none"
+              stroke={`url(#grad-${label})`}
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray={`${dash} ${C}`}
+              transform="rotate(-90 75 75)"
+              initial={{ strokeDasharray: `0 ${C}` }}
+              animate={{ strokeDasharray: `${dash} ${C}` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+            {[0, 90, 180, 270].map((deg) => (
+              <circle
+                key={deg}
+                cx={75 + R * Math.cos((deg * Math.PI) / 180)}
+                cy={75 + R * Math.sin((deg * Math.PI) / 180)}
+                r="2"
+                fill="#D4AF37"
+              />
+            ))}
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <p className="font-heading text-xs font-bold text-[#D4AF37]">
+              {hindi}
+            </p>
+            <div className="h-10 mt-1">
+              <AnimatePresence mode="popLayout">
+                <motion.span
+                  key={value}
+                  initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+                  transition={{ duration: 0.4 }}
+                  className="block font-heading text-3xl font-bold leading-none text-[#F5E6A8] drop-shadow-[0_2px_8px_rgba(212,175,55,0.3)]"
+                >
+                  {String(value).padStart(2, "0")}
+                </motion.span>
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-4 font-body text-[9px] uppercase tracking-[0.25em] text-[#F5E6A8]/90 font-bold select-none z-20">
+          {label}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function Countdown() {
   const c = useCountdown(wedding.date);
-  const units = [
-    { label: "Days", value: c.days },
-    { label: "Hours", value: c.hours },
-    { label: "Minutes", value: c.minutes },
-    { label: "Seconds", value: c.seconds },
+  const items: Array<[keyof typeof COUNTDOWN_MAX, string, string]> = [
+    ["days", "Days", "दिवस"],
+    ["hours", "Hours", "घंटे"],
+    ["minutes", "Minutes", "मिनट"],
+    ["seconds", "Seconds", "सेकंड"],
   ];
+
   return (
-    <section
-      id="countdown"
-      className="relative overflow-hidden py-24 text-ivory bg-black/10"
-    >
-      <GoldenParticles count={40} />
+    <section id="countdown" className="relative overflow-hidden py-24 sm:py-32 text-ivory">
       <FloatingPetals count={10} />
+      <GoldenParticles count={15} />
+
+      {/* Hanging Bells */}
+      <motion.div
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 0.85 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+        className="absolute left-6 sm:left-12 top-6 origin-top flex flex-col items-center pointer-events-none z-10"
+      >
+        <div className="w-px h-8 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/20" />
+        <motion.div animate={{ rotate: [-3, 3, -3] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-0.5">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 0.85 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+        className="absolute right-6 sm:right-12 top-12 origin-top flex flex-col items-center pointer-events-none z-10"
+      >
+        <div className="w-px h-10 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/20" />
+        <motion.div animate={{ rotate: [3, -3, 3] }} transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-0.5">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
       <div className="relative mx-auto max-w-5xl px-6">
         <SectionTitle eyebrow="The Wait Begins" title="Countdown" light subtitle="Every second closer to forever." />
+
         {c.done ? (
-          <p className="text-center font-couple text-3xl sm:text-5xl gold-text">The Celebration Has Begun!</p>
+          <p className="text-center font-heading text-3xl sm:text-5xl gold-text">The Celebration Has Begun!</p>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {units.map((u) => (
-              <div key={u.label} className="glass-dark rounded-2xl p-6 text-center">
-                <div className="font-couple text-5xl sm:text-6xl gold-text tabular-nums">
-                  {String(u.value).padStart(2, "0")}
-                </div>
-                <p className="mt-2 text-[10px] uppercase tracking-[0.4em] text-ivory/70">{u.label}</p>
-              </div>
+          <div className="mt-16 grid grid-cols-2 gap-5 sm:gap-8 md:grid-cols-4 px-2">
+            {items.map(([key, label, hindi]) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 30, scale: 0.93 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+              >
+                <RingTimer value={c[key]} max={COUNTDOWN_MAX[key]} label={label} hindi={hindi} />
+              </motion.div>
             ))}
           </div>
         )}
