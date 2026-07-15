@@ -2103,9 +2103,9 @@ export function WishingWall() {
                 style={{ background: "var(--gradient-gold)", boxShadow: "0 0 15px rgba(212,175,55,0.4)" }}
               >
                 <span className="absolute inset-[-6px] rounded-full border border-dashed border-white/20 animate-spin-slow pointer-events-none" />
-                <span className="relative z-10 flex items-center gap-2 px-6 py-3 text-maroon-deep">
+                <span className="relative z-10 flex items-center gap-2 px-6 py-3 text-[#260508] font-bold">
                   {sending ? (
-                    <span className="w-4 h-4 rounded-full border-2 border-t-transparent border-maroon-deep animate-spin" />
+                    <span className="w-4 h-4 rounded-full border-2 border-t-transparent border-[#260508] animate-spin" />
                   ) : sent ? (
                     <Check className="w-4 h-4" strokeWidth={2.5} />
                   ) : (
