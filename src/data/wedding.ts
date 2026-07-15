@@ -199,8 +199,5 @@ export const navSections = [
   { id: "wishes", label: "Wishes" },
   { id: "rsvp", label: "RSVP" },
   { id: "countdown", label: "Countdown" },
-  { id: "venue", label: "Venue" },
-  { id: "registry", label: "Gifts" },
-  { id: "faq", label: "FAQ" },
   { id: "contact", label: "Contact" },
 ];

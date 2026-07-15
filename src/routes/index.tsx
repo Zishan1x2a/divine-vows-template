@@ -4,7 +4,7 @@ import { Opening } from "@/components/wedding/opening";
 
 import {
   Welcome, Hero, Story, Events, Gallery, Family, WishingWall,
-  Rsvp, Countdown, Venue, Registry, Faq, Contact, ThankYou,
+  Rsvp, Countdown, Contact, ThankYou,
 } from "@/components/wedding/sections";
 
 export const Route = createFileRoute("/")({
@@ -122,9 +122,6 @@ function WeddingPage() {
         <WishingWall />
         <Rsvp />
         <Countdown />
-        <Venue />
-        <Registry />
-        <Faq />
         <Contact />
         <ThankYou />
       </main>
