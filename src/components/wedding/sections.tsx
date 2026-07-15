@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form";
 import {
   Calendar, Clock, MapPin, Sparkles, Heart, Phone, MessageCircle,
   Gift, ChevronDown, X, Car, BedDouble, Navigation, Check,
-  ChevronLeft, ChevronRight, ArrowUpRight,
+  ChevronLeft, ChevronRight, ArrowUpRight, Send,
 } from "lucide-react";
+import { z } from "zod";
+import { toast } from "sonner";
+import confetti from "canvas-confetti";
 import { wedding, ganeshMantra, IMG } from "@/data/wedding";
 import {
   ArchFrame, FloatingPetals, GoldenParticles, MandalaBg,
@@ -1324,90 +1327,295 @@ export function Family() {
   );
 }
 
-/* =========================================================
-   WISHING WALL
-   ========================================================= */
-export function WishingWall() {
-  const [wishes, setWishes] = useState(wedding.initialWishes);
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", msg: "" });
+type Blessing = {
+  id: string;
+  name: string;
+  message: string;
+  at: number;
+};
 
-  function submit(e: React.FormEvent) {
+const STORAGE_KEY = "wedding_blessings_v2";
+
+const blessingSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, { message: "Please enter your name" })
+    .max(50, { message: "Name must be 50 characters or less" }),
+  message: z
+    .string()
+    .trim()
+    .min(5, { message: "Please write a bit more" })
+    .max(400, { message: "Wish must be 400 characters or less" }),
+});
+
+const formatWhen = (ts: number) => {
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return `${d}d ago`;
+};
+
+const fireBlessingConfetti = () => {
+  const end = Date.now() + 2500;
+  const colors = ["#D4AF37", "#F5E6A8", "#B8862A", "#FFFFFF", "#6E1F2A"];
+
+  (function frame() {
+    confetti({
+      particleCount: 8,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0, y: 0.8 },
+      colors: colors,
+      zIndex: 10000
+    });
+    confetti({
+      particleCount: 8,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1, y: 0.8 },
+      colors: colors,
+      zIndex: 10000
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  }());
+};
+
+export function WishingWall() {
+  const [blessings, setBlessings] = useState<Blessing[]>([]);
+  const [formName, setFormName] = useState("");
+  const [formMessage, setFormMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const seedBlessings = useMemo(() => {
+    return wedding.initialWishes.map((w, idx) => ({
+      id: `seed-${idx}`,
+      name: w.name,
+      message: w.msg,
+      at: Date.now() - 1000 * 60 * 60 * (idx + 1) * 3,
+    }));
+  }, []);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Blessing[];
+        setBlessings(parsed);
+        return;
+      }
+    } catch {
+      /* ignore */
+    }
+    setBlessings(seedBlessings);
+  }, [seedBlessings]);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.msg.trim()) return;
-    setWishes((w) => [{ name: form.name, msg: form.msg }, ...w]);
-    setForm({ name: "", msg: "" });
-    setOpen(false);
-  }
+    const result = blessingSchema.safeParse({ name: formName, message: formMessage });
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
+      return;
+    }
+    setSubmitting(true);
+    const next: Blessing = {
+      id: `b-${Date.now()}`,
+      name: result.data.name,
+      message: result.data.message,
+      at: Date.now(),
+    };
+    const list = [next, ...blessings].slice(0, 100);
+    setBlessings(list);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    } catch {
+      /* ignore */
+    }
+    setFormName("");
+    setFormMessage("");
+    toast.success("Thank you for your blessings! 🙏");
+    fireBlessingConfetti();
+    setTimeout(() => setSubmitting(false), 400);
+  };
 
   return (
-    <section id="wishes" className="relative overflow-hidden py-24 bg-black/10">
-      <GoldenParticles count={20} />
-      <div className="mx-auto max-w-6xl px-6">
-        <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings from those we hold dear." />
-        <div className="mb-8 text-center">
-          <GoldButton onClick={() => setOpen(true)}>
-            <Heart size={14} /> Add Your Blessing
-          </GoldButton>
-        </div>
-        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [column-fill:balance]">
-          {wishes.map((w, i) => (
-            <Reveal key={i} delay={Math.min(i * 0.05, 0.4)}>
-              <div className="mb-6 break-inside-avoid glass-card rounded-2xl p-6 shadow-lg">
-                <p className="font-heading text-base italic text-maroon-deep">"{w.msg}"</p>
-                <div className="mt-4 flex items-center gap-3">
-                  <div className="grid h-9 w-9 place-items-center rounded-full gold-gradient font-couple text-xs text-maroon-deep">
-                    {w.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
-                  </div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#B8862A]">— {w.name}</p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+    <section id="wishes" className="relative overflow-hidden py-24 sm:py-32">
+      {/* ── 0. Watermark Mandala watermark in background ── */}
+      <div className="absolute inset-0 -z-20 opacity-[0.04] flex items-center justify-center pointer-events-none select-none">
+        <MandalaBg className="w-[85vw] h-[85vh] text-[#D4AF37]" />
       </div>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-nightbg/80 p-4 backdrop-blur-md"
-          onClick={() => setOpen(false)}
+      <FloatingPetals count={12} />
+      <GoldenParticles count={15} />
+
+      {/* ── 1. Double gold frame border ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.05 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.8, ease: "easeOut" }}
+        className="absolute inset-2 sm:inset-4 pointer-events-none border border-[#D4AF37]/35 rounded-xl sm:rounded-2xl z-10"
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 1.03 }}
+        animate={{ opacity: 0.55, scale: 1 }}
+        transition={{ duration: 2, ease: "easeOut", delay: 0.3 }}
+        className="absolute inset-[10px] sm:inset-[22px] pointer-events-none border border-[#D4AF37]/18 rounded-lg sm:rounded-xl z-10"
+      />
+
+      {/* ── 2. Ornate corner ornaments ── */}
+      <CornerOrnament className="top-[10px]  left-[10px]  sm:top-[22px] sm:left-[22px]" />
+      <CornerOrnament className="top-[10px]  right-[10px] sm:top-[22px] sm:right-[22px] rotate-90" />
+      <CornerOrnament className="bottom-[10px] left-[10px]  sm:bottom-[22px] sm:left-[22px]  -rotate-90" />
+      <CornerOrnament className="bottom-[10px] right-[10px] sm:bottom-[22px] sm:right-[22px] rotate-180" />
+
+      {/* ── 3. Swaying Bells ── */}
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+        className="absolute left-3.5 sm:left-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
+      >
+        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
+        <motion.div animate={{ rotate: [-3, 3, -3] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
+        className="absolute right-3.5 sm:right-10 top-[10px] sm:top-[22px] origin-top flex flex-col items-center pointer-events-none z-20"
+      >
+        <div className="w-px h-10 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/30" />
+        <motion.div animate={{ rotate: [3, -3, 3] }} transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }} className="origin-top -mt-1">
+          <HangingBell />
+        </motion.div>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-5xl z-10 px-6">
+        <SectionTitle eyebrow="From Loved Ones" title="Wishing Wall" subtitle="Blessings from those we hold dear." light />
+
+        {/* ── Embedded Form ── */}
+        <form
+          onSubmit={handleSubmit}
+          className="glass-card rounded-3xl p-6 md:p-8 max-w-xl mx-auto text-left relative overflow-hidden shadow-2xl border border-gold/15 mb-14"
+          style={{
+            background: "linear-gradient(145deg, rgba(38, 5, 9, 0.8) 0%, rgba(20, 10, 4, 0.9) 100%)",
+          }}
         >
-          <form
-            onClick={(e) => e.stopPropagation()}
-            onSubmit={submit}
-            className="w-full max-w-md glass-card rounded-2xl p-8 shadow-2xl"
-          >
-            <h3 className="font-heading text-2xl gold-text">Leave a Blessing</h3>
-            <label className="mt-6 block text-xs uppercase tracking-[0.3em] text-maroon-deep">Your Name</label>
-            <input
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              maxLength={60}
-              required
-              className="mt-2 w-full rounded-lg gold-border bg-ivory/60 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-[#D4AF37]"
-            />
-            <label className="mt-4 block text-xs uppercase tracking-[0.3em] text-maroon-deep">Your Wish</label>
-            <textarea
-              value={form.msg}
-              onChange={(e) => setForm({ ...form, msg: e.target.value })}
-              maxLength={280}
-              required
-              rows={4}
-              className="mt-2 w-full rounded-lg gold-border bg-ivory/60 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-[#D4AF37]"
-            />
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-full px-6 py-2 text-xs uppercase tracking-[0.3em] text-maroon-deep hover:bg-beige/60"
-              >
-                Cancel
-              </button>
-              <GoldButton type="submit">Send Blessing</GoldButton>
+          {/* Inner Frame */}
+          <div className="absolute inset-2 md:inset-3 border-[0.5px] border-gold/25 rounded-[1.5rem] pointer-events-none z-0" />
+          <MandalaBg className="absolute -top-24 -left-24 w-64 h-64 opacity-5 rotate-45 pointer-events-none z-0 text-[#D4AF37]" />
+          <MandalaBg className="absolute -bottom-24 -right-24 w-64 h-64 opacity-5 -rotate-45 pointer-events-none z-0 text-[#D4AF37]" />
+
+          <div className="relative z-10 space-y-4">
+            <p className="font-heading text-xs uppercase tracking-[0.35em] text-[#D4AF37] text-center mb-6 font-semibold">
+              Leave Your Blessing
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="b-name"
+                  className="font-body text-[10px] uppercase tracking-[0.25em] text-[#F5E6A8] block mb-2 font-semibold"
+                >
+                  Your Name
+                </label>
+                <input
+                  id="b-name"
+                  type="text"
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="Enter your name…"
+                  className="w-full bg-white/5 border border-gold/30 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 rounded-lg px-4 py-3 font-body text-white placeholder:text-white/20 shadow-inner text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="b-msg"
+                  className="font-body text-[10px] uppercase tracking-[0.25em] text-[#F5E6A8] block mb-2 font-semibold"
+                >
+                  Your Wish
+                </label>
+                <textarea
+                  id="b-msg"
+                  value={formMessage}
+                  onChange={(e) => setFormMessage(e.target.value)}
+                  maxLength={400}
+                  rows={4}
+                  placeholder="Share a blessing, prayer, or warm wish for the couple…"
+                  className="w-full bg-white/5 border border-gold/30 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20 rounded-lg px-4 py-3 font-body text-white placeholder:text-white/20 resize-none shadow-inner text-sm"
+                  required
+                />
+                <p className="text-right text-[10px] text-white/40 mt-1 font-body tracking-wider">
+                  {formMessage.length}/400
+                </p>
+              </div>
+
+              <div className="text-center pt-3 max-w-[200px] mx-auto">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full relative group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-body text-sm uppercase tracking-[0.25em] text-[#3a1a10] transition-all duration-500 gold-gradient shadow-gold hover:scale-[1.03] disabled:opacity-50 disabled:scale-100 cursor-pointer"
+                >
+                  <Send className="w-4 h-4 fill-current transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  <span className="font-semibold">{submitting ? "Sending…" : "Offer Blessing"}</span>
+                </button>
+              </div>
             </div>
-          </form>
+          </div>
+        </form>
+
+        {/* Wishes Grid Wall */}
+        <div className="max-w-5xl mx-auto">
+          <div className="max-h-[58vh] overflow-y-auto pr-1 md:pr-4 custom-scrollbar">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
+              {blessings.map((b, i) => (
+                <Reveal key={b.id} delay={Math.min(i * 0.05, 0.4)}>
+                  <article
+                    className={`glass-card rounded-3xl p-6 md:p-8 relative shadow-lg transition-transform hover:-translate-y-1 hover:shadow-xl ${
+                      i % 2 === 0 ? "rotate-1" : "-rotate-1"
+                    } hover:rotate-0 overflow-hidden border border-gold/15`}
+                    style={{
+                      background: "linear-gradient(145deg, rgba(38, 5, 9, 0.4) 0%, rgba(20, 10, 4, 0.6) 100%)",
+                    }}
+                  >
+                    {/* Inner decorative border for cards */}
+                    <div className="absolute inset-2 border-[0.5px] border-gold/10 rounded-[1.2rem] pointer-events-none z-0" />
+                    <MandalaBg className="absolute -bottom-16 -right-16 w-40 h-40 opacity-[0.05] pointer-events-none z-0 text-[#D4AF37]" />
+
+                    <div className="relative z-10">
+                      <Heart className="w-5 h-5 text-[#E33434] absolute -top-1 -right-1 opacity-75 animate-pulse" aria-hidden="true" />
+                      <p className="font-heading text-base italic text-white/95 leading-relaxed pr-6">
+                        “{b.message}”
+                      </p>
+
+                      <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4 w-full" />
+
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">— {b.name}</p>
+                        <span className="font-body text-[9px] uppercase tracking-[0.25em] text-white/40">
+                          {formatWhen(b.at)}
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </section>
   );
 }
